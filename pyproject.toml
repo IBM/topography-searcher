@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "topsearch"
+version = "0.1.0"
+description = "The topsearch Python package is designed for mapping the solution space of machine learning algorithms. An understanding of the organisation of the solution space can answer important questions about the reproducibility, explainability and performance of ML methods."
+authors = ["Luke Dicks"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+matplotlib = "^3.8.1"
+networkx = "^3.2.1"
+scipy = "^1.11.3"
+numpy = "^1.26.1"
+scikit-learn = "^1.3.2"
+nptyping = "^2.5.0"
+ase = "^3.22.1"
+rdkit = "^2023.9.4"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.0.2"
+pytest = "^7.4.3"
+flake8 = "^6.1.0"
+pytest-coverage = "^0.0"
+
+
+[tool.poetry.group.ani_potential.dependencies]
+torch = "^2.1.2"
+torchani = "^2.2.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
