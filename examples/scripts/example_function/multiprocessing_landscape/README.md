@@ -1,0 +1,3 @@
+# Landscape generation with parallelisation
+
+The mapping of landscapes requires many transition state searches between different pairs of minima. Such computations can be time-consuming, and the number of such searches grows steeply with the number of local minima. These transition state searches require no communication so their computation is embarassingly parallel. Therefore, we are able to parallelise the many different connection attempts and provide a large reduction in computation time. Here, we illustrate the effect of parallelisation on the landscape computation for the two-dimensional Schwefel function by performing the calculation first on a single core and second using eight cores.

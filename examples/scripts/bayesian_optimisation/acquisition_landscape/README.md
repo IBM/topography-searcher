@@ -1,0 +1,3 @@
+# Acquisition function landscape
+
+The acquisition function has an important place in Bayesian optimisation; it quantifies the value of any point to global optimisation of the underlying function. In this example script, we use TopSearch to build a Gaussian process regression model from a small number of data points generated within the two-dimensional Schwefel function. From the Gaussian process fit we construct the corresponding upper confidence bound acquisition function and map its surface using the energy landscape methodology. Each minimum on the surface is a locally-optimal choice for the next sample point, and we show intermediate properties of the surface using transition states. We then visualise this solution space using a disconnectivity graph and a network.

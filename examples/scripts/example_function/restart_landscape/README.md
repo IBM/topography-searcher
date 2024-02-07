@@ -1,0 +1,3 @@
+# Restarting landscape calculations
+
+Landscape calculations can be expensive. Each transition state search can be time-consuming and we need to perform a large number if there are many minima. Therefore, it is essential to be able to restart landscape calculations when we only have a partial landscape due to time constraints. Restarting landscape calculations is straightforward in TopSearch, all we need is the existing network of transition states and minima, and the list of previous connection attempts. This information is stored in the files `min.data`, `ts.data`, `min.coords`, `ts.coords` and `pairlist`, which we read in before continuing the landscape calculations to find the complete landscape for the two-dimensional Schwefel function.

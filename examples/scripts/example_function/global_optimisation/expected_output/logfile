@@ -1,0 +1,5 @@
+ -------BASIN-HOPPING-------
+Steps = 500,Temperature = 100.0
+Located 208 distinct minima
+Basin-hopping completed in 0.4393625000011525
+

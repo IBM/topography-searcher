@@ -1,0 +1,1009 @@
+ ######## Epoch 1 #########
+
+Best GP fit: 0.1823215567939548 -0.2231435513142097 -2.3025850929940455 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 3 distinct minima
+Basin-hopping completed in 0.7237812500000018
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 2
+
+Connection attempt between minima pair: 0 1
+
+Connection attempt between minima pair: 1 2
+
+Connection attempt between minima pair: 0 0
+
+Connection attempt between minima pair: 0 0
+
+Connection attempt between minima pair: 0 0
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.9360960000001342 s:NEB (0.8424585000000206), HEF (0.09328262500002893)
+-------------------------
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.3176842919999672 s:NEB (1.0211521659998652), HEF (0.29624920800006294)
+-------------------------
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.9847184579998611 s:NEB (1.7148454579998997), HEF (0.26959549999992305)
+-------------------------
+New transition state connecting minima 2 and 0
+New transition state connecting minima 0 and 1
+Repeated transition state
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 2 minimafrom monotonic, remaining from barrier analysis
+0 Coords: 0.8492488715778049 0.17924200792451617  Function: 1.9454415898334703
+0 Coords: 0.8492488715778049 0.17924200792451617  Function: 1.9454415898334703
+2 Coords: -1.2864760841720797 0.9791291038851995  Function: 0.9610457411655364
+Lowest point = -0.73606
+######## Epoch 2 #########
+
+Best GP fit: 0.0769610411361286 -0.32850406697203594 -2.3025850929940455 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 5 distinct minima
+Basin-hopping completed in 0.6398511659999713
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 4
+
+Connection attempt between minima pair: 0 2
+
+Connection attempt between minima pair: 1 2
+
+Connection attempt between minima pair: 1 0
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7106358339999588 s:NEB (0.680834625000216), HEF (0.029461750000109532)
+-------------------------
+Connection attempt between minima pair: 2 3
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.9642062919999717 s:NEB (0.8453620420000334), HEF (0.11849908299996059)
+-------------------------
+Connection attempt between minima pair: 2 4
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.0735710409999228 s:NEB (0.6166037919999781), HEF (0.45652366700005587)
+-------------------------
+Connection attempt between minima pair: 3 1
+
+1: Completed connection in 0.43110166599990407 s:NEB (0.3483738340000855), HEF (0.08255687500013664)
+-------------------------
+Connection attempt between minima pair: 3 0
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.6438496670000404 s:NEB (1.600833959000056), HEF (0.04270562500005326)
+-------------------------
+Connection attempt between minima pair: 4 1
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.072790040999962 s:NEB (0.8034642499999336), HEF (0.26914812500012886)
+-------------------------
+Connection attempt between minima pair: 4 3
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1: 2: Completed connection in 1.4505328329998974 s:NEB (1.2843215830000645), HEF (0.16606570899989492)
+-------------------------
+2: 3: Completed connection in 1.0740665420000823 s:NEB (0.6889219160000266), HEF (0.3850190000000566)
+-------------------------
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.9515614580000147 s:NEB (1.7588705829998617), HEF (0.19248495900001217)
+-------------------------
+1: 2: 3: Completed connection in 1.2472024169999258 s:NEB (0.6796592079999755), HEF (0.5673955830000068)
+-------------------------
+New transition state connecting minima 0 and 4
+New transition state connecting minima 0 and 2
+New transition state connecting minima 1 and 2
+Repeated transition state
+New transition state connecting minima 2 and 3
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 1 and 0
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 2 minimafrom monotonic, remaining from barrier analysis
+1 Coords: 1.496361451366605 0.7676795543538218  Function: 2.3505139243308015
+2 Coords: 0.8055664219612614 -0.702602158344212  Function: 0.23665993524832052
+0 Coords: -1.058200796837458 -0.15468577831554528  Function: 2.384221105992882
+Lowest point = -0.73606
+######## Epoch 3 #########
+
+Best GP fit: -0.028399474521697658 -0.43386458262986216 -2.3025850929940455 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 6 distinct minima
+Basin-hopping completed in 0.7726525000000493
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 2
+
+Connection attempt between minima pair: 0 1
+
+Connection attempt between minima pair: 1 2
+
+Connection attempt between minima pair: 1 3
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.3176007919998938 s:NEB (0.28452149999998255), HEF (0.03281399999991663)
+-------------------------
+Connection attempt between minima pair: 2 4
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.5289749169999141 s:NEB (0.42980341699990277), HEF (0.09885725000003731)
+-------------------------
+Connection attempt between minima pair: 2 3
+
+1: 3 candidates from NEB after 1 attempts. Force constant: 25.0
+2: Completed connection in 0.7402404580000166 s:NEB (0.35608779200015306), HEF (0.3839207080000051)
+-------------------------
+Connection attempt between minima pair: 3 4
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 0.7082146669999929 s:NEB (0.2911524169999211), HEF (0.41687675000002855)
+-------------------------
+Connection attempt between minima pair: 3 0
+
+1: Completed connection in 0.592241083999852 s:NEB (0.4439796249998835), HEF (0.1480773749999571)
+-------------------------
+Connection attempt between minima pair: 4 0
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.1926047919998837 s:NEB (1.070184000000154), HEF (0.12221183300016492)
+-------------------------
+Connection attempt between minima pair: 4 1
+
+2: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 3: Completed connection in 1.8807522919998974 s:NEB (0.701039332999926), HEF (1.1793974580000395)
+-------------------------
+Connection attempt between minima pair: 5 1
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 0.8592446249999739 s:NEB (0.2530374999998912), HEF (0.6060480829999051)
+-------------------------
+Connection attempt between minima pair: 5 0
+
+2: Completed connection in 1.1944236249998994 s:NEB (0.9471186669998133), HEF (0.24712462499996946)
+-------------------------
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.5128348749999532 s:NEB (1.3241498330000923), HEF (0.1884719579998091)
+-------------------------
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.9279476670001259 s:NEB (1.547413792000043), HEF (0.38025658300011855)
+-------------------------
+3 candidates from NEB after 3 attempts. Force constant: 25000.0
+1: 2: 3: Completed connection in 6.55231433300014 s:NEB (6.085608500000035), HEF (0.4664483750000272)
+-------------------------
+New transition state connecting minima 0 and 2
+New transition state connecting minima 1 and 0
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 1 and 2
+New transition state connecting minima 2 and 3
+Repeated transition state
+New transition state connecting minima 4 and 2
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 2 and 5
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 4 minimafrom monotonic, remaining from barrier analysis
+4 Coords: -1.559303439994141 1.0639349640986957  Function: 1.0407341607661793
+3 Coords: -1.5505146793603768 -0.3937881687640765  Function: 2.1971779878214437
+0 Coords: 0.9050732412576654 0.6169226297336544  Function: 1.666105369612573
+Lowest point = -0.73606
+######## Epoch 4 #########
+
+Best GP fit: -0.133759990179524 -0.5392250982876884 -16.11809565095832 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 10 distinct minima
+Basin-hopping completed in 0.7058088329999919
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 6
+
+Connection attempt between minima pair: 1 3
+
+Connection attempt between minima pair: 2 9
+
+Connection attempt between minima pair: 3 6
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.5578500829999484 s:NEB (0.25393112500000825), HEF (0.3036170000000311)
+-------------------------
+Connection attempt between minima pair: 1 2
+
+1: 2: Completed connection in 0.7291381249999631 s:NEB (0.2611919169999055), HEF (0.4676035410000168)
+-------------------------
+Connection attempt between minima pair: 3 4
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2: Completed connection in 0.9028034170000865 s:NEB (0.5045935419998386), HEF (0.3978472910000619)
+-------------------------
+Connection attempt between minima pair: 2 3
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.5046444590000192 s:NEB (1.2088733749999392), HEF (0.29542658400009714)
+-------------------------
+Connection attempt between minima pair: 0 8
+
+1: Completed connection in 1.1652091250000467 s:NEB (0.26184366699999373), HEF (0.9030744169999707)
+-------------------------
+Connection attempt between minima pair: 4 5
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.3467679160000898 s:NEB (1.2006160420000924), HEF (0.14586850000000595)
+-------------------------
+Connection attempt between minima pair: 5 2
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.6397755000000416 s:NEB (1.5681582499998967), HEF (0.07143416700000671)
+-------------------------
+Connection attempt between minima pair: 6 8
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.463717416999998 s:NEB (0.3811251249999259), HEF (0.0824198749999141)
+-------------------------
+Connection attempt between minima pair: 6 7
+
+1: 2: Completed connection in 0.907555875000071 s:NEB (0.3696881250000388), HEF (0.5376777920000677)
+-------------------------
+Connection attempt between minima pair: 5 3
+
+2: Completed connection in 1.748148750000155 s:NEB (1.3186923329999445), HEF (0.42927704199996697)
+-------------------------
+Connection attempt between minima pair: 7 8
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.6818707090001226 s:NEB (0.4334895829999823), HEF (0.2482435419999547)
+-------------------------
+Connection attempt between minima pair: 8 3
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 0.7923737080000137 s:NEB (0.35949583400019947), HEF (0.4327258329999495)
+-------------------------
+Connection attempt between minima pair: 9 1
+
+TS search did not converge.Too many steps
+Completed connection in 0.876441166999939 s:NEB (0.41706054200017206), HEF (0.4591443330000402)
+-------------------------
+Connection attempt between minima pair: 7 0
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7163369580000563 s:NEB (0.33923425000011775), HEF (0.3768995840000571)
+-------------------------
+Connection attempt between minima pair: 9 3
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.81976987500002 s:NEB (1.307715541999869), HEF (0.5118166249999376)
+-------------------------
+Connection attempt between minima pair: 8 1
+
+2: Completed connection in 1.305428333000009 s:NEB (0.617675583999926), HEF (0.6875351659998614)
+-------------------------
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.4981322920000366 s:NEB (0.2610150000000431), HEF (0.2369242499999018)
+-------------------------
+1 candidates from NEB after 3 attempts. Force constant: 0.025
+1: Completed connection in 5.557644708999987 s:NEB (5.378845499999898), HEF (0.1785359170000902)
+-------------------------
+Connection attempt between minima pair: 4 2
+
+3 candidates from NEB after 3 attempts. Force constant: 25.0
+1: 2: 3: Completed connection in 2.0776769999999942 s:NEB (1.3053603329999532), HEF (0.7720380839998597)
+-------------------------
+1: 2: Completed connection in 5.246311666999873 s:NEB (0.27078287500012266), HEF (4.975376916999949)
+-------------------------
+New transition state connecting minima 0 and 1
+New transition state connecting minima 6 and 1
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 3 and 1
+Repeated transition state
+New transition state connecting minima 1 and 2
+New transition state connecting minima 9 and 1
+New transition state connecting minima 3 and 2
+New transition state connecting minima 1 and 3
+Repeated transition state
+New transition state connecting minima 1 and 4
+New transition state connecting minima 1 and 5
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 3 and 8
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+------- SAMPLING THE NETWORK ---------
+Scheme: ConnectUnconnected
+-----------------
+Connection attempt between minima pair: 7 8
+
+Connection attempt between minima pair: 7 6
+
+Connection already attempted. Trying again
+Connection already attempted. Trying again
+Connection attempt between minima pair: 7 0
+
+Connection already attempted. Trying again
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+TS search did not converge.Too many steps
+Completed connection in 0.7761144589999276 s:NEB (0.3154048330000023), HEF (0.4600949999999102)
+-------------------------
+TS search did not converge.Too many steps
+Completed connection in 0.9091717500000414 s:NEB (0.4517317090001143), HEF (0.4569024580000587)
+-------------------------
+4 candidates from NEB after 3 attempts. Force constant: 25.0
+TS search did not converge.Too many steps
+2: 3: 4: Completed connection in 3.383886999999959 s:NEB (1.7888934160000645), HEF (1.5944500419998349)
+-------------------------
+Repeated transition state
+Repeated transition state
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 2 minimafrom monotonic, remaining from barrier analysis
+0 Coords: 2.5483923121250127 0.5782503296560172  Function: 29.29219569548861
+1 Coords: -0.10427611464681952 0.5278147392687119  Function: -0.8156999108099523
+0 Coords: 2.5483923121250127 0.5782503296560172  Function: 29.29219569548861
+Lowest point = -0.81570
+######## Epoch 5 #########
+
+Best GP fit: -0.23912050583735028 -0.6445856139455147 -16.11809565095832 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 10 distinct minima
+Basin-hopping completed in 0.9231240829999479
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+Connection attempt between minima pair: 1 8
+
+Connection attempt between minima pair: 2 9
+
+Connection attempt between minima pair: 3 6
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.21579975000008744 s:NEB (0.08207387499987817), HEF (0.1334349999999631)
+-------------------------
+Connection attempt between minima pair: 2 8
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.6013024999999743 s:NEB (0.4037891660000241), HEF (0.19713391699997374)
+-------------------------
+Connection attempt between minima pair: 3 5
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.9188428330000988 s:NEB (0.7364015420000669), HEF (0.1821915830000762)
+-------------------------
+Connection attempt between minima pair: 1 6
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+TS search did not converge.Can't find a pushoff
+Completed connection in 0.8187444160000723 s:NEB (0.765922332999935), HEF (0.05260654200014869)
+-------------------------
+Connection attempt between minima pair: 4 5
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.9940985829998681 s:NEB (0.8163029579998238), HEF (0.17755229199997302)
+-------------------------
+Connection attempt between minima pair: 4 6
+
+TS search did not converge.Too many steps
+Completed connection in 1.4460820840001816 s:NEB (0.7106845840000915), HEF (0.7351772500001061)
+-------------------------
+Connection attempt between minima pair: 5 7
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.5940566660001423 s:NEB (1.3740539160000935), HEF (0.21971841599997788)
+-------------------------
+Connection attempt between minima pair: 6 8
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.5861152909999419 s:NEB (0.5286967500001083), HEF (0.057242500000029395)
+-------------------------
+Connection attempt between minima pair: 6 0
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1: 1: Completed connection in 5.088840540999854 s:NEB (0.6519677080000292), HEF (4.436576000000059)
+-------------------------
+Connection attempt between minima pair: 0 4
+
+2: Completed connection in 3.0786000000000513 s:NEB (1.111583666000115), HEF (1.9668400830000792)
+-------------------------
+Connection attempt between minima pair: 5 6
+
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: 3: Completed connection in 3.244980291999809 s:NEB (0.30296320800016474), HEF (2.9418387500002154)
+-------------------------
+Connection attempt between minima pair: 7 4
+
+TS search did not converge.Too many steps
+2: Completed connection in 6.818482124999946 s:NEB (1.0445738749999691), HEF (5.773760542000218)
+-------------------------
+Connection attempt between minima pair: 8 9
+
+TS search did not converge.Too many steps
+Completed connection in 5.786041291999936 s:NEB (0.2485943330000282), HEF (5.537273292000009)
+-------------------------
+Connection attempt between minima pair: 9 1
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.6714360419998684 s:NEB (0.6042893339999864), HEF (0.06697620800014192)
+-------------------------
+Connection attempt between minima pair: 7 6
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 0.8698108749999847 s:NEB (0.5349832499998683), HEF (0.3345982079999885)
+-------------------------
+Connection attempt between minima pair: 9 0
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: TS search did not converge.Too many steps
+2: Completed connection in 6.092059666000068 s:NEB (0.6358854590000647), HEF (5.455929749999996)
+-------------------------
+2 candidates from NEB after 3 attempts. Force constant: 25000.0
+1: 1: 2: Completed connection in 2.884541082999931 s:NEB (2.5478215000000546), HEF (0.33644279099985397)
+-------------------------
+Connection attempt between minima pair: 8 0
+
+2 candidates from NEB after 1 attempts. Force constant: 25000.0
+2: Completed connection in 2.959734124999841 s:NEB (0.9445422499998131), HEF (2.01494033400013)
+-------------------------
+1: TS search did not converge.Too many steps
+Completed connection in 6.130853290999994 s:NEB (0.864354750000075), HEF (5.266269125000008)
+-------------------------
+TS search did not converge.Too many steps
+Completed connection in 5.882878957999992 s:NEB (0.2524940410000909), HEF (5.6301444170001105)
+-------------------------
+New transition state connecting minima 4 and 0
+New transition state connecting minima 1 and 4
+New transition state connecting minima 1 and 8
+New transition state connecting minima 6 and 1
+New transition state connecting minima 6 and 9
+New transition state connecting minima 1 and 3
+New transition state connecting minima 5 and 4
+New transition state connecting minima 1 and 6
+Repeated transition state
+New transition state connecting minima 4 and 7
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 6 and 8
+New transition state connecting minima 6 and 1
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 5 and 6
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+------- SAMPLING THE NETWORK ---------
+Scheme: ConnectUnconnected
+-----------------
+Connection attempt between minima pair: 2 9
+
+Connection attempt between minima pair: 2 8
+
+Connection already attempted. Trying again
+Connection already attempted. Trying again
+Connection attempt between minima pair: 2 1
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.2166086660001838 s:NEB (0.08196595799995521), HEF (0.13405775000001086)
+-------------------------
+TS search did not converge.Can't find a pushoff
+2: Completed connection in 0.38981920900005207 s:NEB (0.16598670799999127), HEF (0.22337724999988495)
+-------------------------
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 0.7604639999999563 s:NEB (0.5458245410000018), HEF (0.2142510419998871)
+-------------------------
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 2 minimafrom monotonic, remaining from barrier analysis
+1 Coords: 1.6535534928141844 -0.16825350461115562  Function: 1.6627573290521984
+3 Coords: -0.4229401806555456 0.8302919624282935  Function: -0.5574707470665335
+6 Coords: -2.0653892154423903 1.1485419601823095  Function: 4.03635857070285
+Lowest point = -0.81570
+######## Epoch 6 #########
+
+Best GP fit: -0.34448102149517656 -0.749946129603341 -16.11809565095832 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 14 distinct minima
+Basin-hopping completed in 0.7249676249998629
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 10
+
+Connection attempt between minima pair: 1 4
+
+Connection attempt between minima pair: 2 12
+
+Connection attempt between minima pair: 3 10
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7667808749999949 s:NEB (0.5417824169999221), HEF (0.22466770799996993)
+-------------------------
+Connection attempt between minima pair: 3 5
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.9365545000000566 s:NEB (0.7095833749999656), HEF (0.22659312500013584)
+-------------------------
+Connection attempt between minima pair: 0 8
+
+1: Completed connection in 1.1696514160000788 s:NEB (0.8700176249999458), HEF (0.2992708749998201)
+-------------------------
+Connection attempt between minima pair: 1 11
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7550493749999987 s:NEB (0.7094394579999062), HEF (0.04530354199982867)
+-------------------------
+Connection attempt between minima pair: 4 8
+
+1: 2: Completed connection in 0.6593615419999423 s:NEB (0.33717750000005253), HEF (0.32193899999992937)
+-------------------------
+Connection attempt between minima pair: 5 9
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.9091812499998468 s:NEB (0.8233002500001021), HEF (0.08553841699995246)
+-------------------------
+Connection attempt between minima pair: 5 8
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+4 candidates from NEB after 3 attempts. Force constant: 25000.0
+1: Completed connection in 0.9837723330001609 s:NEB (0.4762594999999692), HEF (0.507246208999959)
+-------------------------
+Connection attempt between minima pair: 6 4
+
+1: 1 candidates from NEB after 1 attempts. Force constant: 25.0
+2: 3: 1: Completed connection in 3.0571111250001195 s:NEB (2.933199249999916), HEF (0.12369624999996631)
+-------------------------
+Connection attempt between minima pair: 7 9
+
+4: Completed connection in 4.063973917000112 s:NEB (3.5840055829999073), HEF (0.479561583000077)
+-------------------------
+Connection attempt between minima pair: 2 11
+
+0 candidates from NEB after 1 attempts. Force constant: 25.0
+Completed connection in 0.46608133299992005 s:NEB (0.4658633750000263), HEF (2.1669998204743024e-06)
+-------------------------
+Connection attempt between minima pair: 6 1
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.4955009580000933 s:NEB (0.4085385410000981), HEF (0.08667795900009878)
+-------------------------
+Connection attempt between minima pair: 7 13
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25000.0
+1: Completed connection in 3.281671250000045 s:NEB (3.050481665999996), HEF (0.2309536669999943)
+-------------------------
+Connection attempt between minima pair: 4 0
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+TS search did not converge.Transition state outside bounds
+1: Completed connection in 1.1108276249999562 s:NEB (0.5364375839999411), HEF (0.5741994579998391)
+-------------------------
+Connection attempt between minima pair: 8 9
+
+2: Completed connection in 1.1208854579999752 s:NEB (0.6810935829998925), HEF (0.4395908750000217)
+-------------------------
+Connection attempt between minima pair: 9 13
+
+0 candidates from NEB after 1 attempts. Force constant: 25.0
+Completed connection in 0.3017432909998661 s:NEB (0.30146304200002305), HEF (2.0420000055310084e-06)
+-------------------------
+Connection attempt between minima pair: 9 0
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.8502203340001415 s:NEB (0.7957201250001162), HEF (0.05425204100015435)
+-------------------------
+Connection attempt between minima pair: 8 10
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.4506157079999866 s:NEB (1.2492906669999684), HEF (0.20111962500004665)
+-------------------------
+Connection attempt between minima pair: 10 11
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.1896404169999641 s:NEB (0.9336950420001813), HEF (0.25570924999988165)
+-------------------------
+Connection attempt between minima pair: 11 0
+
+1: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.2977870419999817 s:NEB (1.1764332080001623), HEF (0.12105537499996899)
+-------------------------
+Connection attempt between minima pair: 12 1
+
+2: Completed connection in 1.1403090839999095 s:NEB (0.4182765840000684), HEF (0.7217678330000581)
+-------------------------
+Connection attempt between minima pair: 10 5
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1 candidates from NEB after 3 attempts. Force constant: 25000.0
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1: Completed connection in 3.440277792000188 s:NEB (3.257999916000017), HEF (0.1820740000000569)
+-------------------------
+Connection attempt between minima pair: 13 5
+
+2: Completed connection in 0.6274572919999173 s:NEB (0.33211612500008414), HEF (0.29510512499996366)
+-------------------------
+Connection attempt between minima pair: 12 10
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.342119208999975 s:NEB (1.1837846670000545), HEF (0.15812495899990608)
+-------------------------
+Connection attempt between minima pair: 11 12
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7432169579999481 s:NEB (0.5823919580000165), HEF (0.16058208300000842)
+-------------------------
+Connection attempt between minima pair: 13 8
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2: 1: Completed connection in 0.25731383300012567 s:NEB (0.0913690410000072), HEF (0.1657374589999563)
+-------------------------
+3: Completed connection in 1.632870916999991 s:NEB (0.3702847499998825), HEF (1.2623231669999768)
+-------------------------
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.3603851249999934 s:NEB (1.2898578750000524), HEF (0.07020120800007135)
+-------------------------
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: 3: Completed connection in 4.180447416999868 s:NEB (1.9128662079999685), HEF (2.267355875000021)
+-------------------------
+New transition state connecting minima 10 and 0
+New transition state connecting minima 0 and 8
+New transition state connecting minima 1 and 4
+New transition state connecting minima 10 and 1
+New transition state connecting minima 11 and 0
+New transition state connecting minima 0 and 2
+Repeated transition state
+New transition state connecting minima 12 and 2
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 3 and 10
+New transition state connecting minima 5 and 3
+New transition state connecting minima 0 and 4
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 5 and 9
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 9 and 7
+Repeated transition state
+New transition state connecting minima 8 and 9
+Repeated transition state
+New transition state connecting minima 0 and 10
+Repeated transition state
+New transition state connecting minima 5 and 10
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 10 and 0
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 5 and 9
+Repeated transition state
+------- SAMPLING THE NETWORK ---------
+Scheme: ConnectUnconnected
+-----------------
+Connection attempt between minima pair: 13 9
+
+Connection attempt between minima pair: 13 7
+
+Connection already attempted. Trying again
+Connection already attempted. Trying again
+Connection attempt between minima pair: 13 5
+
+Connection already attempted. Trying again
+Connection attempt between minima pair: 6 4
+
+Connection already attempted. Trying again
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.3131765830000859 s:NEB (0.18942362500001764), HEF (0.12322804199993698)
+-------------------------
+Connection attempt between minima pair: 6 1
+
+Connection already attempted. Trying again
+1: 1 candidates from NEB after 1 attempts. Force constant: 25.0
+2: Completed connection in 0.8648579579999023 s:NEB (0.3081635419998747), HEF (0.5561659590000545)
+-------------------------
+Connection attempt between minima pair: 6 8
+
+1: Completed connection in 0.6048854159998882 s:NEB (0.39090845900000204), HEF (0.2136754169998767)
+-------------------------
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+5 candidates from NEB after 3 attempts. Force constant: 25.0
+TS search did not converge.Transition state outside bounds
+2: 1: Completed connection in 0.792804500000102 s:NEB (0.6936049999999341), HEF (0.09883525000009286)
+-------------------------
+TS search did not converge.Can't find a pushoff
+TS search did not converge.Can't find a pushoff
+5: Completed connection in 1.911571542000047 s:NEB (1.591903332999891), HEF (0.3191125830001056)
+-------------------------
+1 candidates from NEB after 3 attempts. Force constant: 25.0
+1: Completed connection in 3.045432249999976 s:NEB (2.7049217910000607), HEF (0.3399642080000831)
+-------------------------
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 6 and 11
+Repeated transition state
+Repeated transition state
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 4 minimafrom monotonic, remaining from barrier analysis
+0 Coords: 0.3664866284014772 -0.1643005712524477  Function: 0.3348959793247257
+1 Coords: 1.9432045557508943 0.06414184047169634  Function: 3.21647840567088
+11 Coords: 1.4785086889149617 -1.1611312651117534  Function: 2.3521623400660694
+Lowest point = -0.81570
+######## Epoch 7 #########
+
+Best GP fit: -0.44984153715300285 -0.16691538150457838 -16.11809565095832 
+-------BASIN-HOPPING-------
+Steps = 250,Temperature = 1.0
+Located 11 distinct minima
+Basin-hopping completed in 0.6656827910001084
+
+------- SAMPLING THE NETWORK ---------
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+Connection attempt between minima pair: 1 6
+
+Connection attempt between minima pair: 2 3
+
+Connection attempt between minima pair: 3 5
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.33432520799988197 s:NEB (0.22097562499993728), HEF (0.1129291249999369)
+-------------------------
+Connection attempt between minima pair: 3 1
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7749765830001252 s:NEB (0.30404429200007144), HEF (0.47054383299996516)
+-------------------------
+Connection attempt between minima pair: 2 5
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.0341884590000063 s:NEB (0.9567527499998505), HEF (0.07715487500013296)
+-------------------------
+Connection attempt between minima pair: 1 9
+
+1: Completed connection in 1.15277558400021 s:NEB (0.707389207999995), HEF (0.4450369580001734)
+-------------------------
+Connection attempt between minima pair: 0 8
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2: Completed connection in 1.150597125000104 s:NEB (0.8945753329999206), HEF (0.25586729199994807)
+-------------------------
+Connection attempt between minima pair: 4 9
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.6476581669999177 s:NEB (0.46658162499988975), HEF (0.18091591600000356)
+-------------------------
+Connection attempt between minima pair: 5 9
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.8765365419999398 s:NEB (0.7902930000000197), HEF (0.08603995900011796)
+-------------------------
+Connection attempt between minima pair: 6 8
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.7025672089998807 s:NEB (0.4441417499999716), HEF (0.25813845800007584)
+-------------------------
+Connection attempt between minima pair: 5 1
+
+1: Completed connection in 2.232665083000029 s:NEB (1.5303378339999654), HEF (0.7020899999999983)
+-------------------------
+Connection attempt between minima pair: 7 6
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1: Completed connection in 0.7873709160000999 s:NEB (0.5851162910000767), HEF (0.20201941599998463)
+-------------------------
+Connection attempt between minima pair: 7 8
+
+2: Completed connection in 1.4547984999999244 s:NEB (1.0347404579999875), HEF (0.4199071250000088)
+-------------------------
+Connection attempt between minima pair: 8 1
+
+1: Completed connection in 1.8864022080001632 s:NEB (1.3472559159999946), HEF (0.5388824579999891)
+-------------------------
+Connection attempt between minima pair: 6 9
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+2: 1: 1: 3: Completed connection in 0.7951300830000037 s:NEB (0.4983474160001151), HEF (0.296609750000016)
+-------------------------
+Connection attempt between minima pair: 9 7
+
+2: Completed connection in 0.97226783300016 s:NEB (0.46499195799992776), HEF (0.5071314580000035)
+-------------------------
+Connection attempt between minima pair: 10 4
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.49676799999997456 s:NEB (0.33361566600001424), HEF (0.1630036660001224)
+-------------------------
+Connection attempt between minima pair: 9 0
+
+2: Completed connection in 1.315513332999899 s:NEB (0.4507208750001155), HEF (0.8645238330000211)
+-------------------------
+Connection attempt between minima pair: 8 9
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.5748692909999136 s:NEB (0.47981591600000684), HEF (0.09478054100009103)
+-------------------------
+Connection attempt between minima pair: 10 9
+
+2 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 3 attempts. Force constant: 25000.0
+1: Completed connection in 4.301033791000009 s:NEB (4.191043499999978), HEF (0.10979837500008216)
+-------------------------
+Connection attempt between minima pair: 4 5
+
+1: 2 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 2 candidates from NEB after 1 attempts. Force constant: 25000.0
+2: Completed connection in 1.4209601250001924 s:NEB (0.40964395900005), HEF (1.011155834000192)
+-------------------------
+3 candidates from NEB after 1 attempts. Force constant: 25.0
+1: 1: 2: Completed connection in 1.3972130000001926 s:NEB (0.7650844170000255), HEF (0.6318759590001264)
+-------------------------
+2: 3: Completed connection in 2.0864952920001087 s:NEB (1.417571209000016), HEF (0.6687006660001771)
+-------------------------
+2: Completed connection in 1.545739458000071 s:NEB (0.6783632920000855), HEF (0.8671612919999916)
+-------------------------
+New transition state connecting minima 0 and 1
+New transition state connecting minima 0 and 8
+New transition state connecting minima 1 and 6
+New transition state connecting minima 9 and 0
+New transition state connecting minima 5 and 3
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 1 and 1
+New transition state connecting minima 9 and 4
+Repeated transition state
+New transition state connecting minima 9 and 5
+Repeated transition state
+New transition state connecting minima 1 and 5
+Repeated transition state
+New transition state connecting minima 6 and 8
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 1 and 7
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 6 and 0
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+Repeated transition state
+New transition state connecting minima 1 and 10
+Repeated transition state
+Repeated transition state
+------- SAMPLING THE NETWORK ---------
+Scheme: ConnectUnconnected
+-----------------
+Connection attempt between minima pair: 2 3
+
+Connection attempt between minima pair: 2 5
+
+Connection already attempted. Trying again
+Connection already attempted. Trying again
+Connection attempt between minima pair: 2 4
+
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 0.6294889169998896 s:NEB (0.6086543339999935), HEF (0.02032399999984591)
+-------------------------
+1: Completed connection in 0.6515483339999264 s:NEB (0.16700708300004408), HEF (0.4839753329999894)
+-------------------------
+1 candidates from NEB after 1 attempts. Force constant: 25.0
+1: Completed connection in 1.5186540830000013 s:NEB (0.9726340419999815), HEF (0.5455728750000617)
+-------------------------
+Repeated transition state
+New transition state connecting minima 3 and 2
+Repeated transition state
+------- BATCH SELECTION ---------
+Topographical: 3 minima
+Only got 4 minimafrom monotonic, remaining from barrier analysis
+4 Coords: 1.7103041455082015 -0.8469077218185318  Function: -0.18471501165806825
+1 Coords: -0.5126110888704534 0.57794210150579  Function: -0.27393085285509966
+9 Coords: 0.3963903518973436 -0.5980030408332376  Function: -0.5779915586521241
+Lowest point = -0.81570
