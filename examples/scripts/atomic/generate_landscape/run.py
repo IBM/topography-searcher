@@ -12,6 +12,7 @@ from topsearch.global_optimisation.basin_hopping import BasinHopping
 from topsearch.sampling.exploration import NetworkSampling
 from topsearch.transition_states.hybrid_eigenvector_following import HybridEigenvectorFollowing
 from topsearch.transition_states.nudged_elastic_band import NudgedElasticBand
+from topsearch.plotting.disconnectivity import plot_disconnectivity_graph
 
 # INITIALISATION
 
@@ -26,7 +27,8 @@ position = np.array([[0.0, 0.0, 0.0],
                      [0.0, 3.0, 3.0],
                      [3.0, 3.0, 3.0]])
 coords = AtomicCoordinates(atom_labels=atom_labels,
-                           position=position.flatten())
+                           position=position.flatten(),
+                           bond_cutoff=1.5)
 # Initialise the simple Lennard Jones potential for describing
 # gas phase atomic species
 lj = LennardJones()
@@ -40,17 +42,19 @@ comparer = MolecularSimilarity(distance_criterion=0.1,
 ktn = KineticTransitionNetwork()
 # Perturbation scheme for proposing new positions in configuration space
 # Standard perturbation just applies random perturbations
-step_taking = AtomicPerturbation(max_displacement=0.2,
-                                 max_atoms=1)
+step_taking = AtomicPerturbation(max_displacement=0.5,
+                                 max_atoms=3)
 # Global optimisation class that uses basin-hopping to locate
 # local minima and the global minimum
-optimiser = BasinHopping(ktn=ktn, potential=lj, similarity=comparer,
+optimiser = BasinHopping(ktn=ktn,
+                         potential=lj,
+                         similarity=comparer,
                          step_taking=step_taking)
 # Single ended transition state search object that locates transition
 # states from a single starting position, using hybrid eigenvector-following
 hef = HybridEigenvectorFollowing(potential=lj,
-                                 conv_crit=5e-5,
-                                 ts_steps=50,
+                                 conv_crit=1e-4,
+                                 ts_steps=150,
                                  pushoff=1e-1,
                                  max_uphill_step_size=0.3,
                                  positive_eigenvalue_step=0.3)
@@ -73,13 +77,17 @@ explorer = NetworkSampling(ktn=ktn,
 # BEGIN CALCULATIONS
 
 # Perform global optimisation to locate all local minima of the function
-explorer.get_minima(coords, 2, 1e-5, 1.0, test_valid=False)
+explorer.get_minima(coords, 150, 1e-5, 1.0, test_valid=True)
 for i in range(ktn.n_minima):
     coords.position = ktn.get_minimum_coords(i)
     coords.write_xyz('%i' %i)
 # Then get the transition states between them by attempting to connect
 # each minimum with its eight nearest neighbours
-#explorer.get_transition_states('ClosestEnumeration', 4,
-#                               remove_bounds_minima=False)
+explorer.get_transition_states('ClosestEnumeration', 4,
+                               remove_bounds_minima=False)
+for u, v in ktn.G.edges:
+    coords.position = ktn.get_ts_coords(u, v)
+    coords.write_xyz('%i_%i' %(u, v))
 # Write the network to files to store
-#ktn.dump_network()
+ktn.dump_network()
+plot_disconnectivity_graph(ktn, 100)

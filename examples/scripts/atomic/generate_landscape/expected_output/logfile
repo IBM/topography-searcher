@@ -1,0 +1,64 @@
+ -------BASIN-HOPPING-------
+Steps = 150,Temperature = 1.0
+Step 6: Could not converge 
+Step 22: Could not converge 
+Step 25: Could not converge 
+Step 27: Could not converge 
+Step 38: Could not converge 
+Step 39: Could not converge 
+Step 41: Could not converge 
+Step 48: Could not converge 
+Step 51: Could not converge 
+Step 60: Could not converge 
+Step 64: Could not converge 
+Step 69: Could not converge 
+Step 80: Could not converge 
+Step 84: Could not converge 
+Step 86: Could not converge 
+Step 88: Could not converge 
+Step 91: Could not converge 
+Step 92: Could not converge 
+Step 117: Could not converge 
+Step 119: Could not converge 
+Step 120: Could not converge 
+Step 127: Could not converge 
+Step 131: Could not converge 
+Step 135: Could not converge 
+Step 137: Could not converge 
+Located 4 distinct minima
+Basin-hopping completed in 2.572794334000264
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 4 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 0.4359133749999273 s:NEB (0.05141520799998034), HEF (0.37355816699982825)
+-------------------------
+New transition state connecting minima 0 and 3
+Connection attempt between minima pair: 1 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 0.4391465000003336 s:NEB (0.047047458000179176), HEF (0.3780680830000165)
+-------------------------
+New transition state connecting minima 3 and 1
+Connection attempt between minima pair: 0 3
+
+Nodes already connected by transition state
+Connection attempt between minima pair: 2 3
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 0.2273744170001919 s:NEB (0.06733954199989967), HEF (0.14676537500008635)
+-------------------------
+New transition state connecting minima 3 and 2
+Connection attempt between minima pair: 0 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 0.3283045409998522 s:NEB (0.036849582999820996), HEF (0.2676809999998113)
+-------------------------
+Repeated transition state
+Connection attempt between minima pair: 1 3
+
+Nodes already connected by transition state
