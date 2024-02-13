@@ -41,7 +41,7 @@ pip install topsearch
 ```
 or directly from the git source using
 ```
-pip install git+https://github.com/IBM/TopSearch
+pip install git+https://github.com/IBM/topography-searcher
 ```
 
 For those not importing the package directly you can set up the proper enivornment from the pyproject.toml file with
