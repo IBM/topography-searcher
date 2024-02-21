@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "topsearch"
 version = "0.1.0"
-description = "The topsearch Python package is designed for mapping the solution space of machine learning algorithms. An understanding of the organisation of the solution space can answer important questions about the reproducibility, explainability and performance of ML methods."
-authors = ["Luke Dicks"]
+description = "A Python package for topographical analysis of machine learning models and physical systems"
+license = "MIT"
+authors = ["Luke Dicks <luke.dicks@ibm.com>"]
 readme = "README.md"
+keywords = ["machine-learning", "chemistry", "topography", "landscapes", "explainable-ai"]
+repository = "https://github.com/IBM/topography-searcher/"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
