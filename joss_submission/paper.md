@@ -1,5 +1,5 @@
 ---
-title: 'Gala: A Python package for galactic dynamics'
+title: 'TopSearch: a Python package for topographical analysis of machine learning models and physical systems'
 tags:
   - Python
   - astronomy
@@ -7,86 +7,47 @@ tags:
   - galactic dynamics
   - milky way
 authors:
-  - name: Adrian M. Price-Whelan
-    orcid: 0000-0000-0000-0000
-    equal-contrib: true
-    affiliation: "1, 2" # (Multiple affiliations must be quoted)
-  - name: Author Without ORCID
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
-    affiliation: 2
-  - name: Author with no affiliation
-    corresponding: true # (This is how to denote the corresponding author)
-    affiliation: 3
-  - given-names: Ludwig
-    dropping-particle: van
-    surname: Beethoven
-    affiliation: 3
+  - name: Luke Dicks
+    orcid: 0000-0002-5278-4412
+    affiliation: "1"
+  - name: Edward O. Pyzer-Knapp
+    corresponding: true
+    orcid: 0000-0002-8232-8282
+    affiliation: 1
 affiliations:
- - name: Lyman Spitzer, Jr. Fellow, Princeton University, USA
+ - name: IBM Research Europe, Hartree Centre, Daresbury, United Kingdom
    index: 1
- - name: Institution Name, Country
-   index: 2
- - name: Independent Researcher, Country
-   index: 3
-date: 13 August 2017
+date: 21 February 2024
 bibliography: paper.bib
-
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
 
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
+Machine learning (ML) is now ubiquitous in all scientific fields, but there remains a significant challenge to understanding and explaining model performance.\cite{Zhang2021} Therefore, there is increasing interest in applying methods from other scientific disciplines (e.g. physics and biology) to improve the performance and explainability of machine learning algorithms.\cite{Karniadakis2021} One methodology that has proved useful to understand machine learning performance is the energy landscape framework from chemical physics.\cite{Wales2003}
+
+The energy landscape framework is a set of algorithms that map the topography of continuous surfaces by their stationary points. The topography is encoded as a weighted graph\cite{Noe2008} and in application to potential energy surfaces all physical properties of a system can be extracted from this graph.\cite{Swinburne2020} Examples of the methodology applied to potential energy surfaces explain physical phenomena for proteins,\cite{Roder2019} small molecules,\cite{Matysik2021} atomic clusters\cite{Csanyi2023} and crystalline solids.\cite{Pracht2023}
+
+Additionally, the energy landscape framework is applicable to any given continuous surface, allowing application to a wide range of machine learning algorithms through the corresponding loss function surface. Fitting of a machine learning model usually aims to locate low-valued or diverse solutions, and an understanding of the solution space topography explains model reproducibility and performance. Leveraging the energy landscape framework the performance and reliability of neural networks,\cite{Niroomand2022} Gaussian processes\cite{Niroomand2023} and clustering algorithms\cite{Dicks2022, Dicks2023, Wu2023} has been explored. Moreover, it has been used to explain the effect of dataset roughness on ML model performance,\cite{Dicks2023_2} and a tutorial review of different applications is given in \cite{Niroomand2024}.
 
 # Statement of need
 
-`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
+The \verb +topsearch+ Python package provides a rapid prototyping software for application of the energy landscape framework. It contains the functionality to be used for both potential energy surfaces and the loss function surfaces for a variety of machine learning models. We describe alternate software for both loss function and potential energy surface exploration in the following paragraphs.
 
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
+There is limited software for explicitly analysing the topography of loss function surfaces. These surfaces are considered implicitly when optimising an ML model through local minimisation, but none attempt to capture global topographical features of the parameter space. There is significantly more software for analysing potential energy surfaces, the majority of which approximate topographical features indirectly. Popular examples that aim to explore diverse regions of the surface through enhanced sampling are PyEMMA\cite{scherer_pyemma_2015} and large molecular simulation suites such as LAMMPS,\cite{LAMMPS} GROMACS,\cite{GROMACS} and AMBER\cite{AMBER} the simulations of which can be simplified using PLUMED.\cite{PLUMED} Explicit location of topographical features, such as stationary points, is more common in quantum chemistry and can be performed by software such as VTST,\cite{vtst} PASTA,\cite{Kundu2018} PyMCD\cite{Lee2023} and ORCA.\cite{Neese2020} The explicit computation of topography using the energy landscape framework has several advantages for application to machine learning and none of the above software contains all the required functionality.
 
-# Mathematics
+Current leading tools for applying the energy landscape framework are the suite of FORTRAN programs: GMIN,\cite{GMIN} OPTIM\cite{OPTIM} and PATHSAMPLE.\cite{PATHSAMPLE} This software implements almost all functionality described within the energy landscape literature and, being written in a compiled language, is highly performant. Whilst a clear choice for production work where performance is critical, it is not without limitations for rapid prototyping. The user is required to be familiar with, and pass information between, three large distinct pieces of software. There exists a Python wrapper, \verb +pylfl+,\cite{pylfl} which simplifies their use, but does not remove the limit of multiple programs each of which requires a detailed understanding for use. Furthermore, the software suite contains limited support for machine learning models, and addition of new models is challenging and time-consuming due to a lack of implementations of ML libraries in FORTRAN. Therefore, there is a need for a single software that performs the energy landscape framework for both ML and physics, which integrates seamlessly with ML libraries, thus enabling rapid prototyping in this domain.
 
-Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
+\verb +topsearch+ replaces the functionality of the FORTRAN software suite in a single software package, reducing the need for data transfer and subsequent parameterisation and setup. The package, written entirely in Python, contains additional novel functionality for machine learning, and due to the prevalence of Python in machine learning further new models can be included quickly and easily. Furthermore, the implementation is significantly shorter, requiring less than a hundredth of the lines of code; enabling faster developer onboarding.
 
-Double dollars make self-standing equations:
+# Applications
 
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
+The Github repository, located at \url{https://github.com/IBM/topography-searcher}, contains examples for varied applications. Initially, we provide the examples for mapping surfaces of simple test functions to illustrate the major functionality of the code. These examples constitute an introduction to the methodology and its outputs, which aids the understanding of both the theory and code implementation. There are additional examples for its use in machine learning with an application to quantifying dataset roughness.\cite{Dicks2023_2} This novel application, only possible with this software, can uniquely explain and predict regression performance without any model training. We also provide examples for both atomic and molecular systems, which require significant additional functionality. However, the examples illustrate that the scripts remain remarkably similar, leading to a shallow learning curve because a small number of methods work in all applications.
 
-You can also use plain \LaTeX for equations
-\begin{equation}\label{eq:fourier}
-\hat f(\omega) = \int_{-\infty}^{\infty} f(x) e^{i\omega x} dx
-\end{equation}
-and refer to \autoref{eq:fourier} from text.
+This list of examples does not form the complete set of use cases. Previous applications of this methodology, which will be additionally possible using \verb +topsearch+, are protein and nucleic acids potential energy surfaces and Gaussian process, neural network and clustering loss function surfaces. Moreover, there are many additional machine learning models that could be analysed and the Python implementation allows for their rapid inclusion.
+
+# Conclusions
+
+The \verb +topsearch+ Python package fills a need for a rapid prototyping and analysis tool for the energy landscape framework that can be applied to both physics and machine learning models. This software solution is significantly more lightweight than existing programs and provides a simpler interface for accessing the functionality, all within a single piece of software. Therefore, with a great reduction in code the Python implementation is significantly easier to develop. The learning curve for use is also shallow, and we provide detailed examples that illustrate the conservation of scripts between diverse applications. Lastly, the software is unique in the amount of machine learning models that can be explored and and can easily be extended with existing Python implementations. Our aim is that this software package will aid diverse researchers from computer science to chemistry by providing a simple solution for application of the energy landscape framework.
 
 # Citations
 
@@ -102,18 +63,8 @@ For a quick reference, the following citation commands can be used:
 - `[@author:2001]` -> "(Author et al., 2001)"
 - `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
 
-# Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
-
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+LD and EOP-K would like to acknowledge the financial support of the Hartree National Centre for Digital Innovation – a collaboration between the Science and Technology Facilities Council and IBM. The authors would also like to thank Nicholas Williams and Vlad C\v{a}rare for their helpful feedback as early users of the package.
 
 # References
