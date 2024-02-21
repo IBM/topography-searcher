@@ -23,7 +23,7 @@ bibliography: paper.bib
 
 # Summary
 
-Machine learning (ML) is now ubiquitous in all scientific fields, but there remains a significant challenge to understanding and explaining model performance `[@Zhang2021]`. Therefore, there is increasing interest in applying methods from other scientific disciplines (e.g. physics and biology) to improve the performance and explainability of machine learning algorithms `[@Karniadakis2021]`. One methodology that has proved useful to understand machine learning performance is the energy landscape framework from chemical physics `[@Wales:2003]`.
+Machine learning (ML) is now ubiquitous in all scientific fields, but there remains a significant challenge to understanding and explaining model performance [@Zhang2021]. Therefore, there is increasing interest in applying methods from other scientific disciplines (e.g. physics and biology) to improve the performance and explainability of machine learning algorithms `[@Karniadakis2021]`. One methodology that has proved useful to understand machine learning performance is the energy landscape framework from chemical physics `[@Wales:2003]`.
 
 The energy landscape framework is a set of algorithms that map the topography of continuous surfaces by their stationary points. The topography is encoded as a weighted graph `[@Noe2008]` and in application to potential energy surfaces all physical properties of a system can be extracted from this graph `[@Swinburne2020]`. Examples of the methodology applied to potential energy surfaces explain physical phenomena for proteins `[@Roder2019]`, small molecules `[@Matysik2021]`, atomic clusters `[@Csanyi2023]` and crystalline solids `[@Pracht2023]`.
 
