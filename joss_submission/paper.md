@@ -2,10 +2,10 @@
 title: 'TopSearch: a Python package for topographical analysis of machine learning models and physical systems'
 tags:
   - Python
-  - astronomy
-  - dynamics
-  - galactic dynamics
-  - milky way
+  - machine learning
+  - topography
+  - energy landscapes
+  - chemical physics
 authors:
   - name: Luke Dicks
     orcid: 0000-0002-5278-4412
@@ -41,7 +41,7 @@ Current leading tools for applying the energy landscape framework are the suite 
 
 # Applications
 
-The Github repository, located at \url{https://github.com/IBM/topography-searcher}, contains examples for varied applications. Initially, we provide the examples for mapping surfaces of simple test functions to illustrate the major functionality of the code. These examples constitute an introduction to the methodology and its outputs, which aids the understanding of both the theory and code implementation. There are additional examples for its use in machine learning with an application to quantifying dataset roughness.\cite{Dicks2023_2} This novel application, only possible with this software, can uniquely explain and predict regression performance without any model training. We also provide examples for both atomic and molecular systems, which require significant additional functionality. However, the examples illustrate that the scripts remain remarkably similar, leading to a shallow learning curve because a small number of methods work in all applications.
+The Github repository, located at \url{https://github.com/IBM/topography-searcher}, contains examples for varied applications. Initially, we provide the examples for mapping surfaces of simple test functions to illustrate the major functionality of the code. These examples constitute an introduction to the methodology and its outputs, which aids the understanding of both the theory and code implementation. There are additional examples for its use in machine learning with an application to quantifying dataset roughness `[@Dicks2023_2]`. This novel application, only possible with this software, can uniquely explain and predict regression performance without any model training. We also provide examples for both atomic and molecular systems, which require significant additional functionality. However, the examples illustrate that the scripts remain remarkably similar, leading to a shallow learning curve because a small number of methods work in all applications.
 
 This list of examples does not form the complete set of use cases. Previous applications of this methodology, which will be additionally possible using \verb +topsearch+, are protein and nucleic acids potential energy surfaces and Gaussian process, neural network and clustering loss function surfaces. Moreover, there are many additional machine learning models that could be analysed and the Python implementation allows for their rapid inclusion.
 
