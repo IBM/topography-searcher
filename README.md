@@ -67,7 +67,7 @@ This package is written and maintained by Luke Dicks at IBM Research as part of 
 
 ## License
 
-TopSearch is an open-source software licensed under the BSD3 License. Check the details in the [`LICENSE`](./LICENSE) file.
+TopSearch is an open-source software licensed under the MIT License. Check the details in the [`LICENSE`](./LICENSE) file.
 
 ## Citations
 
