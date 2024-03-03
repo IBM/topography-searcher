@@ -4,7 +4,7 @@
 
 # TopSearch
 
-* This project is currently migrating to open source. Please check back regularly as more functionality is being added and updated *
+_This project is currently migrating to open source. Please check back regularly as more functionality is being added and updated_
 
 ## Introduction
 
