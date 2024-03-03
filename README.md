@@ -4,6 +4,8 @@
 
 # TopSearch
 
+* This project is currently migrating to open source. Please check back regularly as more functionality is being added and updated *
+
 ## Introduction
 
 The TopSearch package provides functionality to map the topography of surfaces, and can be used to map the solution space of machine learning algorithms. Many machine learning algorithms have non-convex loss (or cost) functions, and the aim of fitting is usually to locate low-valued or diverse solutions. An understanding of the solution space organisation provides key understanding about the reproducibility, explainability and performance of ML methods. 
