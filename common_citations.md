@@ -101,8 +101,8 @@
 @article{MolecularDatasetRoughness,
   author = {L. Dicks and D. E. Graff and K. E. Jordan and C. W. Coley and E. O. Pyzer-Knapp}, 
   title = {{Physics-inspired roughness measures for chemical datasets and structure-property relationships}},  
-  year = {2023}, 
-  journal = {ChemRxiv},
+  year = {2024}, 
+  journal = {Mol. Syst. Eng. Des.},
 }
 ```
 
