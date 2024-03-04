@@ -35,7 +35,7 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
     count = 0
     # Initialise transition state array without self-connections
     selfconnected = self_connected(ktn)
-    ts_coords = np.zeros((ktn.n_ts-selfconnected, 2))
+    ts_coords = np.zeros((len(ktn.G.edges)-selfconnected, 2))
     # Plot the connections between minima and transition states
     for node1, node2 in ktn.G.edges:
         if node1 == node2:
@@ -52,12 +52,12 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
                   zorder=1)
         count += 1
     # Add the minima and transition states
-    plt.scatter(ts_coords[:, 0], ts_coords[:, 1], c='r', zorder=3)
-    plt.scatter(minima[:, 0], minima[:, 1], c='g', zorder=3)
+    plt.scatter(ts_coords[:, 0], ts_coords[:, 1], c='r', zorder=3, s=2.0)
+    plt.scatter(minima[:, 0], minima[:, 1], c='g', zorder=3, s=2.0)
     # Add the numerical labels for each minimum
     if label_min:
         for i in min_labels:
-            plt.text(i[0]+0.02, i[1], str(i[2]), fontsize=12)
+            plt.text(i[0], i[1], str(i[2]), fontsize=5)
     # Add labels and write to disc
     plt.xlabel(r'$x$')
     plt.ylabel(r'$y$')
@@ -66,6 +66,37 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
     plt.colorbar(contour_set)
     plt.tight_layout()
     plt.savefig(f"StationaryPoints{label}.png", dpi=300)
+    plt.cla()
+    plt.clf()
+    plt.close()
+
+
+def plot_nudged_elastic_band(potential: type, neb: NDArray, bounds: list,
+                             label: str = '', contour_levels: int = 50,
+                             fineness: int = 50,
+                             colour_scheme: str = 'cool') -> None:
+    """ Plot all minima and transition states of the function. Each transition
+        state is given in red and each minimum in green with a labelling
+        matching min.data. Connected minima of each transition state are
+        joined by solid black lines """
+
+    plt.figure()
+    cmap = plt.cm.get_cmap(colour_scheme, contour_levels+1)
+    # Get the function contours
+    contour_set = plot_contours(potential, bounds, fineness,
+                                contour_levels, cmap)
+    # Add the minima and transition states
+    plt.plot(neb[:, 0], neb[:, 1], c='k', zorder=3)
+    plt.scatter(neb[0, 0], neb[0, 1], c='k', marker='x')
+    plt.scatter(neb[-1, 0], neb[-1, 1], c='k', marker='x')
+    # Add labels and write to disc
+    plt.xlabel(r'$x$')
+    plt.ylabel(r'$y$')
+    plt.xlim(bounds[0])
+    plt.ylim(bounds[1])
+    plt.colorbar(contour_set)
+    plt.tight_layout()
+    plt.savefig(f"NudgedElasticBand{label}.png", dpi=300)
     plt.cla()
     plt.clf()
     plt.close()

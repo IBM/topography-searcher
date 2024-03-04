@@ -132,7 +132,7 @@ def cut_line_collection(ktn: type, conn_graph: nx.Graph, lines: list,
         # and add a replacement line starting from the right value
         max_y = -1e30
         y_values = []
-        # Get all the lines y-values corresponding to the given x_value
+        # Get all the lines y-values corresponding to the given x_value
         for count, j in enumerate(lines, 0):
             if j[0][0] == x_value and j[1][0] == x_value:
                 y_values.append(j[1][1])
@@ -140,7 +140,7 @@ def cut_line_collection(ktn: type, conn_graph: nx.Graph, lines: list,
         # Account for lines merging to same x at lower y
         diffs = np.abs(np.diff(np.asarray(y_values)))
         idxs = np.where(diffs > 1.5*step)[0]
-        # If splits in the y values, then make separate lines
+        # If splits in the y values, then make separate lines
         if np.any(idxs):
             min_y = energy
             for i in np.flip(idxs):
@@ -161,7 +161,7 @@ def cut_line_collection(ktn: type, conn_graph: nx.Graph, lines: list,
 def plot_disconnectivity_graph(ktn: type, levels: int,
                                label: str = '') -> None:
     """ Compute the disconnectivity graph, plot and save to file """
-    # Find the highest energy transition state as upper limit
+    # Find the highest energy transition state as upper limit
     ts_energies = []
     for u, v in ktn.G.edges():
         ts_energies.append(ktn.get_ts_energy(u, v))
@@ -169,16 +169,16 @@ def plot_disconnectivity_graph(ktn: type, levels: int,
         highest = np.max(ts_energies)
     else:
         highest = np.max(get_minima_energies(ktn))
-    # Find the lowest minimum as lower limit
+    # Find the lowest minimum as lower limit
     lowest = np.min(get_minima_energies(ktn))
     # Add a little extra in y to space out plot
     start = highest + 0.05*(highest-lowest)
     finish = lowest - 0.1*(highest-lowest)
     # Get the connectivity graph for the subsets as they split
     c_graph = get_connectivity_graph(ktn, start, finish, levels)
-    # Get the corresponding lines from this connectivity graph
+    # Get the corresponding lines from this connectivity graph
     lines = get_line_collection(c_graph, start, finish, levels)
-    # Edit these lines to have the correct length
+    # Edit these lines to have the correct length
     lines = cut_line_collection(ktn, c_graph, lines, start, finish, levels)
     fig, axes = pl.subplots()
     axes.get_xaxis().set_visible(False)
