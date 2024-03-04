@@ -226,6 +226,7 @@ def test_write_xyz():
     coords = AtomicCoordinates(atom_labels, position)
     coords.write_xyz('min')
     assert os.path.exists('coordsmin.xyz') == True
+    os.remove('coordsmin.xyz')
 
 def test_write_extended_xyz():
     position = np.array([0.7430002202, 0.2647603899, -0.0468575389,
@@ -238,8 +239,9 @@ def test_write_extended_xyz():
     coords = AtomicCoordinates(atom_labels, position)
     coords.write_extended_xyz(energy=-6.0000, grad=np.zeros((18), dtype=float))
     assert os.path.exists('coords.xyz') == True
+    os.remove('coords.xyz')
 
-def test_check_dissociation():
+def test_same_bonds_atomic():
     position = np.array([0.7430002202, 0.2647603899, -0.0468575389,
                         -0.7430002647, -0.2647604843, 0.0468569750,
                         0.1977276118, -0.4447220146, 0.6224700350,
@@ -248,22 +250,76 @@ def test_check_dissociation():
                          0.1822015272, -0.5970484858, -0.4844360463])
     atom_labels = ['C','C','C','C','C','C']
     coords = AtomicCoordinates(atom_labels, position)
-    dissociated = coords.check_dissociation(3.0)
-    assert dissociated == False
-    dissociated = coords.check_dissociation(1e-3)
-    assert dissociated == True
+    connected = coords.same_bonds()
+    assert connected == True
 
-def test_check_dissociation2():
+def test_same_bonds_atomic2():
+    position = np.array([9.814092288762296, 9.227490230720699, -10.038780475529002,
+                         0.8092010989322692, -0.16947705869253502, -0.9655624073859348,
+                         0.26589614724764465, 0.9736503616532832, -0.19023873584003642,
+                         9.025775160466077, 10.023895940544458, -9.705304241267015,
+                         -10.730951910669928, -9.633300369407152, 10.271102362179427,
+                         -10.080332241326632, -10.514264109213222, 10.426436148917208,
+                         0.8963194565882777, 0.09200500439447187, 0.20234734892535222])
+    atom_labels = ['C','C','C','C','C','C','C']
+    coords = AtomicCoordinates(atom_labels, position)
+    connected = coords.same_bonds()
+    assert connected == False
+
+def test_check_atom_clashes():
+    position = np.array([9.814092288762296, 9.227490230720699, -10.038780475529002,
+                         0.8092010989322692, -0.16947705869253502, -0.9655624073859348,
+                         0.26589614724764465, 0.9736503616532832, -0.19023873584003642,
+                         9.025775160466077, 10.023895940544458, -9.705304241267015,
+                         -10.730951910669928, -9.633300369407152, 10.271102362179427,
+                         -10.080332241326632, -10.514264109213222, 10.426436148917208,
+                         0.8963194565882777, 0.09200500439447187, 0.20234734892535222])
+    atom_labels = ['C','C','C','C','C','C','C']
+    coords = AtomicCoordinates(atom_labels, position)
+    clashes = coords.check_atom_clashes()
+    assert clashes == False
+
+def test_check_atom_clashes2():
+    position = np.array([9.814092288762296, 9.227490230720699, -10.038780475529002,
+                         0.8092010989322692, -0.16947705869253502, -0.9655624073859348,
+                         0.86589614724764465, 0.0736503616532832, -0.99023873584003642,
+                         9.025775160466077, 10.023895940544458, -9.705304241267015,
+                         -10.730951910669928, -9.633300369407152, 10.271102362179427,
+                         -10.080332241326632, -10.514264109213222, 10.426436148917208,
+                         0.8963194565882777, 0.09200500439447187, 0.20234734892535222])
+    atom_labels = ['C','C','C','C','C','C','C']
+    coords = AtomicCoordinates(atom_labels, position)
+    clashes = coords.check_atom_clashes()
+    assert clashes == True
+
+def test_remove_atom_clashes_atomic():
     position = np.array([0.7430002202, 0.2647603899, -0.0468575389,
-                        -0.7430002647, -0.2647604843, 0.0468569750,
+                       -0.7430002647, -0.2647604843, 0.0468569750,
                         0.1977276118, -0.4447220146, 0.6224700350,
                         -0.1977281310, 0.4447221826, -0.6224697723,
                         -0.1822009635, 0.5970484122, 0.4844363476,
-                         2.1822015272, -2.5970484858, -2.4844360463])
+                         0.1822015272, -0.5970484858, -0.4844360463])
     atom_labels = ['C','C','C','C','C','C']
     coords = AtomicCoordinates(atom_labels, position)
-    dissociated = coords.check_dissociation(1.5)
-    assert dissociated == True
+    coords.remove_atom_clashes()
+    assert np.all(coords.position == position)
+
+def test_remove_atom_clashes_atomic2():
+    position = np.array([0.7430002202, 0.2647603899, -0.0468575389,
+                         0.6430002647, -0.2647604843, 0.0468569750,
+                        0.1977276118, -0.4447220146, 0.6224700350,
+                        -0.1977281310, 0.4447221826, -0.6224697723,
+                        -0.1822009635, 0.5970484122, 0.4844363476,
+                         0.1822015272, -0.5970484858, -0.4844360463])
+    atom_labels = ['C','C','C','C','C','C']
+    coords = AtomicCoordinates(atom_labels, position)
+    coords.remove_atom_clashes()
+    unclashed = np.array([0.93500027, 0.36404554, -0.06442912, 0.79750033,
+                          -0.36404567, 0.06442834, 0.18525043, -0.61149277,
+                           0.8558963, -0.35850121, 0.611493, -0.85589594,
+                          -0.33715136, 0.82094157, 0.66609998, 0.16390207,
+                          -0.82094167, -0.66609956])
+    assert np.all(coords.position == pytest.approx(unclashed, abs=1e-5))
 
 ####### TEST MOLECULAR COORDINATES CLASS
 
@@ -286,7 +342,7 @@ def test_mol_initialisation():
                      [1, 6], [1, 7], [2, 8]]
 
 def test_get_bonds():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -298,7 +354,7 @@ def test_get_bonds():
                              [1, 6], [1, 7], [2, 8]]
 
 def test_get_bonds2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -312,7 +368,7 @@ def test_get_bonds2():
                              [1, 2], [1, 3], [1, 4], [2, 8]]
 
 def test_get_bonds3():
-    atoms = ase.io.read('azobenzene.xyz')
+    atoms = ase.io.read('test_data/azobenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -327,7 +383,7 @@ def test_get_bonds3():
 
 def test_get_bonds4():
     # dissociation
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -341,7 +397,7 @@ def test_get_bonds4():
                              [1, 6], [1, 7], [2, 8]]
 
 def test_same_bonds():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -351,7 +407,7 @@ def test_same_bonds():
     assert same == True
 
 def test_same_bonds2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -359,7 +415,7 @@ def test_same_bonds2():
     assert same == True
 
 def test_same_bonds3():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -369,7 +425,7 @@ def test_same_bonds3():
     assert same == False
 
 def test_get_planar_rings():
-    atoms = ase.io.read('azobenzene.xyz')
+    atoms = ase.io.read('test_data/azobenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -377,7 +433,7 @@ def test_get_planar_rings():
     assert rigid_atoms == [11, 10, 9, 8, 13, 12, 1, 2, 3, 4, 5, 0]
 
 def test_get_planar_rings2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -385,7 +441,7 @@ def test_get_planar_rings2():
     assert rigid_atoms == []
 
 def test_get_planar_rings3():
-    atoms = ase.io.read('benzene.xyz')
+    atoms = ase.io.read('test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -393,7 +449,7 @@ def test_get_planar_rings3():
     assert rigid_atoms == [0, 1, 2, 3, 4, 5]
 
 def test_get_movable_atoms():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -403,7 +459,7 @@ def test_get_movable_atoms():
     assert movable_atoms == [8, 2]
 
 def test_get_movable_atoms2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -413,7 +469,7 @@ def test_get_movable_atoms2():
     assert movable_atoms == [4]
 
 def test_get_movable_atoms3():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -423,7 +479,7 @@ def test_get_movable_atoms3():
     assert movable_atoms == [8, 2]
 
 def test_get_movable_atoms4():
-    atoms = ase.io.read('benzene.xyz')
+    atoms = ase.io.read('test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -433,7 +489,7 @@ def test_get_movable_atoms4():
     assert movable_atoms == [8]
 
 def test_get_movable_atoms5():
-    atoms = ase.io.read('benzene.xyz')
+    atoms = ase.io.read('test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -443,7 +499,7 @@ def test_get_movable_atoms5():
     assert movable_atoms == [11]
 
 def test_get_movable_atoms6():
-    atoms = ase.io.read('benzene.xyz')
+    atoms = ase.io.read('test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -453,7 +509,7 @@ def test_get_movable_atoms6():
     assert movable_atoms == [4, 10]
 
 def test_get_movable_atoms7():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -463,7 +519,7 @@ def test_get_movable_atoms7():
     assert movable_atoms == [7]
 
 def test_get_movable_atoms8():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -473,7 +529,7 @@ def test_get_movable_atoms8():
     assert movable_atoms == [8, 11, 12]
 
 def test_get_movable_atoms9():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -483,7 +539,7 @@ def test_get_movable_atoms9():
     assert movable_atoms == [7]
 
 def test_get_movable_atoms10():
-    atoms = ase.io.read('azobenzene.xyz')
+    atoms = ase.io.read('test_data/azobenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -493,7 +549,7 @@ def test_get_movable_atoms10():
     assert movable_atoms == []
 
 def test_get_movable_atoms11():
-    atoms = ase.io.read('azobenzene.xyz')
+    atoms = ase.io.read('test_data/azobenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -507,7 +563,7 @@ def test_get_movable_atoms11():
     assert movable_atoms == [6, 7, 8, 9, 10, 11, 12, 13]
 
 def test_get_movable_atoms12():
-    atoms = ase.io.read('azobenzene.xyz')
+    atoms = ase.io.read('test_data/azobenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -517,7 +573,7 @@ def test_get_movable_atoms12():
     assert movable_atoms == [4]
 
 def test_get_repeat_dihedrals():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -532,7 +588,7 @@ def test_get_repeat_dihedrals():
                        [4, 0, 2, 8]]
 
 def test_get_rotatable_dihedrals():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -541,7 +597,7 @@ def test_get_rotatable_dihedrals():
     assert coords.rotatable_atoms[1] == [1, 5, 6, 7]
 
 def test_get_rotatable_dihedrals2():
-    atoms = ase.io.read('benzene.xyz')
+    atoms = ase.io.read('test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -549,7 +605,7 @@ def test_get_rotatable_dihedrals2():
     assert coords.rotatable_atoms == []
 
 def test_get_rotatable_dihedrals3():
-    atoms = ase.io.read('azobenzene.xyz')
+    atoms = ase.io.read('test_data/azobenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -560,7 +616,7 @@ def test_get_rotatable_dihedrals3():
     assert coords.rotatable_atoms[2] == [6, 7, 8, 9, 10, 11, 12, 13]
 
 def test_get_rotation_matrix():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -570,7 +626,7 @@ def test_get_rotation_matrix():
                                                         [0.0, 1.0, 0.0]])))
 
 def test_get_rotation_matrix2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -580,115 +636,115 @@ def test_get_rotation_matrix2():
                                                         [0.0, -1.0, 0.0]])))
 
 def test_rotate_dihedral():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.rotate_dihedral([0, 1], 120.0, [1, 5, 6, 7])
-    atoms_rot = ase.io.read('coordsrot120.xyz')
+    atoms_rot = ase.io.read('test_data/ethanol_rot120.xyz')
     rotated = atoms_rot.get_positions()
     assert np.all(rotated.flatten() == pytest.approx(coords.position))
 
 def test_rotate_dihedral2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.rotate_dihedral([0, 1], 60.0, [1, 5, 6, 7])
-    atoms_rot = ase.io.read('coordsrot60.xyz')
+    atoms_rot = ase.io.read('test_data/ethanol_rot60.xyz')
     rotated = atoms_rot.get_positions()
     assert np.all(rotated.flatten() == pytest.approx(coords.position))
 
 def test_rotate_angle():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.rotate_angle([8, 2, 0], 45.0, [8])
-    atoms_rot = ase.io.read('coordsangle.xyz')
+    atoms_rot = ase.io.read('test_data/ethanol_angle.xyz')
     rotated = atoms_rot.get_positions()
     assert np.all(rotated.flatten() == pytest.approx(coords.position))
 
 def test_rotate_angle2():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.rotate_angle([2, 5, 8], 10.0, [8, 11, 12])
-    atoms_rot = ase.io.read('coordsangle2.xyz')
+    atoms_rot = ase.io.read('test_data/cyclopentane_angle.xyz')
     rotated = atoms_rot.get_positions()
     assert np.all(rotated.flatten() == pytest.approx(coords.position))
 
 def test_change_bond_length():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.change_bond_length([2, 8], 1.0, [8])
-    atoms_bond = ase.io.read('coordsbond.xyz')
+    atoms_bond = ase.io.read('test_data/ethanol_bond.xyz')
     bond_change = atoms_bond.get_positions()
     assert np.all(bond_change.flatten() == pytest.approx(coords.position))
 
 def test_change_bond_length2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.change_bond_length([0, 1], 1.0, [1, 5, 6, 7])
-    atoms_bond = ase.io.read('coordsbond2.xyz')
+    atoms_bond = ase.io.read('test_data/ethanol_bond2.xyz')
     bond_change = atoms_bond.get_positions()
     assert np.all(bond_change.flatten() == pytest.approx(coords.position))
 
 def test_change_bond_lengths():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     bonds = [[0, 1], [0, 3], [0, 4], [1, 7]]
     step = [1.0, 0.5, 0.5, 0.5]
     coords.change_bond_lengths(bonds, step, coords.reference_bonds)
-    atoms_bond = ase.io.read('coordsexpanded.xyz')
+    atoms_bond = ase.io.read('test_data/ethanol_expand.xyz')
     bond_change = atoms_bond.get_positions()
     assert np.all(bond_change.flatten() == pytest.approx(coords.position))
 
 def test_change_bond_lengths2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     bonds = [[0, 1], [0, 3], [0, 4], [1, 7]]
     step = [-0.3, -0.5, -0.5, -0.5]
     coords.change_bond_lengths(bonds, step, coords.reference_bonds)
-    atoms_bond = ase.io.read('coordscompress.xyz')
+    atoms_bond = ase.io.read('test_data/ethanol_compress.xyz')
     bond_change = atoms_bond.get_positions()
     assert np.all(bond_change.flatten() == pytest.approx(coords.position))
 
 def test_change_bond_angles():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     angles = [[2, 0, 1], [8, 2, 0], [5, 1, 6]]
     step = [-30.0, 50.0, 40.0]
     coords.change_bond_angles(angles, step, coords.reference_bonds)
-    atoms_bond = ase.io.read('coordsmultiangle.xyz')
+    atoms_bond = ase.io.read('test_data/ethanol_multiangle.xyz')
     bond_change = atoms_bond.get_positions()
     assert np.all(bond_change.flatten() == pytest.approx(coords.position))
 
 def test_change_dihedral_angles():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     dihedrals = [[1, 0, 2, 8], [2, 0, 1, 5]]
     step = [180.0, 60.0]
     coords.change_dihedral_angles(dihedrals, step, coords.reference_bonds)
-    atoms_bond = ase.io.read('coordsdihedral.xyz')
+    atoms_bond = ase.io.read('test_data/ethanol_dihedral.xyz')
     bond_change = atoms_bond.get_positions()
     assert np.all(bond_change.flatten() == pytest.approx(coords.position))
 
 def test_get_bond_angle_info():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -707,7 +763,7 @@ def test_get_bond_angle_info():
     assert information[5] == [180.0, 299.99812858558613]
 
 def test_get_bond_angle_info2():
-    atoms = ase.io.read('benzene.xyz')
+    atoms = ase.io.read('test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -729,7 +785,7 @@ def test_get_bond_angle_info2():
     assert information[5] == []
 
 def test_get_bond_angle_info3():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -763,7 +819,7 @@ def test_get_bond_angle_info3():
                               341.9236462777772, 337.25629573038157]
 
 def test_remove_repeat_angles():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -773,7 +829,7 @@ def test_remove_repeat_angles():
         set(tuple(i) for i in [[0, 1, 2], [0, 1, 3], [1, 0, 3], [6, 5, 4]])
 
 def test_get_specific_bond_angle_info():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -798,7 +854,7 @@ def test_get_specific_bond_angle_info():
     assert information[2] == [180.0, 299.99812858558613]
 
 def test_get_specific_bond_angle_info2():
-    atoms = ase.io.read('cyclopentane.xyz')
+    atoms = ase.io.read('test_data/cyclopentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -838,15 +894,14 @@ def test_get_specific_bond_angle_info2():
                               341.9236462777772, 337.25629573038157]
 
 def test_remove_atom_clashes():
-    atoms = ase.io.read('hexane.xyz')
+    atoms = ase.io.read('test_data/hexane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
-    ff = MMFF94('hexane.xyz')
+    ff = MMFF94('test_data/hexane.xyz')
     coords.rotate_dihedral([1, 2], 180.0, [3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     coords.rotate_dihedral([2, 3], 180.0, [4, 5, 13, 14, 15, 16, 17, 18, 19])
     coords.rotate_dihedral([3, 4], 180.0, [5, 15, 16, 17, 18, 19])
-    coords.write_xyz('flip')
     coords.remove_atom_clashes(ff)
     unclashed_position = coords.position.copy()
     coords.remove_atom_clashes(ff)
