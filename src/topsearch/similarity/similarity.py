@@ -109,6 +109,9 @@ class StandardSimilarity:
                               ktn.get_ts_coords(node1, node2),
                               ts_energy,
                               ktn.get_ts_energy(node1, node2)):
+                with open('logfile', 'a', encoding="utf-8") as outfile:
+                    outfile.write("Repeated transition state connecting "
+                                  f"{node1} and {node2}\n")
                 return False, node1, node2
         return True, None, None
 
@@ -157,4 +160,5 @@ class StandardSimilarity:
         with open('logfile', 'a', encoding="utf-8") as outfile:
             outfile.write(f"New transition state connecting minima"
                           f" {index_plus} and {index_minus}\n")
+
         ktn.add_ts(ts_coords.position, ts_energy, index_plus, index_minus)
