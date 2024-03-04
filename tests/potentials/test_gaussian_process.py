@@ -7,8 +7,8 @@ from topsearch.data.model_data import ModelData
 
 def test_function_rbf():
     # Fix theta for testing
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e1, 1.00000001e1),
                                         (1e1, 1.00000001e1),
@@ -27,8 +27,8 @@ def test_function_rbf():
     
 def test_function_and_std_rbf():
     # Fix theta for testing
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e1, 1.00000001e1),
                                         (1e1, 1.00000001e1),
@@ -49,8 +49,8 @@ def test_function_and_std_rbf():
 
 def test_function_rbf_fit():
     # Fit the rbf kernel
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-4)],
@@ -71,8 +71,8 @@ def test_function_rbf_fit():
     assert gp_mean == pytest.approx(3.4859748905013)
 
 def test_standardise_training():
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-4)],
@@ -88,8 +88,8 @@ def test_standardise_training():
     assert gp.get_score() == pytest.approx(0.9999999859966073)
 
 def test_standardise_response():
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-4)],
@@ -103,8 +103,8 @@ def test_standardise_response():
     assert gp_mean == pytest.approx(-0.5768242790490604)
 
 def test_standardise_both():
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-1)],
@@ -116,8 +116,8 @@ def test_standardise_both():
                   pytest.approx(np.array([1.0, 1.0])))
 
 def test_function_rbf_limit():
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     mean = np.mean(model_data.response)
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
@@ -127,8 +127,8 @@ def test_function_rbf_limit():
     assert np.max(gp.model_data.response) == np.abs(mean*5.0)
 
 def test_function_matern():
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='Matern',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-2)],
@@ -138,10 +138,42 @@ def test_function_matern():
                                                          -4.60517019]))
 
 def test_write_fit():
-    model_data = ModelData(training_file='training3.txt',
-                           response_file='response3.txt')
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
     gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-1)])
     gp.write_fit()
     assert os.path.exists('logfile') == True
+
+def test_refit_model():
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
+    gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
+                         kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
+                                        (1e-5, 1e-4)],
+                         standardise_response=False)
+    assert np.all(gp.gpr.kernel_.theta == 
+                  pytest.approx(np.array([0.46979649, -1.78642308,
+                                          -9.21034037])))
+    model_data.standardise_response()
+    gp.refit_model()
+    assert np.all(gp.gpr.kernel_.theta == 
+                  pytest.approx(np.array([-0.94938977, 0.27690632,
+                                          -9.21034037])))
+    
+def test_update_bounds():
+    model_data = ModelData(training_file='test_data/training_gp.txt',
+                           response_file='test_data/response_gp.txt')
+    gp = GaussianProcess(model_data=model_data, kernel_choice='RBF',
+                         kernel_bounds=[(1e1, 1.00000001e1),
+                                        (1e1, 1.00000001e1),
+                                        (1e-5, 1e-4)],
+                         standardise_response=False)
+    gp.update_bounds(0.99)
+    gp.update_bounds(0.99)
+    gp.update_bounds(0.99)
+    gp.refit_model()
+    assert np.all(gp.gpr.kernel_.theta == 
+                  pytest.approx(np.array([0.46979649, -1.78642308,
+                                          -9.21034037])))

@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-import ase
 from topsearch.potentials.atomic import LennardJones, BinaryGupta
 
 def test_lj_energy():

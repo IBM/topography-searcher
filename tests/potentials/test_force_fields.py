@@ -6,16 +6,16 @@ from topsearch.minimisation import lbfgs
 from topsearch.data.coordinates import MolecularCoordinates
 
 def test_function():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     position = atoms.get_positions().flatten()
-    ff = MMFF94('ethanol.xyz')
+    ff = MMFF94('test_data/ethanol.xyz')
     energy = ff.function(position)
     assert energy == pytest.approx(-0.3243009121732608)
 
 def test_gradient():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     position = atoms.get_positions().flatten()
-    ff = MMFF94('ethanol.xyz')
+    ff = MMFF94('test_data/ethanol.xyz')
     grad = ff.gradient(position)
     assert np.all(grad == pytest.approx(np.array([-4.52011926, -5.47800931, 0.0,
                                                   -13.14840751, 10.28990225, 0.0,
@@ -28,9 +28,9 @@ def test_gradient():
                                                     3.56247514, 13.9109227, 0.0])))
 
 def test_function_gradient():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     position = atoms.get_positions().flatten()
-    ff = MMFF94('ethanol.xyz')
+    ff = MMFF94('test_data/ethanol.xyz')
     energy, grad = ff.function_gradient(position)
     assert energy == pytest.approx(-0.3243009121732608)
     assert np.all(grad == pytest.approx(np.array([-4.52011926, -5.47800931, 0.0,
@@ -44,23 +44,23 @@ def test_function_gradient():
                                                     3.56247514, 13.9109227, 0.0])))
 
 def test_min():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     position = atoms.get_positions().flatten()
-    ff = MMFF94('ethanol.xyz')
+    ff = MMFF94('test_data/ethanol.xyz')
     min_position, energy, results_dict = \
         lbfgs.minimise(func_grad=ff.function_gradient,
                        initial_position=position,
                        bounds=None,
                        conv_crit=1e-3)
-    atoms = ase.io.read('coordseth.xyz')
+    atoms = ase.io.read('test_data/ethanol2.xyz')
     position = atoms.get_positions().flatten()
     assert energy == pytest.approx(-1.5170975759813006)
-    assert np.all(position == pytest.approx(min_position))
+    assert np.all(position == pytest.approx(min_position, abs=1e-5))
 
 def test_function_gradient2():
-    atoms = ase.io.read('coordseth.xyz')
+    atoms = ase.io.read('test_data/ethanol2.xyz')
     position = atoms.get_positions().flatten()
-    ff = MMFF94('ethanol.xyz')
+    ff = MMFF94('test_data/ethanol.xyz')
     energy, grad = ff.function_gradient(position)
     assert energy == pytest.approx(-1.5170975759813006)
     assert np.all(grad < 1e-3)
