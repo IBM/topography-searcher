@@ -22,6 +22,7 @@ class LennardJones(Potential):
     """
 
     def __init__(self, epsilon: float = 1.0, sigma: float = 1.0):
+        self.atomistic = True
         self.epsilon = epsilon
         self.sigma = sigma
 
@@ -67,7 +68,6 @@ class LennardJones(Potential):
                 grad[i*3:(i*3)+3] += diff*g_factor
                 grad[j*3:(j*3)+3] -= diff*g_factor
         return grad
-#        return np.clip(grad, -100.0, 100.0)
 
     def function_gradient(self, position: NDArray) -> tuple:
         """ Return both the function and gradient at point position """
@@ -83,8 +83,8 @@ class LennardJones(Potential):
                 diff = self.get_atom(position, i) - self.get_atom(position, j)
                 grad[i*3:(i*3)+3] += diff*g_factor
                 grad[j*3:(j*3)+3] -= diff*g_factor
-#        return pot_energy_total, np.clip(grad, -100.0, 100.0)
         return pot_energy_total, grad
+
 
 class BinaryGupta(Potential):
     """
@@ -110,6 +110,7 @@ class BinaryGupta(Potential):
     """
 
     def __init__(self, species: list):
+        self.atomistic = True
         self.species = species
         self.atom_labels = [0 if i == 'Au' else 1 for i in self.species]
         # Initialise the parameters of the potential

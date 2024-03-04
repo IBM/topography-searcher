@@ -4,9 +4,6 @@
 import numpy as np
 from nptyping import NDArray
 from ase import Atoms
-import torchani
-import torch
-from mace.calculators import MACECalculator
 from .potential import Potential
 
 
@@ -27,6 +24,7 @@ class MachineLearningPotential(Potential):
 
     def __init__(self, atom_labels: list,
                  calculator_type: str = 'torchani') -> None:
+        self.atomistic = True
         self.calculator_type = calculator_type
         self.atom_labels = atom_labels
         # Make a placeholder atomic configuration for initialising calculator
@@ -39,8 +37,10 @@ class MachineLearningPotential(Potential):
         self.calculator_type = calculator_type
         # Set up the calculator based on the specified type
         if self.calculator_type == 'torchani':
+            import torchani
             self.model = torchani.models.ANI2x(periodic_table_index=True)
         elif self.calculator_type == 'mace':
+            from mace.calculators import MACECalculator
             self.atoms.calc = \
                 MACECalculator(model_paths='MACE_model_swa.model',
                                device='cpu')
@@ -51,6 +51,7 @@ class MachineLearningPotential(Potential):
         if self.calculator_type == 'mace':
             energy = self.atoms.get_potential_energy()
         elif self.calculator_type == 'torchani':
+            import torch
             species = torch.tensor(self.atoms.get_atomic_numbers(),
                                    dtype=torch.int64).unsqueeze(0)
             coordinates = torch.tensor(position.reshape(-1, 3),
@@ -69,6 +70,7 @@ class MachineLearningPotential(Potential):
             forces = self.atoms.get_forces().flatten()
             gradient = -1.0 * np.array(forces.tolist())
         elif self.calculator_type == 'torchani':
+            import torch
             species = torch.tensor(self.atoms.get_atomic_numbers(),
                                    dtype=torch.int64).unsqueeze(0)
             coordinates = torch.tensor(position.reshape(-1, 3),
@@ -88,6 +90,7 @@ class MachineLearningPotential(Potential):
             forces = self.atoms.get_forces().flatten()
             gradient = -1.0 * np.array(forces.tolist())
         elif self.calculator_type == 'torchani':
+            import torch
             species = torch.tensor(self.atoms.get_atomic_numbers(),
                                    dtype=torch.int64).unsqueeze(0)
             coordinates = torch.tensor(position.reshape(-1, 3),

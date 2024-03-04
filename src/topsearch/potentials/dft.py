@@ -29,6 +29,7 @@ class DensityFunctionalTheory(Potential):
 
     def __init__(self, atom_labels: list, options: dict,
                  force_field: type, calculator_type: str = 'psi4') -> None:
+        self.atomistic = True
         self.calculator_type = calculator_type
         self.atom_labels = atom_labels
         self.options = options

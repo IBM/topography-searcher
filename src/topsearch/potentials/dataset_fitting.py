@@ -25,6 +25,7 @@ class DatasetInterpolation(Potential):
         The scipy interpolation model that can be fit and queried
     """
     def __init__(self, model_data: type, smoothness: float = 0.0) -> None:
+        self.atomistic = False
         self.model_data = model_data
         self.smoothness = smoothness
         self.model = None
@@ -47,6 +48,7 @@ class DatasetInterpolation(Potential):
                                      self.model_data.response,
                                      smoothing=self.smoothness)
 
+
 class DatasetRegression(Potential):
     """
     Class to compute and evaluate a regression or interpolation model fitted
@@ -65,6 +67,7 @@ class DatasetRegression(Potential):
         The results of cross-validation fitting of MLP
     """
     def __init__(self, model_data: type, model_rand: int = 1) -> None:
+        self.atomistic = False
         self.model_data = model_data
         self.model_rand = model_rand
         self.model = None
@@ -74,7 +77,7 @@ class DatasetRegression(Potential):
     def initialise_model(self) -> None:
         """ Initialise the regression model, a multi-layer perceptron
             as implemented in sklearn """
-        self.model = MLPRegressor(random_state=self.model_rand)
+        self.model = MLPRegressor(random_state=self.model_rand, max_iter=1000)
         self.model.fit(self.model_data.training, self.model_data.response)
         cv = KFold(n_splits=5, shuffle=True, random_state=self.model_rand)
         self.cv_results = cross_validate(self.model,
@@ -100,7 +103,7 @@ class DatasetRegression(Potential):
                                          scoring=('neg_mean_squared_error'),
                                          n_jobs=None,
                                          return_estimator=True)
-    
+
     def get_model_error(self) -> float:
         """ Return the model error of current fit """
         best_estimator = \

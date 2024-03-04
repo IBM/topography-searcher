@@ -49,6 +49,7 @@ class GaussianProcess(Potential):
                  standardise_response: bool = True,
                  limit_highest_data: bool = False,
                  matern_nu: float = None) -> None:
+        self.atomistic = False
         self.model_data = model_data
         self.kernel_choice = kernel_choice
         self.kernel_bounds = kernel_bounds
@@ -112,6 +113,15 @@ class GaussianProcess(Potential):
         if self.standardise_response:
             self.model_data.standardise_response()
 
+    def lowest_point(self) -> float:
+        """ Find the lowest point in the current dataset """
+        if self.standardise_response:
+            self.model_data.unstandardise_response()
+        lowest = np.min(self.model_data.response)
+        if self.standardise_response:
+            self.model_data.standardise_response()
+        return lowest
+
     def write_fit(self) -> None:
         """ Write the hyperparameters of the best GP fit """
         with open('logfile', 'a', encoding="utf-8") as outfile:
@@ -132,3 +142,17 @@ class GaussianProcess(Potential):
     def function_and_std(self, position: NDArray) -> float:
         """ Return the variance of the GP fit at position """
         return self.gpr.predict(position.reshape(1, -1), return_std=True)
+
+    def refit_model(self, n_restarts: int = 50) -> None:
+        """ Refit the GP model based on the current model_data """
+        self.gpr.n_restarts_optimizer = n_restarts
+        self.gpr.fit(self.model_data.training, self.model_data.response)
+
+    def update_bounds(self, scaling: float) -> None:
+        """ Change the lengthscale bounds for kernel """
+        length_bounds = np.exp(self.gpr.kernel.bounds)[:-1, :]
+        length_bounds[:, 0] *= 1-scaling
+        length_bounds[:, 1] *= 1+scaling
+        lengthscale_bounds = [tuple(i) for i in length_bounds.tolist()]
+        kernel_params = {"k1__length_scale_bounds": lengthscale_bounds}
+        self.gpr.kernel.set_params(**kernel_params)

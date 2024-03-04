@@ -19,7 +19,7 @@ class Camelback(Potential):
     """
 
     def __init__(self):
-        pass
+        self.atomistic = False
 
     def function(self, position: NDArray) -> float:
         """ Return function evaluated at position """
@@ -64,7 +64,7 @@ class Schwefel(Potential):
     """
 
     def __init__(self):
-        pass
+        self.atomistic = False
 
     def function(self, position: NDArray) -> NDArray:
         """ Returns the Schwefel function evaluated at position """
@@ -88,7 +88,7 @@ class Quadratic(Potential):
     """
 
     def __init__(self):
-        pass
+        self.atomistic = False
 
     def function(self, position: NDArray) -> float:
         """ Return the quadratic function value """

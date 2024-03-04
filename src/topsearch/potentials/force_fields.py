@@ -15,6 +15,7 @@ class MMFF94(Potential):
         force field using RDKit """
 
     def __init__(self, xyz_file: str):
+        self.atomistic = True
         self.xyz_file = xyz_file
         # Initialise the molecule from xyz_file
         mol = Chem.MolFromXYZFile(xyz_file)

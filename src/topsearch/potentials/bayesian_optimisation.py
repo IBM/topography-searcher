@@ -30,6 +30,7 @@ class ExpectedImprovement(Potential):
     """
 
     def __init__(self, gaussian_process: type, zeta: float) -> None:
+        self.atomistic = False
         self.gaussian_process = gaussian_process
         self.zeta = zeta
 
@@ -64,6 +65,7 @@ class UpperConfidenceBound(Potential):
     """
 
     def __init__(self, gaussian_process: type, zeta: float) -> None:
+        self.atomistic = False
         self.gaussian_process = gaussian_process
         self.zeta = zeta
 
