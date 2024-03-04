@@ -88,7 +88,8 @@ class AtomicCoordinates(StandardCoordinates):
         The species in the system, matching the order of position
     """
 
-    def __init__(self, atom_labels: list, position: NDArray) -> None:
+    def __init__(self, atom_labels: list, position: NDArray,
+                 bond_cutoff: float = 1.5) -> None:
         self.atom_labels = atom_labels
         self.position = position
         self.ndim = position.size
@@ -100,6 +101,7 @@ class AtomicCoordinates(StandardCoordinates):
         self.atoms = Atoms(''.join(self.atom_labels),
                            positions=self.position.reshape(-1, 3))
         self.atom_weights = self.atoms.get_atomic_numbers()
+        self.bond_cutoff = bond_cutoff
 
     def get_atom(self, atom_ind: int) -> NDArray:
         """ Get the Cartesian position of the atom given index atom_ind """
@@ -128,18 +130,49 @@ class AtomicCoordinates(StandardCoordinates):
                 xyz_file.write(f'{grad[i*3]} {grad[(i*3)+1]} {grad[(i*3)+2]}')
                 xyz_file.write('\n')
 
-    def check_dissociation(self, bond_cutoff: float) -> bool:
-        """ Check if any of the atoms are dissociated in the current
-            configuration of atoms based on distance """
-        for i in range(self.n_atoms):
-            distances = np.full(self.n_atoms, 1e6, dtype=float)
-            for j in range(self.n_atoms):
-                if i == j:
-                    continue
-                distances[j] = np.linalg.norm(self.get_atom(i)-self.get_atom(j))
-            if np.all(distances > bond_cutoff):
-                return True
+    def same_bonds(self) -> bool:
+        """ Check if we still have a connected network of atoms """
+        # Construct adjacency matrix
+        adj_matrix = np.zeros((self.n_atoms, self.n_atoms), dtype=int)
+        for i in range(self.n_atoms-1):
+            for j in range(i+1, self.n_atoms):
+                dist = np.linalg.norm(self.get_atom(i)-self.get_atom(j))
+                if dist < self.bond_cutoff:
+                    adj_matrix[i][j] = 1
+                    adj_matrix[j][i] = 1
+        # Turns adjacency matrix into graph
+        adj_graph = nx.from_numpy_array(adj_matrix)
+        # Test if all nodes are connected
+        return nx.is_connected(adj_graph)
+
+    def remove_atom_clashes(self):
+        """ Routine to remove clashes between atoms that result in
+            very large gradient and explosion of the cluster.
+            Unused default parameter is for matching with other classes """
+        centre_of_mass = np.array([np.average(self.position[0::3]),
+                                   np.average(self.position[1::3]),
+                                   np.average(self.position[2::3])])
+        displacements = 0.25*self.bond_cutoff * \
+            (self.position.reshape(-1, 3) - centre_of_mass).flatten()
+        for i in range(25):
+            if self.check_atom_clashes():
+                self.position = self.position + displacements
+            else:
+                break
+
+    def check_atom_clashes(self) -> bool:
+        """ Determine if there are atom clashes within the configuration """
+        for i in range(self.n_atoms-1):
+            for j in range(i+1, self.n_atoms):
+                atom1 = self.get_atom(i)
+                atom2 = self.get_atom(j)
+                # Compare distance to bond_cutoff
+                bond_length = np.linalg.norm(atom1 - atom2)
+                allowed_bond_length = 0.5*self.bond_cutoff
+                if bond_length < allowed_bond_length:
+                    return True
         return False
+
 
 class MolecularCoordinates(AtomicCoordinates):
     """
@@ -557,7 +590,7 @@ class MolecularCoordinates(AtomicCoordinates):
                 # Compare the bond length to the average for these atom types
                 bond_length = np.linalg.norm(atom1 - atom2)
                 allowed_bond_length = 0.9*(self.natural_cutoffs[i] +
-                                            self.natural_cutoffs[j])
+                                           self.natural_cutoffs[j])
                 if bond_length < allowed_bond_length:
                     clash = True
         # Loosely converge with force field that does not fail at high overlap

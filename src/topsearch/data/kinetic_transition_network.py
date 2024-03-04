@@ -145,16 +145,16 @@ class KineticTransitionNetwork:
         np.savetxt(f"min.coords{text_string}", minima_coords)
         np.savetxt(f"pairlist{text_string}", self.pairlist, fmt='%i')
 
-    def read_network(self, text_string: str = '') -> None:
+    def read_network(self, text_path: str = '', text_string: str = '') -> None:
         """ Returns G network from files that resulted from dump_network """
 
         # Get the data back from files
-        minima_data = np.loadtxt(f"min.data{text_string}")
-        minima_coords = np.loadtxt(f"min.coords{text_string}")
-        ts_data = np.loadtxt(f"ts.data{text_string}")
-        ts_coords = np.loadtxt(f"ts.coords{text_string}")
-        self.pairlist = np.loadtxt(f"pairlist{text_string}", ndmin=2,
-                                   dtype=int)
+        minima_data = np.loadtxt(f"{text_path}min.data{text_string}")
+        minima_coords = np.loadtxt(f"{text_path}min.coords{text_string}")
+        ts_data = np.loadtxt(f"{text_path}ts.data{text_string}")
+        ts_coords = np.loadtxt(f"{text_path}ts.coords{text_string}")
+        self.pairlist = np.loadtxt(f"{text_path}pairlist{text_string}",
+                                   ndmin=2, dtype=int)
 
         # Now build a graph from the data
         self.n_minima = np.size(minima_data, 0)

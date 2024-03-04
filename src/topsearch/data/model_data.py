@@ -53,7 +53,7 @@ class ModelData:
             Stored in class attributes to be accessed through potential """
         self.training = np.loadtxt(f"{training_file}", dtype=float, ndmin=2)
         self.response = np.loadtxt(f"{response_file}", dtype=float)
-        # Reset number of points and dimensions
+        # Reset number of points and dimensions
         self.n_points = self.training.shape[0]
         self.n_dims = self.training.shape[1]
 
@@ -141,7 +141,7 @@ class ModelData:
         self.training = np.delete(self.training, repeated_points, axis=0)
         self.response = np.delete(self.response, repeated_points, axis=0)
         self.n_points = self.training.shape[0]
-    
+
     def feature_subset(self, features: list) -> None:
         """ Get a subset of the features of the training data """
         self.training = self.training[:, features]
