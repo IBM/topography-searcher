@@ -15,7 +15,8 @@ def test_get_invalid_minima():
                                                  (-5.0, 5.0)])
     schwefel = Schwefel()
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     for i in range(ktn.n_minima):
         minimum = ktn.get_minimum_coords(i)
         ktn.G.nodes[i]['coords'] = minimum*100.0
@@ -30,7 +31,8 @@ def test_get_bounds_minima():
                                                  (-5.0, 5.0),
                                                  (-5.0, 5.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     minima = get_bounds_minima(ktn, coords)
     assert minima == [0, 6, 7]
 
@@ -39,14 +41,16 @@ def test_get_all_bounds_minima():
                                                  (-5.0, 5.0),
                                                  (-5.0, 5.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     ktn.add_minimum(np.array([5.0, 5.0, 5.0]), 0.0)
     minima = get_all_bounds_minima(ktn, coords)
     assert minima == [9]
 
 def test_get_similar_minima():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     points = np.array([[5.0, -3.3082, 4.245]])
     similar_minima = get_similar_minima(ktn, 0.1, points)
     assert similar_minima == [0]
@@ -58,7 +62,8 @@ def test_get_similar_minima():
 
 def test_get_minima_above_cutoff():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     minima = get_minima_above_cutoff(ktn, -2.0)
     assert np.all(minima == np.array([2, 3, 4, 5, 6, 7, 8]))
     minima = get_minima_above_cutoff(ktn, 0.0)
@@ -66,7 +71,8 @@ def test_get_minima_above_cutoff():
 
 def test_get_minima_energies():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     energies = get_minima_energies(ktn)
     assert np.all(energies == pytest.approx(np.array([-2.29238, -2.58207,
                                                       -1.67184, -1.44769,
@@ -76,7 +82,8 @@ def test_get_minima_energies():
 
 def test_get_ordered_minima():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     ordered_indices = get_ordered_minima(ktn)
     assert np.all(ordered_indices == np.array([1, 0, 5, 2,
                                                3, 4, 6, 8, 7]))
@@ -87,7 +94,8 @@ def test_get_distance_matrix():
                                                  (-5.0, 5.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     ktn.remove_minima(np.array([4, 5, 6, 7, 8]))
     dist_matrix = get_distance_matrix(ktn, similarity, coords)
     assert np.all(dist_matrix[0,:] == pytest.approx([0.0, 6.64842106,
@@ -105,7 +113,8 @@ def test_get_distance_matrix():
                                                  (-5.0, 5.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     ktn.remove_minima(np.array([4, 5, 6, 7, 8]))
     dist_vector = get_distance_from_minimum(ktn, similarity, coords, 0)
     assert np.all(dist_vector == pytest.approx([0.0, 6.64842106,

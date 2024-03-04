@@ -10,7 +10,8 @@ from topsearch.analysis.graph_properties import (unconnected_component,
 
 def test_get_connections():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     transition_states1 = get_connections(ktn, 1)
     transition_states4 = get_connections(ktn, 4)
     transition_states7 = get_connections(ktn, 7)
@@ -20,7 +21,8 @@ def test_get_connections():
 
 def test_unconnected_component():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     unconnected = unconnected_component(ktn)
     assert unconnected == set()
     ktn.remove_ts(0, 1)
@@ -35,7 +37,8 @@ def test_unconnected_component():
 
 def test_check_if_nodes_connected():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     connected = are_nodes_connected(ktn, 0, 1)
     assert connected == True
     ktn.remove_ts(0, 1)
@@ -44,7 +47,8 @@ def test_check_if_nodes_connected():
 
 def test_all_minima_connected():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     all_connected = all_minima_connected(ktn)
     assert all_connected == True
     ktn.remove_ts(0, 1)
@@ -53,7 +57,8 @@ def test_all_minima_connected():
 
 def test_remove_edges_threshold():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     H = ktn.G.copy()
     cut_graph = remove_edges_threshold(H, -1.0)
     edges = []
@@ -63,7 +68,8 @@ def test_remove_edges_threshold():
 
 def test_disconnected_height():
     ktn = KineticTransitionNetwork()
-    ktn.read_network()
+    ktn.read_network(text_path='test_data/',
+                     text_string='.analysis')
     height = disconnected_height(ktn, 0, 1, -0.46971, 2.11236)
     assert abs(height+1.26162) < 1e-2
     ktn.remove_ts(0, 1)
