@@ -61,6 +61,7 @@ class NudgedElasticBand:
         self.force_constants = None
         self.n_images = None
         self.band_bounds = None
+        self.neb_count = 0
 
     def run(self, coords1: type, coords2: NDArray, attempts: int = 0,
             permutation: NDArray = None) -> tuple[NDArray, NDArray]:
@@ -75,6 +76,7 @@ class NudgedElasticBand:
         # Find local maxima of the band as transition state candidates
         candidates, positions = self.find_ts_candidates(band)
         # Return the transition state candidates and their positions
+        self.neb_count += 1
         return candidates, positions
 
     def minimise_interpolation(self, band: NDArray) -> NDArray:
@@ -83,11 +85,11 @@ class NudgedElasticBand:
             optimised band """
         # Require a 1d array for scipy lbfgs
         band = band.flatten()
-        optimised_band = \
+        optimised_band, f_val, r_dict = \
             lbfgs.minimise(func_grad=self.band_function_gradient,
                            initial_position=band,
                            bounds=self.band_bounds,
-                           conv_crit=self.neb_conv_crit)[0]
+                           conv_crit=self.neb_conv_crit)
         # Reshape into 2d array, one image per row
         return np.reshape(optimised_band, (self.n_images, -1))
 
@@ -110,9 +112,6 @@ class NudgedElasticBand:
             self.update_image_density(attempts)
         # Perform the type of interpolation specified by number of attempts
         if isinstance(coords1, MolecularCoordinates):
-            print("Coords1 = ", coords1)
-            print("pos = ", coords1.position)
-            print("Coords2 = ", coords2)
             band = self.dihedral_interpolation(coords1, coords2, permutation)
         else:
             band = self.linear_interpolation(coords1, coords2)
@@ -219,7 +218,7 @@ class NudgedElasticBand:
         # Search through the 1D array of energies to find local maxima
         for i in range(1, self.n_images-1):
             if (band_potential_energies[i] >= band_potential_energies[i+1] and
-                 band_potential_energies[i] >= band_potential_energies[i-1]):
+                  band_potential_energies[i] >= band_potential_energies[i-1]):
                 # Store index and coordinates of transition state candidate
                 candidates = np.append(candidates, i)
                 positions = np.append(positions, band[i, :])
