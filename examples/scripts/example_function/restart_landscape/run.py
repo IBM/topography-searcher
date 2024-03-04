@@ -60,7 +60,7 @@ explorer = NetworkSampling(ktn=ktn, coords=coords,
 # BEGIN CALCULATIONS
 
 # Read the partially-complete landscape in from file
-ktn.read_network('.original')
+ktn.read_network(text_string='.original')
 # Plot this original landscape
 plot_disconnectivity_graph(ktn, 100, label='Original')
 plot_stationary_points(schwefel, ktn, bounds=coords.bounds, contour_levels=100,
