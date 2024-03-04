@@ -30,12 +30,13 @@ model_data = ModelData(training_file='training.txt',
 # Interpolation function class. This class takes in the training data
 # fits a radial basis function interpolation with the specified smoothness
 # and can then be queried to give function and gradient at any point
-interpolation = DatasetInterpolation(model_data=model_data, smoothness=1e-5)
+interpolation = DatasetInterpolation(model_data=model_data,
+                                     smoothness=1e-4)
 # Similarity object, decides if two points are the same or different
 # Same if distance between points is less than distance_criterion
 # and the difference in function value is less than energy_criterion
 # Distance is a proportion of the range, in this case 0.05*1.0
-comparer = StandardSimilarity(distance_criterion=0.05,
+comparer = StandardSimilarity(distance_criterion=0.02,
                               energy_criterion=5e-2,
                               proportional_distance=True)
 # Kinetic transition network to store stationary points
@@ -50,14 +51,19 @@ optimiser = BasinHopping(ktn=ktn, potential=interpolation, similarity=comparer,
 # Single ended transition state search object that locates transition
 # states from a single starting position, using hybrid eigenvector-following
 hef = HybridEigenvectorFollowing(potential=interpolation,
-                                 conv_crit=1e-5,
+                                 ts_conv_crit=5e-4,
                                  ts_steps=75,
-                                 pushoff=1e-1)
+                                 pushoff=5e-3,
+                                 steepest_descent_conv_crit=1e-4,
+                                 max_uphill_step_size=1e1,
+                                 min_uphill_step_size=1e-8,
+                                 eigenvalue_conv_crit=1e-3,
+                                 positive_eigenvalue_step=1e-2)
 # Double ended transition state search that locates approximate minimum energy
 # pathways between two points using the nudged elastic band algorithm
 neb = NudgedElasticBand(potential=interpolation,
-                        force_constant=25.0,
-                        image_density=10.0,
+                        force_constant=5e2,
+                        image_density=50.0,
                         max_images=30,
                         neb_conv_crit=1e-2)
 # Object that deals with sampling of configuration space,
@@ -109,7 +115,7 @@ for i in pairs:
     for d_p in model_data.training:
         coords.position = d_p
         # Perform global optimisation of interpolated function
-        explorer.get_minima(coords, 50, 1e-6, 100.0, test_valid=True)
+        explorer.get_minima(coords, 5, 1e-4, 100.0, test_valid=True)
 
     # Remove any minima that lie outside the convex hull of the original data
     # Outside of this region the interpolating function is untrustworthy due
@@ -123,18 +129,16 @@ for i in pairs:
 
     # Get the transition states between the remaining minima to produce
     # the complete landscape for this dataset interpolation
-    explorer.get_transition_states('ClosestEnumeration', 8,
-                                   remove_bounds_minima=True)
+    explorer.get_transition_states('ClosestEnumeration', 12,
+                                   remove_bounds_minima=False)
 
     # Compute the roughness of the dataset using the frustration metric
     frustration = roughness_metric(ktn, lengthscale=0.8)
     frustration_values.append(frustration)
 
     # Plot the relevant surface descriptions for the feature pair
-    plot_stationary_points(interpolation, ktn, bounds=coords.bounds, contour_levels=100,
-                           fineness=150, label='%i_%i' %(i[0], i[1]))
-    plot_disconnectivity_graph(ktn, 100, label='%i_%i' %(i[0], i[1]))
-    plot_network(ktn, label='%i_%i' %(i[0], i[1]))
+    plot_stationary_points(interpolation, ktn, bounds=coords.bounds, contour_levels=125,
+                           fineness=175, label='%i_%i' %(i[0], i[1]))
 
     # Store the landscape to file for future reference
     ktn.dump_network('%i_%i' %(i[0], i[1]))
