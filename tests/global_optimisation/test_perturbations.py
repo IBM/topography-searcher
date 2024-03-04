@@ -87,7 +87,7 @@ def test_perturb():
 ### MOLECULAR
 
 def test_perturb2():
-    atoms = ase.io.read('ethanol.xyz')
+    atoms = ase.io.read('test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
