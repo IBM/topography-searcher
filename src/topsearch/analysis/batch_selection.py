@@ -152,7 +152,10 @@ def barrier_batch_selector(ktn: type,
     ts_energies = []
     for u, v in ktn.G.edges():
         ts_energies.append(ktn.get_ts_energy(u, v))
-    max_ts_energy = np.max(ts_energies)
+    if not ts_energies:
+        max_ts_energy = 1e5
+    else:
+        max_ts_energy = np.max(ts_energies)
     # Find energy range for barrier calc
     energies = get_minima_energies(ktn)
     e_range = np.max(energies) - np.min(energies)
@@ -211,10 +214,12 @@ def monotonic_batch_selector(ktn: type, excluded_minima: list) -> list:
             continue
         # Loop over all edges getting the two connected minima
         for j in edges_i:
+            if j[0] == j[1]:
+                continue
             if j[1] == i:
                 j.reverse()
             min1, min2 = j
-            if min1 == min2 or min2 in excluded_minima:
+            if min2 in excluded_minima:
                 continue
             # Find other connected minimum and if lower not monotonic
             if ktn.get_minimum_energy(min2) <= energy_i:

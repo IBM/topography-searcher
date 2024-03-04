@@ -13,6 +13,9 @@ def connect_unconnected(ktn: type, similarity: type,
     Find all minima not connected to global minimum set and their nearest
     cycles minima. Run connection attempts for each minima pair
     """
+    # Check for emptiness
+    if ktn.n_minima == 0:
+        return []
     # Get the set of minima not connected to the global minimum
     unconnected_set = unconnected_component(ktn)
     total_pairs = []
@@ -69,9 +72,9 @@ def closest_enumeration(ktn: type, similarity: type,
     return unique_pairs(pairs)
 
 
-def read_pairs():
+def read_pairs(text_path: str = ''):
     """ Pair selection by reading the information from file pairs.txt """
-    pairs = np.genfromtxt('pairs.txt', dtype=int)
+    pairs = np.genfromtxt(f'{text_path}pairs.txt', dtype=int)
     return unique_pairs(pairs.tolist())
 
 
