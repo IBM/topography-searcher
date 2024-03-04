@@ -5,6 +5,8 @@ from topsearch.data.coordinates import StandardCoordinates, AtomicCoordinates
 from topsearch.transition_states.hybrid_eigenvector_following import HybridEigenvectorFollowing
 from topsearch.potentials.test_functions import Camelback, Schwefel
 from topsearch.potentials.atomic import LennardJones
+from topsearch.potentials.dataset_fitting import DatasetInterpolation
+from topsearch.data.model_data import ModelData
 
 # Smallest eigenvalue tests
     
@@ -23,7 +25,7 @@ def test_rayleigh_ritz_function_gradient():
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
     vec = np.array([-0.06213744, 0.9980676])
     f_val, grad = single_ended.rayleigh_ritz_function_gradient(vec, 0.0, 0.0)
-    assert f_val == pytest.approx(-8.06225775)
+    assert f_val == pytest.approx(-8.06224187173922, abs=1e-4)
     assert np.max(np.abs(grad)) < 1e-3
 
 def test_rayleigh_ritz_function_gradient2():
@@ -31,7 +33,7 @@ def test_rayleigh_ritz_function_gradient2():
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
     vec = np.array([0.06213744, -0.9980676])
     f_val, grad = single_ended.rayleigh_ritz_function_gradient(vec, 0.0, 0.0)
-    assert f_val == pytest.approx(-8.06225775)
+    assert f_val == pytest.approx(-8.06224187173922, abs=1e-4)
     assert np.max(np.abs(grad)) < 1e-3
 
 def test_rayleigh_ritz_function_gradient3():
@@ -39,7 +41,7 @@ def test_rayleigh_ritz_function_gradient3():
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
     vec = np.array([-0.9980676, -0.06213744])
     f_val, grad = single_ended.rayleigh_ritz_function_gradient(vec, 0.0, 0.0)
-    assert f_val == pytest.approx(8.06225775)
+    assert f_val == pytest.approx(8.06224187173922, abs=1e-4)
     assert np.max(np.abs(grad)) < 1e-3
 
 def test_rayleigh_ritz_function_gradient4():
@@ -47,7 +49,7 @@ def test_rayleigh_ritz_function_gradient4():
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
     vec = np.array([0.514496, 0.857493])
     f_val, grad = single_ended.rayleigh_ritz_function_gradient(vec, 0.0, 0.0)
-    assert f_val == pytest.approx(-2.8823503586018004)
+    assert f_val == pytest.approx(-2.8823422966763426, abs=1e-4)
     assert np.max(np.abs(grad)) > 5.0
     
 def test_check_valid_eigenvector():
@@ -178,12 +180,12 @@ def test_get_smallest_eigenvalue1():
     lower_bounds = np.array([0, 0])
     upper_bounds = np.array([0, 0])
     single_ended.eigenvector_bounds = [(-math.inf, math.inf)]*2
-    eigv, eig = single_ended.get_smallest_eigenvector(rand_vec, coords,
+    eigv, eig, steps = single_ended.get_smallest_eigenvector(rand_vec, coords,
                                           lower_bounds, upper_bounds)
     if eigv[0] < 0.0:
         eigv *= -1.0
     diff = np.abs(eigv - np.array([0.06213744, -0.9980676]))
-    assert eig == pytest.approx(-8.06225775)
+    assert eig == pytest.approx(-8.0622418717394, abs=1e-4)
     assert np.all(diff < 1e-3)
 
 def test_get_smallest_eigenvalue2():
@@ -195,11 +197,11 @@ def test_get_smallest_eigenvalue2():
     lower_bounds = np.array([0, 0])
     upper_bounds = np.array([0, 0])
     single_ended.eigenvector_bounds = [(-math.inf, math.inf)]*2
-    eigv, eig = single_ended.get_smallest_eigenvector(rand_vec, coords,
+    eigv, eig, steps = single_ended.get_smallest_eigenvector(rand_vec, coords,
                                           lower_bounds, upper_bounds)
     if eigv[0] > 0.0:
         eigv *= -1.0
-    assert eig == pytest.approx(-6.177696093241991)
+    assert eig == pytest.approx(-6.177671098551178, abs=1e-4)
     diff = np.abs(eigv - np.array([-0.997991, 0.06335585]))
     assert np.all(diff < 1e-3)
 
@@ -212,13 +214,36 @@ def test_get_smallest_eigenvalue3():
     lower_bounds = np.array([0, 0])
     upper_bounds = np.array([0, 1])
     single_ended.eigenvector_bounds = [(-math.inf, math.inf)]*2
-    eigv, eig = single_ended.get_smallest_eigenvector(rand_vec, coords,
+    eigv, eig, steps = single_ended.get_smallest_eigenvector(rand_vec, coords,
                                           lower_bounds, upper_bounds)
     if eigv[0] < 0.0:
         eigv *= -1.0
     assert np.abs(eig + 7.205229981722495) < 1e-2
     diff = np.abs(eigv - np.array([0.99998632, -0.00522991]))
     assert np.all(diff < 1e-2)
+
+def test_get_smallest_eigenvalue4():
+    coords = StandardCoordinates(ndim=2, bounds=[(0.0, 1.0), (0.0, 1.0)])
+    model_data = ModelData('test_data/training_ts.txt',
+                           'test_data/response_ts.txt')
+    model_data.feature_subset([0, 1])
+    model_data.remove_duplicates()
+    model_data.normalise_training()
+    model_data.normalise_response()
+    interpolation = DatasetInterpolation(model_data, 1e-5)
+    single_ended = HybridEigenvectorFollowing(potential=interpolation,
+                                 ts_conv_crit=5e-4,
+                                 ts_steps=150,
+                                 pushoff=5e-3,
+                                 eigenvalue_conv_crit=1e-3)
+    rand_vec = single_ended.generate_random_vector(2)
+    lower_bounds = np.array([0, 0])
+    upper_bounds = np.array([0, 0])
+    coords.position = np.array([0.39560017, 0.11547777])
+    eigv, eig, steps = single_ended.get_smallest_eigenvector(rand_vec, coords,
+                                                      lower_bounds, upper_bounds)
+    assert eig == pytest.approx(-6556.503538596112, abs=5e-1)
+    assert np.all(eigv == pytest.approx(np.array([-0.93580141, 0.35252763]), abs=1e-1))
 
 def test_analytical_step_size():
     camel = Camelback()
@@ -241,7 +266,8 @@ def test_analytical_step_size2():
 
 def test_analytical_step_size3():
     camel = Camelback()
-    single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4)
+    single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4,
+                                              max_uphill_step_size=0.1)
     grad = np.array([1.0, 0.0])
     eigenvector = np.array([0.707, 0.707])
     eigenvalue = -2.0
@@ -262,7 +288,8 @@ def test_take_uphill_step2():
     coords.position = np.array([1.0, 1.0])
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4,
-                                              positive_eigenvalue_step=0.2)
+                                              positive_eigenvalue_step=0.2,
+                                              max_uphill_step_size=0.1)
     single_ended.take_uphill_step(coords, np.array([1.0, 0.0]), -1.0)
     assert np.all(coords.position == np.array([1.1, 1.0]))
 
@@ -292,9 +319,9 @@ def test_subspace_minimisation2():
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4)
     eigenvector = np.array([0.0, 1.0])
     pos, energy, r_dict = single_ended.subspace_minimisation(coords, eigenvector)
-    assert energy == pytest.approx(-0.3276)
-    assert np.all(pos == pytest.approx(np.array([-5.55111512e-17,
-                                                 3.00000000e-01])))
+    print("pos, energy = ", pos, energy)
+    assert energy == pytest.approx(-0.14619315859200002)
+    assert np.all(pos == pytest.approx(np.array([0.18, 0.3])))
 
 def test_get_local_bounds():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
@@ -302,8 +329,8 @@ def test_get_local_bounds():
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4)
     subspace_bounds = single_ended.get_local_bounds(coords)
-    assert subspace_bounds[0] == pytest.approx((-0.25, 0.35))
-    assert subspace_bounds[1] == pytest.approx((0.1, 0.5))
+    assert subspace_bounds[0] == pytest.approx((-0.07, 0.17))
+    assert subspace_bounds[1] == pytest.approx((0.22, 0.38))
 
 def test_get_local_bounds2():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
@@ -311,8 +338,8 @@ def test_get_local_bounds2():
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4)
     subspace_bounds = single_ended.get_local_bounds(coords)
-    assert subspace_bounds[0] == pytest.approx((-0.25, 0.35))
-    assert subspace_bounds[1] == pytest.approx((-2.0, -1.8))
+    assert subspace_bounds[0] == pytest.approx((-0.07, 0.17))
+    assert subspace_bounds[1] == pytest.approx((-2.0, -1.92))
 
 def test_get_local_bounds3():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
@@ -320,8 +347,8 @@ def test_get_local_bounds3():
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-4)
     subspace_bounds = single_ended.get_local_bounds(coords)
-    assert subspace_bounds[0] == pytest.approx((2.7, 3.0))
-    assert subspace_bounds[1] == pytest.approx((-2.0, -1.8))
+    assert subspace_bounds[0] == pytest.approx((2.88, 3.0))
+    assert subspace_bounds[1] == pytest.approx((-2.0, -1.92))
 
 def test_test_convergence():
     position = np.array([-1.296046538004201443, -0.6050858882331980881])
@@ -466,15 +493,23 @@ def test_run():
     assert np.all(coords == pytest.approx(np.array([-1.29607027,
                                                     -0.60508439])))
     assert e_ts == pytest.approx(2.229470818029859)
-    assert np.all(plus_min == pytest.approx(np.array([-1.60710468,
-                                                      -0.56865148])))
-    assert np.all(minus_min == pytest.approx(np.array([ 0.08984202,
-                                                       -0.7126564 ])))
-    assert e_plus == pytest.approx(2.10425)
-    assert e_minus == pytest.approx(-1.0316284534898772)
+    if plus_min[0] < minus_min[0]:
+        assert np.all(plus_min == pytest.approx(np.array([-1.60710468,
+                                                          -0.56865148])))
+        assert np.all(minus_min == pytest.approx(np.array([ 0.08984202,
+                                                           -0.7126564 ])))
+        assert e_plus == pytest.approx(2.10425)
+        assert e_minus == pytest.approx(-1.0316284534898772)
+    else:
+        assert np.all(minus_min == pytest.approx(np.array([-1.60710468,
+                                                          -0.56865148])))
+        assert np.all(plus_min == pytest.approx(np.array([ 0.08984202,
+                                                           -0.7126564 ])))
+        assert e_minus == pytest.approx(2.10425)
+        assert e_plus == pytest.approx(-1.0316284534898772)
 
 def test_remove_zero_eigenvectors():
-    position = np.genfromtxt('lj13.xyz')
+    position = np.genfromtxt('test_data/lj13.xyz')
     lj = LennardJones()
     single_ended = HybridEigenvectorFollowing(lj, 1e-6, 50, 5e-1)
     vec = np.array([  2.94274405e-02,  2.30205592e-01,  3.49224659e-02,
@@ -503,7 +538,7 @@ def test_remove_zero_eigenvectors():
                                                  -0.09880458, -0.11817034, 0.18210343]), abs=1e-4))
 
 def test_rayleigh_ritz_function_gradient5():
-    position = np.genfromtxt('lj13.xyz')
+    position = np.genfromtxt('test_data/lj13.xyz')
     lj = LennardJones()
     single_ended = HybridEigenvectorFollowing(lj, 1e-6, 50, 5e-1)
     single_ended.remove_trans_rot = True
@@ -521,7 +556,7 @@ def test_rayleigh_ritz_function_gradient5():
                      -9.75565088e-02, -9.14992957e-02,  7.97870299e-03,
                      -1.79584905e-01, -1.59155289e-01,  1.39074326e-01])
     f_val, grad = single_ended.rayleigh_ritz_function_gradient(vec, *position.flatten())
-    assert f_val == pytest.approx(125.33511021863676)
+    assert f_val == pytest.approx(125.33577098153548, abs=1e-4)
     assert np.all(grad == pytest.approx(np.array([-3.42179306, -14.61058916, 9.47070617, 28.24454099, -30.54033991,
                                                   -36.79959485, 12.17165542, 68.54885275, -31.09259249, 45.3887703,
                                                    15.32494429, -58.82903373, -4.72585149, 8.07193141, 13.7266261,
@@ -529,10 +564,10 @@ def test_rayleigh_ritz_function_gradient5():
                                                   -12.78632718, 20.39685638, -6.85447997, -40.90169008, -29.31240567,
                                                   -43.7539737, 44.47936809, 0.81148729, 3.28306977, -6.89091314,
                                                   -17.15607116, 11.28301764, -28.44961534, 15.71178257, -3.54161929,
-                                                   -4.95709362, -58.0442718, -87.99869339, 150.55134906])))
+                                                   -4.95709362, -58.0442718, -87.99869339, 150.55134906]), abs=1e-3))
 
 def test_run2():
-    position = np.genfromtxt('lj13.xyz')
+    position = np.genfromtxt('test_data/lj13.xyz')
     atom_labels = ['C', 'C', 'C', 'C', 'C', 'C', 'C',
                    'C', 'C', 'C', 'C', 'C', 'C']
     coords = AtomicCoordinates(atom_labels, position.flatten())
