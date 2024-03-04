@@ -51,11 +51,13 @@ For those not importing the package directly you can set up the proper enivornme
 poetry install
 ```
 
-We can test the environment build using `tests` via
+We can test the environment build by running
 ```
-pytest tests/*
+pytest
 ```
-For a successful build we should have all tests pass. If this is the case then enjoy using TopSearch!
+within the `tests` directory. For a successful build we should have all tests pass.
+By default we do not test for the `molecular_potentials` as the dependencies are not shipped by default due to the large size.
+If this is the case then enjoy using TopSearch!
 
 ## Examples
 
