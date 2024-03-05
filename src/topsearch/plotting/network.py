@@ -11,6 +11,8 @@ import networkx as nx
 
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 rc('text', usetex=True)
 mpl.rcParams.update({'font.size': 18})

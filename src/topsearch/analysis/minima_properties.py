@@ -2,10 +2,16 @@
     minima. All methods loop through and find minima that meet, or fail,
     specified criteria """
 
+import logging
+
 import numpy as np
 from nptyping import NDArray
+from numpy.testing import assert_allclose, assert_array_less
+from scipy.optimize import fmin_l_bfgs_b
+
 from topsearch.data.coordinates import StandardCoordinates
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+from topsearch.data.model_data import ModelData
 from topsearch.potentials.potential import Potential
 from topsearch.similarity.similarity import StandardSimilarity
 
@@ -110,3 +116,31 @@ def get_distance_from_minimum(ktn: KineticTransitionNetwork, similarity: Standar
         coords2 = ktn.get_minimum_coords(i)
         dist_vector[i] = similarity.closest_distance(coords, coords2)
     return dist_vector
+
+def validate_minima(ktn: KineticTransitionNetwork, model_data: ModelData, coords: StandardCoordinates, interpolation: Potential) -> None:
+    logger = logging.getLogger("minima_validation")
+
+    for i in range(ktn.n_minima):
+        min_coords = ktn.get_minimum_coords(i)
+        min_energy = ktn.get_minimum_energy(i)
+        x,f,d = fmin_l_bfgs_b(func=interpolation.function_gradient,
+                                x0=min_coords,
+                                factr=1e-30,
+                                bounds=coords.bounds,
+                                pgtol=1e-3)
+        logger.debug("Evaluating minimum index %i", i)
+        logger.debug("From basin hopping: f = %e, x = %s", min_energy, min_coords)
+        logger.debug("From lbfgs: f = %e, x = %s, d = %s", f, x, d)
+        
+        assert_allclose(min_coords, x, atol=1e-3, err_msg="Minimum coords from basin hopping do not match values from l-bfgs-b", verbose=True)
+        assert_allclose(min_energy, f, atol=1e-3, err_msg="Minimum energy from basin hopping does not match value from l-bfgs-b", verbose=True)
+        grad = interpolation.gradient(min_coords)
+        f_plus = interpolation.function(np.clip(x + 1e-3, 0, 1))
+        f_minus = interpolation.function(np.clip(x - 1e-3, 0, 1))
+        logger.debug("f_plus: %f, f_minux: %f", f_plus, f_minus)
+
+        for x_j, l_bound, u_bound, grad_j in zip (min_coords, coords.lower_bounds, coords.upper_bounds, grad):
+            if x_j != l_bound and x_j != u_bound:
+                assert_allclose(grad_j, 0, atol=1e-3, err_msg=f"Non-zero gradient {grad} at {min_coords}")
+                assert_array_less(f, f_plus, err_msg="f_plus is less than f", verbose=True)
+                assert_array_less(f, f_minus, err_msg="f_minus is less than f", verbose=True)

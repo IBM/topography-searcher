@@ -2,6 +2,7 @@
     The methods take in a network encoding of the surface topography,
     and analyse it to select a diverse set of minima. """
 
+import logging
 import numpy as np
 from nptyping import NDArray
 from topsearch.data.coordinates import StandardCoordinates
@@ -13,6 +14,7 @@ from .minima_properties import get_ordered_minima, get_minima_energies, \
                                get_bounds_minima, get_similar_minima, \
                                get_minima_above_cutoff
 
+logger = logging.getLogger()
 
 def get_excluded_minima(ktn: KineticTransitionNetwork,
                         energy_cutoff: float = 1.0,
@@ -64,9 +66,8 @@ def select_batch(ktn: KineticTransitionNetwork, batch_size: int, batch_selection
     abs_barrier_cutoff = barrier_cutoff * \
         (np.max(energies) - np.min(energies))
     # Write the batch scheme we are using
-    with open('logfile', 'a', encoding="utf-8") as outfile:
-        outfile.write("------- BATCH SELECTION ---------\n")
-        outfile.write(f"{batch_selection_method}: {batch_size} minima\n")
+    logger.debug("------- BATCH SELECTION ---------\n")
+    logger.debug(f"{batch_selection_method}: {batch_size} minima\n")
     # Perform the batch selection scheme
     batch_indices = generate_batch(ktn, batch_selection_method,
                                    excluded_minima,
@@ -129,8 +130,7 @@ def topographical_batch_selector(ktn: KineticTransitionNetwork,
 
     # Get the monotonic batch
     monotonic_indices = monotonic_batch_selector(ktn, excluded_minima)
-    with open('logfile', 'a', encoding="utf-8") as outfile:
-        outfile.write(f"Got {np.size(monotonic_indices)} "
+    logger.debug(f"Got {np.size(monotonic_indices)} "
                       f"minima from monotonic sequence basins\n")
     # Get the barrier batch
     barrier_indices = barrier_batch_selector(ktn,
@@ -251,9 +251,8 @@ def evaluate_batch(true_potential: Potential, batch_indices: list,
         true_potential.function, 1, batch_points)
     # Write the batch to file
     for i in range(len(batch_indices)):
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"{batch_indices[i]} Coords: ")
-            for j in range(np.size(batch_points[i])):
-                outfile.write(f"{batch_points[i][j]} ")
-            outfile.write(f" Function: {new_response[i]}\n")
+        logger.debug(f"{batch_indices[i]} Coords: ")
+        for j in range(np.size(batch_points[i])):
+            logger.debug(f"{batch_points[i][j]} ")
+        logger.debug(f" Function: {new_response[i]}\n")
     return new_response

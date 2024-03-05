@@ -9,7 +9,7 @@ from topsearch.minimisation import lbfgs
 from topsearch.data.coordinates import MolecularCoordinates, StandardCoordinates
 from topsearch.potentials.potential import Potential
 import traceback
-
+import logging
 
 class NudgedElasticBand:
 
@@ -58,6 +58,8 @@ class NudgedElasticBand:
                  neb_conv_crit: float,
                  output_level: int = 0,
                  ) -> None:
+        self.logger = logging.getLogger("NEB")
+        self.logger.info(f"NEB parameters: force_constant: {force_constant}, image_density: {image_density}, max_images: {max_images}, neb_conv_crit: {neb_conv_crit}")
         self.potential = potential
         self.force_constant = force_constant
         self.image_density = image_density

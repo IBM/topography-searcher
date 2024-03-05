@@ -12,8 +12,8 @@ from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 
 from topsearch.potentials.potential import Potential
 
-rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-rc('text', usetex=True)
+rc('font', **{'family': 'serif'})
+rc('text', usetex=False)
 mpl.rcParams.update({'font.size': 18})
 
 

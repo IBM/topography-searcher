@@ -1,6 +1,9 @@
 """ The basin_hopping module contains the BasinHopping class which performs
     global optimisation of a given function """
 
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from functools import partial
+import logging
 from timeit import default_timer as timer
 import numpy as np
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
@@ -10,7 +13,8 @@ from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates, 
 from topsearch.potentials.dft import DensityFunctionalTheory
 from topsearch.potentials.potential import Potential
 from topsearch.similarity.similarity import StandardSimilarity
-
+from topsearch.utils.parallel import run_parallel
+from tqdm.auto import tqdm, trange
 
 class BasinHopping:
 
@@ -51,22 +55,53 @@ class BasinHopping:
         self.potential = potential
         self.similarity = similarity
         self.step_taking = step_taking
+        self.logger = logging.getLogger("basin-hopping")
         self.opt_method = opt_method
         self.ignore_relreduc = ignore_relreduc
+
+    def run_batch(self, initial_positions: np.ndarray, coords: type, n_steps: int, conv_crit: float,
+                temperature: float, num_proc=8) -> None:
+        self.logger.debug(f"Running basin hopping for {len(initial_positions)} starting points with {num_proc} processes")
+
+        run_step = partial(self.run_single, coords=coords, n_steps=n_steps, conv_crit=conv_crit, temperature=temperature)
+
+        for position, ktn in run_parallel(run_step, initial_positions, processes=num_proc, return_input=True):
+                for m in range(ktn.n_minima):
+                    try:
+                        coords.position = ktn.get_minimum_coords(m)
+                        self.logger.debug(f"New minimum value {ktn.get_minimum_energy(m)}")
+                        self.similarity.test_new_minimum(self.ktn, coords, ktn.get_minimum_energy(m))
+                    except KeyError:
+                        self.logger.error(f"Missing minimum index {m}. n_minima: {ktn.n_minima} Nodes in graph: {len(ktn.G.nodes)}.\n Keys: {ktn.G.nodes.keys()} ")
+                        ktn.dump_network("bad_minima")
+                
+                self.ktn.add_attempted_position(position)
+                self.ktn.dump_network()
+           
+    def run_single(self, position: np.ndarray, coords: type, n_steps: int, conv_crit: float,
+                temperature: float):
+            
+            coords.position = position
+            self.logger.debug(f"Starting position: {position}")
+            self.logger.debug(f"Current KTN with n_minima: {self.ktn.n_minima} nodes in graph: {len(self.ktn.G.nodes)}")
+            self.ktn.reset_network() # Clear the KTN to aovid returning a massive one
+            self.run(coords=coords, n_steps=n_steps, conv_crit=conv_crit, temperature=temperature)
+            self.logger.debug(f"Returning KTN with n_minima: {self.ktn.n_minima} nodes in graph: {len(self.ktn.G.nodes)}")
+            return self.ktn
 
     def run(self, coords: StandardCoordinates | MolecularCoordinates | AtomicCoordinates, n_steps: int, conv_crit: float,
             temperature: float) -> None:
         """ Method to perform basin-hopping from a given start point """
         start_time = timer()
-        self.write_initial_information(n_steps, temperature)
+        self.write_initial_information(n_steps, temperature, conv_crit)
         energy = self.prepare_initial_coordinates(coords, conv_crit)
         # coords/energy - coordinates after each perturbation
         # markov_coords/energy - current minimum in the Markov chain
         markov_coords = coords.position.copy()
         markov_energy = energy
         # Main loop for repeated perturbation, minimisation, and acceptance
-        for i in range(n_steps):
-            print(f"doing step {i}")
+        for i in trange(n_steps, desc="Basin hopping - steps"):
+            self.logger.debug(f"Step {i} of {n_steps}")
             #  Perturb coordinates
             self.step_taking.perturb(coords)
             # Test for and remove atom clashes if density functional theory
@@ -103,8 +138,8 @@ class BasinHopping:
             if results_dict['warnflag'] != 0 or \
                     (results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH' \
                         and not self.ignore_relreduc):
-                with open('logfile', 'a', encoding="utf-8") as outfile:
-                    outfile.write(f"Step {i+1}: Could not converge with {results_dict} \n")
+                
+                self.logger.info(f"Step {i+1}: Could not converge with {results_dict} \n")
                 # Revert to previous coordinates
                 coords.position = markov_coords
                 continue
@@ -135,12 +170,14 @@ class BasinHopping:
     def prepare_initial_coordinates(self, coords: StandardCoordinates,
                                     conv_crit: float) -> float:
         """ Generate the initial minimum and set its energy and position """
+        self.logger.debug("Initial minimisation")
         if self.opt_method == 'scipy':
             min_position, energy, results_dict = \
                 lbfgs.minimise(func_grad=self.potential.function_gradient,
                             initial_position=coords.position,
                             bounds=coords.bounds,
                             conv_crit=conv_crit)
+            self.logger.debug(f"Initial minima: {min_position}, energy: {energy}, results_dict: {results_dict}")
         elif self.opt_method == 'ase':
                 min_position, energy, results_dict = \
                     lbfgs.minimise_ase(self.potential,
@@ -160,6 +197,9 @@ class BasinHopping:
         # After minimisation add to the existing stationary point network
         if results_dict['warnflag'] == 0:
             self.similarity.test_new_minimum(self.ktn, coords, energy)
+        elif results_dict['warnflag'] == 1:
+            self.logger.info("Initial minimisation did not converge")
+             
         return energy
 
     def metropolis(self, energy1: float, energy2: float,
@@ -176,20 +216,15 @@ class BasinHopping:
         return bool(boltzmann_factor > uniform_random)
 
     def write_initial_information(self, n_steps: int,
-                                  temperature: float) -> None:
+                                  temperature: float, conv_crit: float) -> None:
         """ Print out the initial basin-hopping information """
 
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write('-------BASIN-HOPPING-------\n')
-            outfile.write(f"Steps = {n_steps},"
-                          f"Temperature = {temperature}\n")
+        self.logger.info(f"Steps = {n_steps}, Temperature = {temperature}, conv_crit = {conv_crit}")
 
     def write_final_information(self, start_time: float,
                                 end_time: float) -> None:
         """ Print out the final basin-hopping information """
 
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"Located {self.ktn.n_minima} distinct minima\n")
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"Basin-hopping completed in "
+        self.logger.info(f"Located {self.ktn.n_minima} distinct minima\n")
+        self.logger.info(f"Basin-hopping completed in "
                           f"{end_time - start_time}\n\n")

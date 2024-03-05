@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from copy import deepcopy
+import logging
 import numpy as np
 from nptyping import NDArray
 from topsearch.data.coordinates import StandardCoordinates
@@ -48,8 +49,9 @@ class StandardSimilarity:
         self.distance_criterion = distance_criterion
         self.energy_criterion = energy_criterion
         self.proportional_distance = proportional_distance
+        self.logger = logging.getLogger('similarity')
 
-    def distance(self, coords1: StandardCoordinates, coords2: NDArray) -> float:
+    def distance(self, coords1: NDArray, coords2: NDArray) -> float:
         """ Returns Euclidean distance between two configurations """
         return np.linalg.norm(coords1 - coords2)
 
@@ -86,8 +88,13 @@ class StandardSimilarity:
             sum_distances = np.sum(np.divide(np.subtract(
                 coords1.position, coords2), allowed_differences)**2)
             # If within ellipsoid and energy range then accept
-            return bool((sum_distances <= 1.0) and
+            same = bool((sum_distances <= 1.0) and
                         (energy_difference < self.energy_criterion))
+            #if same:
+                #self.logger.debug("Minimum too close to existing, energy difference: %e, sum distnaces=%e", energy_difference, sum_distances)
+
+            return same
+        
         distance = self.distance(coords1.position, coords2)
         return bool((distance < self.distance_criterion) and
                     (energy_difference < self.energy_criterion))
@@ -118,8 +125,7 @@ class StandardSimilarity:
                               ktn.get_ts_coords(node1, node2, edge_index),
                               ts_energy,
                               ktn.get_ts_energy(node1, node2, edge_index)):
-                with open('logfile', 'a', encoding="utf-8") as outfile:
-                    outfile.write("Repeated transition state connecting "
+                self.logger.debug("Repeated transition state connecting "
                                   f"{node1} and {node2}\n")
                 return False, node1, node2
         return True, None, None
@@ -133,6 +139,7 @@ class StandardSimilarity:
         if not self.is_new_minimum(ktn, min_coords, min_energy)[0]:
             return
         ktn.add_minimum(min_coords.position, min_energy)
+        self.logger.debug(f"New minimum with energy {min_energy}")
 
     def test_new_ts(self, ktn: KineticTransitionNetwork,
                     ts_coords: StandardCoordinates, ts_energy: float,
@@ -144,8 +151,7 @@ class StandardSimilarity:
 
         # Check if the transition state is new or repeated
         if not self.is_new_ts(ktn, ts_coords, ts_energy)[0]:
-            with open('logfile', 'a', encoding="utf-8") as outfile:
-                outfile.write("Repeated transition state\n")
+            self.logger.debug("Repeated transition state\n")
             return
 
         # Set up classes for the minima to compare
@@ -166,8 +172,7 @@ class StandardSimilarity:
             index_minus = ktn.n_minima-1
 
         # Add the transition state to the network
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"New transition state connecting minima"
-                          f" {index_plus} and {index_minus}\n")
+        self.logger.debug(f"New transition state connecting minima"
+                        f" {index_plus} and {index_minus}\n")
 
         ktn.add_ts(ts_coords.position, ts_energy, index_plus, index_minus)

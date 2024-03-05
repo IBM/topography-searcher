@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from numpy.testing import assert_array_equal
 import ase.io
 import os
 from topsearch.similarity.similarity import StandardSimilarity
@@ -52,6 +53,59 @@ def test_get_minima2():
                                                                -0.21546382,
                                                                2.10425031,
                                                                2.10425031])))
+
+def test_batch_finds_all_minima():
+    step_taking = StandardPerturbation(max_displacement=0.7,
+                                       proportional_distance=True)
+    similarity = StandardSimilarity(0.1, 0.1)
+    coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
+    ktn = KineticTransitionNetwork()
+    camelback = Camelback()
+    basin_hopping = BasinHopping(ktn=ktn, potential=camelback,
+                                 similarity=similarity,
+                                 step_taking=step_taking)
+    starting_points = np.array([[0.08984199, -0.7126564 ],
+                                [-0.08984203, 0.71265641],
+                                [1.60710479, 0.56865138],
+                                [-1.70360672, 0.79608357],
+                                [ 1.70360672, -0.79608357],
+                                [-1.60710476, -0.56865144]]) - 0.05
+    sampler = NetworkSampling(ktn, None, basin_hopping, None, None, None, n_processes=8)
+
+    sampler.get_minima(initial_positions=starting_points, coords=coords, n_steps=5,
+                      temperature=1.0, conv_crit=1e-6)
+    assert ktn.n_minima == 6
+
+def test_batch_does_not_repeated_attempted_initial_positions(mocker):
+    step_taking = StandardPerturbation(max_displacement=0.7,
+                                       proportional_distance=True)
+    similarity = StandardSimilarity(0.1, 0.1)
+    coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
+    ktn = KineticTransitionNetwork()
+    camelback = Camelback()
+    basin_hopping = BasinHopping(ktn=ktn, potential=camelback,
+                                 similarity=similarity,
+                                 step_taking=step_taking)
+    run_batch = mocker.patch.object(basin_hopping, "run_batch")
+
+    starting_points = np.array([[0.08984199, -0.7126564 ],
+                                [-0.08984203, 0.71265641],
+                                [1.60710479, 0.56865138],
+                                [-1.70360672, 0.79608357],
+                                [ 1.70360672, -0.79608357],
+                                [-1.60710476, -0.56865144]]) - 0.05
+    
+    sampler = NetworkSampling(ktn, None, basin_hopping, None, None, None, n_processes=8)
+
+    ktn.add_attempted_position(starting_points[0])
+    ktn.add_attempted_position(starting_points[1])
+    ktn.add_attempted_position(starting_points[2])
+
+    sampler.get_minima(initial_positions=starting_points, coords=coords, n_steps=5,
+                      temperature=1.0, conv_crit=1e-6)
+    run_batch.assert_called()
+    print(run_batch.call_args)
+    assert_array_equal(run_batch.call_args.kwargs["initial_positions"], starting_points[3:6])
 
 def test_check_pair():
     ktn = KineticTransitionNetwork()
@@ -319,6 +373,26 @@ def test_run_connection_attempts2():
     assert ktn.G[0][5][0]['energy'] == pytest.approx(2.229357197530713)
     assert np.all(np.abs(ktn.G[1][2][0]['coords']) < 1e-6)
     assert ktn.G[1][2][0]['energy'] == pytest.approx(0.0000)
+
+def test_runs_connection_attempts_for_all_pairs():
+    similarity = StandardSimilarity(0.1, 0.1)
+    coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
+    ktn = KineticTransitionNetwork()
+    camel = Camelback()
+    single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 5e-1)
+    double_ended = NudgedElasticBand(camel, 50.0, 4.0, 50, 1e-2)
+    sampler = NetworkSampling(ktn, coords, None, single_ended,
+                              double_ended, similarity, multiprocessing_on=True,
+                              n_processes=3)
+    pairs = []
+    for i in range(100):
+        ktn.add_minimum(np.array([0, i]), 0)
+        pairs.append([0, i])
+    
+    sampler.run_connection_attempts(pairs)
+    sorted_pairlist = ktn.pairlist[ktn.pairlist[:,1].argsort()]
+    assert_array_equal(sorted_pairlist, np.array(pairs))
+
 
 def test_get_transition_states():
     similarity = StandardSimilarity(0.1, 0.1)

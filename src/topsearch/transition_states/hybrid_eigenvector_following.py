@@ -1,6 +1,7 @@
 """ The single_ended_search module contains methods for locating
     transition states starting from a single point """
 
+import logging
 from math import inf
 from copy import deepcopy
 import numpy as np
@@ -79,6 +80,10 @@ class HybridEigenvectorFollowing:
         self.failure = None
         self.remove_trans_rot = None
         self.output_level = output_level
+        self.logger = logging.getLogger("HEF")
+        self.logger.info("ts_conv_crit = %e, ts_steps = %im", ts_conv_crit, ts_steps)
+        self.logger.info("steepest_descent_conv_crit = %e, max_uphill_step_size = %e, min_uphill_step_size = %e", steepest_descent_conv_crit, max_uphill_step_size, min_uphill_step_size)
+        self.logger.info("positive_eigenvalue_step = %e, eigenvalue_conv_crit= %e", positive_eigenvalue_step, eigenvalue_conv_crit)
 
     def run(self, coords: StandardCoordinates, tag: str = '') -> tuple:
         """ Perform a single-ended transition state search starting from 
@@ -105,6 +110,8 @@ class HybridEigenvectorFollowing:
 
         # Take steps to find transition states until convergence or too many
         for n_steps in range(self.ts_steps):
+            self.logger.debug("Step = %i", n_steps)
+            self.logger.debug("coords.position = %s",  coords.position)
             # Find the smallest eigenvalue and associated eigenvector
             eigenvector, eigenvalue, eig_steps = \
                 self.get_smallest_eigenvector(eigenvector,
@@ -114,13 +121,16 @@ class HybridEigenvectorFollowing:
             # Invalid eigenvector so return
             if eigenvector is None:
                 return None, None, None, None, None, None, None
+            self.logger.debug("eigenvalue, eigenvector = %e, %s",  eigenvalue, eigenvector)
             # Take a step following the eigenvector uphill
             self.take_uphill_step(coords, eigenvector, eigenvalue)
+            self.logger.debug("coords after step: %s", coords.position)
             # If eigenvalue is below zero then minimise in orthogonal subspace
             if eigenvalue < 0.0 and eig_steps < 5:
                 subspace_pos, energy, results_dict = \
                     self.subspace_minimisation(coords, eigenvector)
                 coords.position = subspace_pos
+            self.logger.debug("After subspace: %s", coords.position)
             # Reset appropriate eigenvector bounds
             lower_bounds, upper_bounds = coords.active_bounds()
             self.update_eigenvector_bounds(lower_bounds, upper_bounds)
@@ -219,8 +229,9 @@ class HybridEigenvectorFollowing:
             return False
         lower_bounds, upper_bounds = coords.active_bounds()
         all_bounds = np.column_stack((lower_bounds, upper_bounds))
+        #self.logger.debug("Lower bounds = %s, upper bounds = %s, all_bounds = %s", lower_bounds, upper_bounds, all_bounds)
         # Point is at all bounds and cannot be meaningful maximum
-        if np.all(np.any(all_bounds, axis=0)):
+        if np.all(np.any(all_bounds, axis=1)):
             self.failure = 'bounds'
             return False
         return True
@@ -470,14 +481,16 @@ class HybridEigenvectorFollowing:
             Only consider the gradient components in dimensions not at bounds.
             Return True if points passes convergence test """
         grad = self.potential.gradient(position)
+
         # Find the directions at bounds
         all_bounds = np.column_stack((lower_bounds, upper_bounds))
         # Get the gradient for just the dimensions not at bounds
-        non_bounds_dimensions = np.where(np.any(all_bounds, axis=0))[0]
-        if non_bounds_dimensions.size > 0:
-            grad[non_bounds_dimensions] = 0.0
+        bounds_dimensions = np.where(np.any(all_bounds, axis=1))[0]
+        if bounds_dimensions.size > 0:
+            grad[bounds_dimensions] = 0.0
         if np.max(np.abs(grad)) < self.ts_conv_crit:
             return True
+        self.logger.debug("Grad magnitude: %s", np.linalg.norm(grad))
         return False
 
     def update_eigenvector_bounds(self, lower_bounds: NDArray,

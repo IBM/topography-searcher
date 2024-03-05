@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from numpy.testing import assert_array_equal
 import networkx as nx
 import os
 import os.path
@@ -45,36 +46,75 @@ def test_read_network():
     assert ktn.n_ts == 0
     assert edges == []
 
-def test_dump_network():
-    ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path=f'{current_dir}/test_data/',
-                     text_string='.ktn')
-    ktn.dump_network(text_string='.new')
-    ktn_new = KineticTransitionNetwork()
-    ktn_new.read_network(text_string='.new')
+def test_read_network_from_default_path():
+    ktn = KineticTransitionNetwork(dump_path=f"{current_dir}/test_data/", dump_suffix=".ktn")
+    ktn.read_network()
     edges = []
-    for i in ktn.G.edges:
+    for i in ktn.G.edges():
         edges.append(i)
-    edges_new = []
-    for i in ktn_new.G.edges:
-        edges_new.append(i)
-    assert ktn.n_minima == ktn_new.n_minima
-    assert ktn.n_ts == ktn_new.n_ts
-    assert edges == edges_new
-    os.remove('min.coords.new')
-    os.remove('min.data.new')
-    os.remove('ts.data.new')
-    os.remove('ts.coords.new')
-    os.remove('pairlist.new')
+    assert ktn.n_minima == 9
+    assert ktn.n_ts == 8
+    assert edges == [(0, 1), (1, 2), (2, 8), (3, 6),
+                     (3, 7), (3, 4), (4, 8), (4, 5)]
     
-    # Can we correctly dump and read cases where we have more than 1 transition
-    # state per pair of nodes?
+def test_read_network_with_single_ts(tmp_path):
+    dump_path = str(tmp_path) + "/"
+    ktn = KineticTransitionNetwork(dump_path, ".single_ts")
+    ktn.add_minimum(np.array([0,0]), 0)
+    ktn.add_minimum(np.array([1,1]), 0)
+    ktn.add_ts(np.array([0.5,0.5]),0,0,1)
+    ktn.dump_network()
+
+    ktn_new = KineticTransitionNetwork(dump_path, ".single_ts")
+    ktn_new.read_network()
+
+    assert_array_equal(ktn.get_ts_coords(0,1), np.array([0.5,0.5]))
+
+def test_read_network_with_multiple_ts_per_node():
+     # check result for a kinetic transition network where nodes 0, 1 have two transition states
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn_multipleTS')
-    ktn.dump_network(text_string='.new')
+    edges = []
+    for i in ktn.G.edges:
+        edges.append(i)
+    assert ktn.n_minima == 9
+    assert ktn.n_ts == 9
+    assert edges == [(0, 1, 0), (0, 1, 1), (1, 2, 0), (2, 8, 0), (3, 6, 0),
+                     (3, 7, 0), (3, 4, 0), (4, 8, 0), (4, 5, 0)]
+
+def test_read_network_with_single_minimum(tmp_path):
+    dump_path = str(tmp_path) + "/"
+    ktn = KineticTransitionNetwork(dump_path, ".single_min")
+    ktn.add_minimum(np.array([1,1,1]), 1.0)
+    ktn.dump_network()
+
+    ktn_new = KineticTransitionNetwork(dump_path, ".single_min")
+    ktn_new.read_network()
+
+    assert_array_equal(ktn_new.get_minimum_coords(0), np.array([1,1,1]))
+    assert ktn_new.get_minimum_energy(0) == 1.0
+
+def test_read_network_with_single_attempted_coord(tmp_path):
+    dump_path = str(tmp_path) + "/"
+    ktn = KineticTransitionNetwork(dump_path, ".single_attempted")
+    ktn.add_minimum(np.array([1,1,1]), 1.0)
+    ktn.add_attempted_position(np.array([1,1,1]))
+    ktn.dump_network()
+
+    ktn_new = KineticTransitionNetwork(dump_path, ".single_attempted")
+    ktn_new.read_network()
+
+    assert_array_equal(ktn_new.get_attempted_positions(), np.array([[1,1,1]]))
+
+def test_dump_network_to_specified_path(tmp_path):
+    dest_path = str(tmp_path) + "/"
+    ktn = KineticTransitionNetwork()
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
+                     text_string='.ktn')
+    ktn.dump_network(text_string='.new', text_path=dest_path)
     ktn_new = KineticTransitionNetwork()
-    ktn_new.read_network(text_string='.new')
+    ktn_new.read_network(text_string='.new', text_path=dest_path)
     edges = []
     for i in ktn.G.edges:
         edges.append(i)
@@ -84,11 +124,49 @@ def test_dump_network():
     assert ktn.n_minima == ktn_new.n_minima
     assert ktn.n_ts == ktn_new.n_ts
     assert edges == edges_new
-    os.remove('min.coords.new')
-    os.remove('min.data.new')
-    os.remove('ts.data.new')
-    os.remove('ts.coords.new')
-    os.remove('pairlist.new')
+
+def test_dump_network_to_default_path(tmp_path):
+    dest_path = str(tmp_path) + "/"
+    ktn = KineticTransitionNetwork(dump_path=dest_path, dump_suffix=".new")
+    ktn.read_network(text_path=f"{current_dir}/test_data/",
+                     text_string='.ktn')
+    ktn.dump_network()
+    ktn_new = KineticTransitionNetwork(dump_path=dest_path, dump_suffix=".new")
+    ktn_new.read_network(text_string='.new', text_path=dest_path)
+    edges = []
+    for i in ktn.G.edges:
+        edges.append(i)
+    edges_new = []
+    for i in ktn_new.G.edges:
+        edges_new.append(i)
+    assert ktn.n_minima == ktn_new.n_minima
+    assert ktn.n_ts == ktn_new.n_ts
+    assert edges == edges_new
+
+def test_dump_network_appends_slash_if_needed(tmp_path):
+    dest_path = str(tmp_path)
+    ktn = KineticTransitionNetwork(dump_path=dest_path, dump_suffix=".new")
+    ktn.read_network(text_path=f"{current_dir}/test_data/",
+                     text_string='.ktn')
+    ktn.dump_network()
+    assert (tmp_path / 'min.data.new').exists()
+    
+
+def test_read_network_with_small_values(tmp_path):
+    dump_path = str(tmp_path) + "/"
+    ktn = KineticTransitionNetwork(dump_path, ".small_min")
+    ktn.add_minimum(np.array([0,0]), -1.123456e-10)
+    ktn.add_minimum(np.array([1,1]), 1.789101e-8)
+    ktn.add_ts(np.array([0.5,0.5]),-1.3333333e-11,0,1)
+    ktn.dump_network()
+
+    ktn_new = KineticTransitionNetwork(dump_path, ".small_min")
+    ktn_new.read_network()
+
+    assert ktn.get_minimum_energy(0) == ktn_new.get_minimum_energy(0)
+    assert ktn.get_minimum_energy(1) == ktn_new.get_minimum_energy(1)
+    assert ktn.get_ts_energy(0,1) == ktn_new.get_ts_energy(0,1)
+
 
 def test_reset_network():
     ktn = KineticTransitionNetwork()
@@ -363,3 +441,27 @@ def test_combine_networks():
     
     assert len(ktn.G.nodes()) == 9
     assert len(ktn.G.edges()) == 9
+
+    # Can we combine networks that have more than 1 transition state
+    # per pair of nodes? 
+    ktn = KineticTransitionNetwork()
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
+                     text_string='.ktn_combined')
+    
+    other_ktn = KineticTransitionNetwork()
+    other_ktn.read_network(text_path=f'{current_dir}/test_data/',
+                           text_string='.ktn_multipleTS')
+    similarity = StandardSimilarity(0.05, 0.1, proportional_distance=True)
+    coords = StandardCoordinates(ndim=3, bounds=[(-5.0, 5.0), (-5.0, 5.0),
+                                                 (-5.0, 5.0)])
+    ktn.add_network(other_ktn, similarity, coords)
+    
+    assert len(ktn.G.nodes()) == 9
+    assert len(ktn.G.edges()) == 9
+
+def test_adds_attempted_initial_position_to_list():
+    ktn = KineticTransitionNetwork()
+    ktn.add_attempted_position(np.array([0.1, 0.2, 0.3]))
+    ktn.add_attempted_position(np.array([0.4, 0.5, 0.6]))
+
+    assert_array_equal(ktn.get_attempted_positions(), np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]))
