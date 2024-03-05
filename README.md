@@ -34,30 +34,40 @@ For more details of the methodology please refer to [`common_citations.md`](./co
 
 Instructions are for installation into a conda environment. First create the conda environment
 ```
-conda create -n topsearch_env python
+conda create -n topsearch_env python=3.10
 conda activate topsearch_env
 ```
 The package is available on PyPI and can be installed using pip
 ```
-pip install topsearch
-```
-or directly from the git source using
-```
-pip install git+https://github.com/IBM/topography-searcher
+pip install topsearch==0.0.1
 ```
 
-For those not importing the package directly you can set up the proper enivornment from the pyproject.toml file with
+For the source code you can clone the git repository locally using
+```
+git clone https://github.com/IBM/topography-searcher.git
+```
+and then install the dependencies using either
+```
+pip install -r requirements.txt
+```
+or from the pyproject.toml file with
 ```
 poetry install
 ```
 
 We can test the environment build by running
 ```
+cd tests
 pytest
 ```
-within the `tests` directory. For a successful build we should have all tests pass.
-By default we do not test for the `molecular_potentials` as the dependencies are not shipped by default due to the large size.
-If this is the case then enjoy using TopSearch!
+For a successful build we should have all tests pass. If this is the case then enjoy using TopSearch!
+
+_Note_: By default we do not specify the dependencies for molecular potentials (`dft.py`, `ml_potentials.py`) due to the large increase in environment size, which is unnecessary for machine learning applications. The dependencies for a given potential should be installed in addition if required. Therefore, we do not run the tests in `molecular_potentials` by default, but these can be run manually with
+```
+cd tests
+cd molecular_potentials
+pytest test*
+```
 
 ## Examples
 
