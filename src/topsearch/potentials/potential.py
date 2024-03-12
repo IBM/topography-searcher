@@ -7,6 +7,8 @@ from typing import Tuple
 import numpy as np
 from nptyping import NDArray
 
+from topsearch.data.coordinates import StandardCoordinates
+
 
 class Potential:
 
@@ -74,7 +76,7 @@ class Potential:
                 hess[j, i] = hess[i, j]
         return hess
 
-    def check_valid_minimum(self, coords: type) -> bool:
+    def check_valid_minimum(self, coords: StandardCoordinates) -> bool:
         """ Determines if a minimum is allowed based on eigenvalues """
         if not coords.at_bounds():
             # Find the eigenvalues of the Hessian matrix
@@ -91,7 +93,7 @@ class Potential:
                 return False
         return True
 
-    def check_valid_ts(self, coords: type) -> bool:
+    def check_valid_ts(self, coords: StandardCoordinates) -> bool:
         """ Check if transition state one negative eigenvalue """
         if not coords.at_bounds():
             # Compute the eigenvalue spectrum
