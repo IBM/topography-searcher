@@ -10,6 +10,8 @@ import matplotlib as mpl
 from matplotlib import rc
 from matplotlib import collections as mc
 import pylab as pl
+
+from ..data.kinetic_transition_network import KineticTransitionNetwork
 from ..analysis.graph_properties import remove_edges_threshold
 from ..analysis.minima_properties import get_minima_energies
 
@@ -18,7 +20,7 @@ rc('text', usetex=True)
 mpl.rcParams.update({'font.size': 18})
 
 
-def get_connectivity_graph(ktn: type, start: float, finish: float,
+def get_connectivity_graph(ktn: KineticTransitionNetwork, start: float, finish: float,
                            levels: int) -> nx.Graph:
     """ Generate the connectivity graph for splitting the space. This
         is a network containing the subsets of minima that are connected
@@ -52,7 +54,7 @@ def get_connectivity_graph(ktn: type, start: float, finish: float,
     return connectivity_graph
 
 
-def find_parent(H: nx.Graph, member: set, level: int) -> int:
+def find_parent(H: nx.Graph, member: set, level: int) -> int | None:
     """ Find the parent node for the subset containing the member minimum """
     level_nodes = [x for x, y in H.nodes(data=True) if y['level'] == level]
     # Loop through all nodes at the level to find which contains member
@@ -111,7 +113,7 @@ def get_line_collection(conn_graph: nx.Graph, start: float,
     return lines
 
 
-def cut_line_collection(ktn: type, conn_graph: nx.Graph, lines: list,
+def cut_line_collection(ktn: KineticTransitionNetwork, conn_graph: nx.Graph, lines: list,
                         start: float, finish: float, levels: int) -> list:
     """ Take the lines that currently run to the lowest known energy and
         shorten each node to its corresponding energy when there is only
@@ -160,7 +162,7 @@ def cut_line_collection(ktn: type, conn_graph: nx.Graph, lines: list,
     return lines
 
 
-def plot_disconnectivity_graph(ktn: type, levels: int,
+def plot_disconnectivity_graph(ktn: KineticTransitionNetwork, levels: int,
                                label: str = '') -> None:
     """ Compute the disconnectivity graph, plot and save to file """
     # Find the highest energy transition state as upper limit

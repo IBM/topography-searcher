@@ -6,7 +6,8 @@
 import numpy as np
 from nptyping import NDArray
 from topsearch.minimisation import lbfgs
-from topsearch.data.coordinates import MolecularCoordinates
+from topsearch.data.coordinates import MolecularCoordinates, StandardCoordinates
+from topsearch.potentials.potential import Potential
 
 
 class NudgedElasticBand:
@@ -49,7 +50,7 @@ class NudgedElasticBand:
         Same as potential bounds, but one per image
     """
 
-    def __init__(self, potential: type,
+    def __init__(self, potential: Potential,
                  force_constant: float,
                  image_density: float,
                  max_images: int,
@@ -68,7 +69,7 @@ class NudgedElasticBand:
         self.neb_count = 0
         self.output_level = output_level
 
-    def run(self, coords1: type, coords2: NDArray, attempts: int = 0,
+    def run(self, coords1: StandardCoordinates, coords2: NDArray, attempts: int = 0,
             permutation: NDArray = None) -> tuple[NDArray, NDArray]:
         """ Complete double-ended transition state search when provided with
             two minima. Returns an array of transition state candidates taken
@@ -113,7 +114,7 @@ class NudgedElasticBand:
         """ Revert the image density to its original value """
         self.image_density = self.original_image_density
 
-    def initial_interpolation(self, coords1: type, coords2: NDArray,
+    def initial_interpolation(self, coords1: StandardCoordinates, coords2: NDArray,
                               attempts: int, permutation: NDArray) -> NDArray:
         """ Return initial interpolation band using the appropriate number
             of images based on previous attempts. Set force constants and
@@ -136,7 +137,7 @@ class NudgedElasticBand:
         self.get_force_constants()
         return band
 
-    def linear_interpolation(self, coords1: type, coords2: NDArray) -> NDArray:
+    def linear_interpolation(self, coords1: StandardCoordinates, coords2: NDArray) -> NDArray:
         """ Produce a linear interpolation between two points with a number of
             images specified by self.image_density """
         # Set the number of images based on given image density
@@ -155,7 +156,7 @@ class NudgedElasticBand:
             band[i, :] = coords1.position+(direction_vec*i)
         return band
 
-    def dihedral_interpolation(self, coords1: type, coords2: NDArray,
+    def dihedral_interpolation(self, coords1: StandardCoordinates, coords2: NDArray,
                                permutation: NDArray) -> NDArray:
         """ Interpolate linearly in the space of dihedrals, angles and
             bond lengths, which will be much more appropriate for molecules """

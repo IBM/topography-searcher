@@ -3,9 +3,13 @@
 
 from timeit import default_timer as timer
 import numpy as np
-from topsearch.minimisation import lbfgs, psi4_internal
-from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+from topsearch.global_optimisation.perturbations import AtomicPerturbation, MolecularPerturbation, StandardPerturbation
+from topsearch.minimisation import lbfgs
+from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates, StandardCoordinates
 from topsearch.potentials.dft import DensityFunctionalTheory
+from topsearch.potentials.potential import Potential
+from topsearch.similarity.similarity import StandardSimilarity
 
 
 class BasinHopping:
@@ -37,19 +41,18 @@ class BasinHopping:
     """
 
     def __init__(self,
-                 ktn: type,
-                 potential: type,
-                 similarity: type,
-                 step_taking: type,
-                 opt_method: str = 'scipy',) -> None:
-        
+                 ktn: KineticTransitionNetwork,
+                 potential: Potential,
+                 similarity: StandardSimilarity,
+                 step_taking: StandardPerturbation | AtomicPerturbation | MolecularPerturbation,
+                 opt_method: str = 'scipy') -> None:
         self.ktn = ktn
         self.potential = potential
         self.similarity = similarity
         self.step_taking = step_taking
         self.opt_method = opt_method
 
-    def run(self, coords: type, n_steps: int, conv_crit: float,
+    def run(self, coords: StandardCoordinates | MolecularCoordinates | AtomicCoordinates, n_steps: int, conv_crit: float,
             temperature: float) -> None:
         """ Method to perform basin-hopping from a given start point """
         start_time = timer()
@@ -118,7 +121,7 @@ class BasinHopping:
         end_time = timer()
         self.write_final_information(start_time, end_time)
 
-    def prepare_initial_coordinates(self, coords: type,
+    def prepare_initial_coordinates(self, coords: StandardCoordinates,
                                     conv_crit: float) -> float:
         """ Generate the initial minimum and set its energy and position """
         if self.opt_method == 'scipy':

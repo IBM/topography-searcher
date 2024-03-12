@@ -5,6 +5,8 @@
 import scipy.stats
 import numpy as np
 from nptyping import NDArray
+
+from topsearch.potentials.gaussian_process import GaussianProcess
 from .potential import Potential
 
 
@@ -28,7 +30,7 @@ class ExpectedImprovement(Potential):
         exploitation
     """
 
-    def __init__(self, gaussian_process: type, zeta: float) -> None:
+    def __init__(self, gaussian_process: GaussianProcess, zeta: float) -> None:
         self.atomistic = False
         self.gaussian_process = gaussian_process
         self.zeta = zeta
@@ -62,7 +64,7 @@ class UpperConfidenceBound(Potential):
         exploitation
     """
 
-    def __init__(self, gaussian_process: type, zeta: float) -> None:
+    def __init__(self, gaussian_process: GaussianProcess, zeta: float) -> None:
         self.atomistic = False
         self.gaussian_process = gaussian_process
         self.zeta = zeta

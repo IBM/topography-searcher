@@ -4,9 +4,13 @@
 
 import numpy as np
 from nptyping import NDArray
+from topsearch.data.coordinates import StandardCoordinates
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+from topsearch.potentials.potential import Potential
+from topsearch.similarity.similarity import StandardSimilarity
 
 
-def get_invalid_minima(ktn: type, potential: type, coords: type) -> list:
+def get_invalid_minima(ktn: KineticTransitionNetwork, potential: Potential, coords: StandardCoordinates) -> list[int]:
     """ Find any minima in the network G that do not meet the
         gradient or eigenspectrum criteria """
     invalid_minima = []
@@ -20,7 +24,7 @@ def get_invalid_minima(ktn: type, potential: type, coords: type) -> list:
     return invalid_minima
 
 
-def get_bounds_minima(ktn: type, coords: type) -> list:
+def get_bounds_minima(ktn: KineticTransitionNetwork, coords: StandardCoordinates) -> list:
     """ Find any minima that are at the bounds in any dimension """
     bounds_minima = []
     #  Loop over all current minima
@@ -32,7 +36,7 @@ def get_bounds_minima(ktn: type, coords: type) -> list:
     return bounds_minima
 
 
-def get_all_bounds_minima(ktn: type, coords: type) -> list:
+def get_all_bounds_minima(ktn: KineticTransitionNetwork, coords: StandardCoordinates) -> list:
     """ Find any minima that are at the bounds in all dimensions """
     bounds_minima = []
     #  Loop over all current minima
@@ -44,7 +48,7 @@ def get_all_bounds_minima(ktn: type, coords: type) -> list:
     return bounds_minima
 
 
-def get_similar_minima(ktn: type,
+def get_similar_minima(ktn: KineticTransitionNetwork,
                        proximity_measure: float,
                        comparison_points: NDArray) -> list:
     """ Locate any minima within proximity_measure of the comparison_points """
@@ -62,7 +66,7 @@ def get_similar_minima(ktn: type,
     return similar_minima
 
 
-def get_minima_above_cutoff(ktn: type,
+def get_minima_above_cutoff(ktn: KineticTransitionNetwork,
                             cutoff: float) -> list:
     """ Find all minima with an energy above cutoff """
 
@@ -71,7 +75,7 @@ def get_minima_above_cutoff(ktn: type,
     return np.where(high_energy_minima)[0].tolist()
 
 
-def get_minima_energies(ktn: type) -> NDArray:
+def get_minima_energies(ktn: KineticTransitionNetwork) -> NDArray:
     """ Return the energies of all the minima """
     energies = np.zeros((ktn.n_minima), dtype=float)
     for i in range(ktn.n_minima):
@@ -79,13 +83,13 @@ def get_minima_energies(ktn: type) -> NDArray:
     return energies
 
 
-def get_ordered_minima(ktn: type) -> NDArray:
+def get_ordered_minima(ktn: KineticTransitionNetwork) -> NDArray:
     """ Return the ordered list of indices with increasing energy """
     energies = get_minima_energies(ktn)
     return np.argsort(energies)
 
 
-def get_distance_matrix(ktn: type, similarity: type, coords: type) -> NDArray:
+def get_distance_matrix(ktn: KineticTransitionNetwork, similarity: StandardSimilarity, coords: StandardCoordinates) -> NDArray:
     """ Compute a distance matrix for all minima in the network """
     dist_matrix = np.zeros((ktn.n_minima, ktn.n_minima), dtype=float)
     for i in range(ktn.n_minima-1):
@@ -97,7 +101,7 @@ def get_distance_matrix(ktn: type, similarity: type, coords: type) -> NDArray:
     return dist_matrix
 
 
-def get_distance_from_minimum(ktn: type, similarity: type, coords: type,
+def get_distance_from_minimum(ktn: KineticTransitionNetwork, similarity: StandardSimilarity, coords: StandardCoordinates,
                               node: int) -> NDArray:
     """ Compute the distance of all nodes from specified minimum node1 """
     dist_vector = np.zeros((ktn.n_minima), dtype=float)

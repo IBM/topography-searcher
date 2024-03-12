@@ -6,7 +6,8 @@ from copy import deepcopy
 import numpy as np
 from nptyping import NDArray
 from topsearch.minimisation import lbfgs
-from topsearch.data.coordinates import AtomicCoordinates, MolecularCoordinates
+from topsearch.data.coordinates import AtomicCoordinates, MolecularCoordinates, StandardCoordinates
+from topsearch.potentials.potential import Potential
 
 
 class HybridEigenvectorFollowing:
@@ -54,7 +55,7 @@ class HybridEigenvectorFollowing:
     """
 
     def __init__(self,
-                 potential: type,
+                 potential: Potential,
                  ts_conv_crit: float,
                  ts_steps: int,
                  pushoff: float,
@@ -79,7 +80,7 @@ class HybridEigenvectorFollowing:
         self.remove_trans_rot = None
         self.output_level = output_level
 
-    def run(self, coords: type, tag: str = '') -> tuple:
+    def run(self, coords: StandardCoordinates, tag: str = '') -> tuple:
         """ Perform a single-ended transition state search starting from 
             coords. Returns the information about transition states
             and their connected minima that is needed for testing similarity
@@ -157,7 +158,7 @@ class HybridEigenvectorFollowing:
         return None, None, None, None, None, None, None
 
     def get_smallest_eigenvector(self, initial_vector: NDArray,
-                                 coords: type,
+                                 coords: StandardCoordinates,
                                  lower_bounds: NDArray,
                                  upper_bounds: NDArray) -> NDArray:
         """ Routine to find the smallest eigenvalue and the associated
@@ -207,7 +208,7 @@ class HybridEigenvectorFollowing:
 
     def check_valid_eigenvector(self, eigenvector: NDArray,
                                 eigenvalue: float,
-                                coords: type) -> bool:
+                                coords: StandardCoordinates) -> bool:
         """ Test that an eigenvector is valid. It cannot contain
             only zeros or any nans """
         if (not np.any(eigenvector)) or (np.any(np.isnan(eigenvector))):
@@ -235,7 +236,7 @@ class HybridEigenvectorFollowing:
         """ Return perpendicular component of vector vec1 relative to vec2 """
         return vec1 - self.parallel_component(vec1, vec2)
 
-    def subspace_minimisation(self, coords: type,
+    def subspace_minimisation(self, coords: StandardCoordinates,
                               eigenvector: NDArray) -> tuple:
         """ Perform minimisation in the subspace orthogonal to eigenvector.
             The distance is limited to be at most 2% of the range of the
@@ -249,7 +250,7 @@ class HybridEigenvectorFollowing:
                            conv_crit=self.steepest_descent_conv_crit)
         return position, energy, results_dict
 
-    def get_local_bounds(self, coords: type) -> list:
+    def get_local_bounds(self, coords: StandardCoordinates) -> list:
         """ Create a box around the given point that ensures that subspace
             minimisation is bounded to a small region to avoid moving to
             a different basin. Still respect total function bounds """
@@ -284,7 +285,7 @@ class HybridEigenvectorFollowing:
             return self.min_uphill_step_size
         return step_length
 
-    def take_uphill_step(self, coords: type,
+    def take_uphill_step(self, coords: StandardCoordinates,
                          eigenvector: NDArray,
                          eigenvalue: float) -> NDArray:
         """ Take uphill step of appropriate length given an eigenvector
@@ -300,7 +301,7 @@ class HybridEigenvectorFollowing:
             coords.position += step_size*eigenvector
         coords.move_to_bounds()
 
-    def steepest_descent(self, transition_state: type,
+    def steepest_descent(self, transition_state: StandardCoordinates,
                          eigenvector: NDArray) -> tuple:
         """
         Perturb away from the transition state along the eigenvector
@@ -326,7 +327,7 @@ class HybridEigenvectorFollowing:
             self.steepest_descent_paths(connected_minimum)
         return plus_min, plus_energy, minus_min, minus_energy
 
-    def steepest_descent_paths(self, coords: type) -> tuple:
+    def steepest_descent_paths(self, coords: StandardCoordinates) -> tuple:
         """ Perform local minimisation to get the result of a steepest
             descent path beginning from position. To avoid very large
             initial steps in LBFGS we constrain the local minimisation
@@ -371,7 +372,7 @@ class HybridEigenvectorFollowing:
                     return coords.position, current_energy, current_dict
         return coords.position, current_energy, current_dict
 
-    def find_pushoff(self, transition_state: type,
+    def find_pushoff(self, transition_state: StandardCoordinates,
                      eigenvector: NDArray) -> tuple[NDArray, NDArray]:
         """ Given the transition state location and direction of its single
             negative eigenvalue. We compute a step length in this direction
@@ -441,7 +442,7 @@ class HybridEigenvectorFollowing:
         transition_state.position = ts_position
         return positive_x, negative_x
 
-    def do_pushoff(self, ts_position: type, eigenvector: NDArray,
+    def do_pushoff(self, ts_position: StandardCoordinates, eigenvector: NDArray,
                    increment: float, iteration: int) -> NDArray:
         """ Take a step along the pushoff.
             Return the new position after performing pushoff """

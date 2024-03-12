@@ -7,6 +7,8 @@ from nptyping import NDArray
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import cross_validate, KFold
 from scipy.interpolate import RBFInterpolator
+
+from topsearch.data.model_data import ModelData
 from .potential import Potential
 
 
@@ -25,7 +27,7 @@ class DatasetInterpolation(Potential):
     model: class
         The scipy interpolation model that can be fit and queried
     """
-    def __init__(self, model_data: type, smoothness: float = 0.0) -> None:
+    def __init__(self, model_data: ModelData, smoothness: float = 0.0) -> None:
         self.atomistic = False
         self.model_data = model_data
         self.smoothness = smoothness
@@ -67,7 +69,8 @@ class DatasetRegression(Potential):
     cv_results: dict
         The results of cross-validation fitting of MLP
     """
-    def __init__(self, model_data: type, model_rand: int = 1) -> None:
+
+    def __init__(self, model_data: ModelData, model_rand: int = 1) -> None:
         self.atomistic = False
         self.model_data = model_data
         self.model_rand = model_rand

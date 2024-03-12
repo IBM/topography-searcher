@@ -9,12 +9,14 @@ from matplotlib import rc
 import numpy as np
 import networkx as nx
 
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 rc('text', usetex=True)
 mpl.rcParams.update({'font.size': 18})
 
 
-def plot_network(ktn: type, label: str = '',
+def plot_network(ktn: KineticTransitionNetwork, label: str = '',
                  colour_scheme: str = 'cool') -> None:
     """ Plot the network using a weighted spring layout with larger
         barriers giving a larger separation between nodes """
@@ -36,7 +38,7 @@ def plot_network(ktn: type, label: str = '',
     plt.close()
 
 
-def barrier_reweighting(ktn: type) -> nx.Graph:
+def barrier_reweighting(ktn: KineticTransitionNetwork) -> nx.Graph:
     """ Calculate appropriate weighting for spring constants in the
         graph layout from barriers to ensure inversely proportional
         to barrier height. Returns reweighted network """
