@@ -72,8 +72,8 @@ class BasinHopping:
                                bounds=coords.bounds,
                                conv_crit=conv_crit)
             # Failed minimisation so don't accept
-            if results_dict['warnflag'] != 0: # or \
-#                    results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH':
+            if results_dict['warnflag'] != 0 or \
+                    results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH':
                 with open('logfile', 'a', encoding="utf-8") as outfile:
                     outfile.write(f"Step {i+1}: Could not converge \n")
                 # Revert to previous coordinates

@@ -249,7 +249,7 @@ def test_optimal_alignment3():
                           0.949876547225363, 0.6596726581246294, 0.19804485103942987])
     atom_labels = ['C','C','C','C','C','C', 'C']
     coords = AtomicCoordinates(atom_labels, position)
-    similarity = MolecularSimilarity(0.1, 0.05, weighted=False)
+    similarity = MolecularSimilarity(0.1, 0.05, weighted=False, allow_inversion=True)
     # Rotate, permute and displace by a very small amount
     coords2 = np.array([ 0.38713985736237416, -0.365316094325874, 0.7542320614929241,
                         -0.32461053888530045, 0.6158843587799965, -0.6062289562915606,

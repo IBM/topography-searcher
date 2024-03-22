@@ -39,17 +39,27 @@ ktn = KineticTransitionNetwork()
 step_taking = StandardPerturbation(max_displacement=1.0,
                                    proportional_distance=True)
 # Global optimisation class using basin-hopping to find local minima
-optimiser = BasinHopping(ktn=ktn, potential=schwefel, similarity=comparer,
+optimiser = BasinHopping(ktn=ktn,
+                         potential=schwefel,
+                         similarity=comparer,
                          step_taking=step_taking)
 # Single ended transition state search object that locates transition
 # states from a single starting position, using hybrid eigenvector-following
-hef = HybridEigenvectorFollowing(schwefel, 1e-4, 75, 1.0)
+hef = HybridEigenvectorFollowing(potential=schwefel,
+                                 ts_conv_crit=1e-4,
+                                 ts_steps=75,
+                                 pushoff=1.0)
 # Double ended transition state search that locates approximate minimum energy
 # pathways between two points using the nudged elastic band algorithm
-neb = NudgedElasticBand(schwefel, 10.0, 50, 10, 1e-2)
+neb = NudgedElasticBand(potential=schwefel,
+                        force_constant=10.0,
+                        image_density=10.0,
+                        max_images=50,
+                        neb_conv_crit=1e-2)
 # Class for sampling configuration space by driving the global_optimisation
 # and transition state search methods
-explorer = NetworkSampling(ktn=ktn, coords=coords,
+explorer = NetworkSampling(ktn=ktn,
+                           coords=coords,
                            global_optimiser=optimiser,
                            single_ended_search=hef,
                            double_ended_search=neb,
@@ -62,16 +72,29 @@ explorer = NetworkSampling(ktn=ktn, coords=coords,
 # Read the partially-complete landscape in from file
 ktn.read_network(text_string='.original')
 # Plot this original landscape
-plot_disconnectivity_graph(ktn, 100, label='Original')
-plot_stationary_points(schwefel, ktn, bounds=coords.bounds, contour_levels=100,
-                       fineness=150, label='Original')
+plot_disconnectivity_graph(ktn=ktn,
+                           levels=100,
+                           label='Original')
+plot_stationary_points(potential=schwefel,
+                       ktn=ktn,
+                       bounds=coords.bounds,
+                       contour_levels=100,
+                       fineness=150,
+                       label='Original')
 
 # Then continue the sampling of the landscape to locate further intermediate
 # transition states between the known minima
-explorer.get_transition_states('ClosestEnumeration', 20)
+explorer.get_transition_states(method='ClosestEnumeration',
+                               cycles=20)
 # Write all the stationary points back to file
 ktn.dump_network()
 # Plot the complete landscape to compare with the original network read in
-plot_disconnectivity_graph(ktn, 100, label='Final')
-plot_stationary_points(schwefel, ktn, bounds=coords.bounds, contour_levels=100,
-                       fineness=150, label='Final')
+plot_disconnectivity_graph(ktn=ktn,
+                           levels=100,
+                           label='Final')
+plot_stationary_points(potential=schwefel,
+                       ktn=ktn,
+                       bounds=coords.bounds,
+                       contour_levels=100,
+                       fineness=150,
+                       label='Final')
