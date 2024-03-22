@@ -1,5 +1,3 @@
 # Molecular structure optimisation
 
-In this script we explore the potential energy surface of a small molecule computed using density functional theory. We optimise the molecular
-structure using basin-hopping to locate the global minimum conformation of ethanol. The conformational space is explored by applying random rotations
-to the flexible dihedrals, and we easily locate the global minimum for this simple optimisation task. We finally visualise the global minimum.
+In this script we explore the potential energy surface of a small molecule using basin-hopping to locate the global minimum conformation. The energy of the system is computed using density functional theory and the conformational space is explored by applying random rotations to the flexible dihedrals. We store and visualise all minima we locate during basin-hopping. In this example we analyse ethanol, but the script can be applied to optimise any molecule by changing the xyz file input, but be aware the computational cost will increase quickly with molecule size, and `n_steps` in `get_minima` should be increased accordingly. **This script is slow, and will several hours to complete on 8 threads**.
