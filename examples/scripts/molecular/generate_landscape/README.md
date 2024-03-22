@@ -1,6 +1,3 @@
 # Molecular landscape generation
 
-In this script we produce the energy landscape for a small molecule using density functional theory. We explore the potential energy surface
-to locate the local minima and the transition states between them. We visualise the structure of the potential energy surface and 
-the corresponding conformations at each stationary point. Lasly, we highlight how thermodynamic and kinetic properties of a molecular system
-can be derived from these stationary points.
+In this script we produce the potential energy landscape for a small molecule (ethanol in this case) using density functional theory. We explore the potential energy surface to locate all local minima and the transition states between them. We visualise the conformations of both minima and transition states and plot the structure of the potential energy surface using a disconnectivity graph. The script can generally be applied to any molecule by changing the xyz file input, but be aware the computational cost will increase quickly with molecule size, and `n_steps` in `get_minima` should be increased accordingly. **This script is slow, and will already take almost 24 hours to complete on 8 threads**.
