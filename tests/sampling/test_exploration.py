@@ -212,7 +212,7 @@ def test_connection_attempt2():
     single_ended = HybridEigenvectorFollowing(potential=interpolation,
                                  ts_conv_crit=5e-4,
                                  ts_steps=150,
-                                 pushoff=5e-3,
+                                 pushoff=5e-4,
                                  steepest_descent_conv_crit=1e-4,
                                  min_uphill_step_size=1e-8,
                                  eigenvalue_conv_crit=1e-6,

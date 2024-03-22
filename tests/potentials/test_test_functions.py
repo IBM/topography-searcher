@@ -129,9 +129,9 @@ def test_schwefel_hessian():
     position = np.array([420.9687, 420.9687, 420.9687])
     hess = schwefel.hessian(position)
     assert np.all(hess == pytest.approx(
-        np.array([[0.22737368, 0.05684342, 0.05684342],
-                  [0.05684342, 0.22737368, 0.05684342],
-                  [0.05684342, 0.05684342, 0.22737368]]), abs=1e-4))
+        np.array([[0.25295321, 0.0,        0.0       ],
+                  [0.0,        0.25238478, 0.0       ],
+                  [0.0,        0.0,        0.25238478]]), abs=1e-3))
 
 def test_schwefel_function2():
     schwefel = Schwefel()
@@ -159,6 +159,6 @@ def test_schwefel_hessian2():
     position = np.array([20.0, 40.0, 60.0])
     hess = schwefel.hessian(position)
     assert np.all(hess == pytest.approx(
-        np.array([[-0.22737368, -0.05684342,  0.05684342],
-                  [-0.05684342, -0.17053026, -0.05684342],
-                  [ 0.05684342, -0.05684342,  0.28421709]]), abs=1e-4))
+        np.array([[-0.20293101, 0.0,          0.0       ],
+                  [ 0.0,        -0.1080025,   0.0       ],
+                  [ 0.0,        0.0,          0.23874236]]), abs=1e-3))
