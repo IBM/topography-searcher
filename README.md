@@ -32,12 +32,12 @@ For more details of the methodology please refer to [`common_citations.md`](./co
 
 Instructions are for installation into a conda environment. First create the conda environment
 ```
-conda create -n topsearch_env python=3.10
+conda create -n topsearch_env python=3.11
 conda activate topsearch_env
 ```
 The package is available on PyPI and can be installed using pip
 ```
-pip install topsearch==0.0.1
+pip install topsearch==0.0.2
 ```
 
 For the source code you can clone the git repository locally using
