@@ -1,4 +1,5 @@
-## Generate the potential energy landscape 
+## Generate the potential energy landscape of a small molecule starting from
+## a lower level of theory
 
 # IMPORTS
 
@@ -12,13 +13,14 @@ from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.global_optimisation.perturbations import MolecularPerturbation
 from topsearch.global_optimisation.basin_hopping import BasinHopping
 from topsearch.sampling.exploration import NetworkSampling
+from topsearch.plotting.disconnectivity import plot_disconnectivity_graph
 from topsearch.transition_states.hybrid_eigenvector_following import HybridEigenvectorFollowing
 from topsearch.transition_states.nudged_elastic_band import NudgedElasticBand
 
 # INITIALISATION
 
-# Specify the coordinates for optimisation. We will optimise in a space
-# of two dimensions, and select the standard bounds used for Schwefel
+# Specify the molecule and its initial coordinates from the xyz file
+# Here the molecule is ethanol, but any other molecule could be used
 atoms = ase.io.read('ethanol.xyz')
 species = atoms.get_chemical_symbols()
 position = atoms.get_positions().flatten()
@@ -28,52 +30,55 @@ coords = MolecularCoordinates(species, position)
 # and remove the clashes before we continue with DFT
 ff = MMFF94('ethanol.xyz')
 # Initialise the DFT potential that we will compute the landscape of
-# Set all the Psi4 options
-options = {"method": 'pbe',
-           "basis": 'def2-svp',
+# Set all the Psi4 options. These are expensive but high quality parameters
+options = {"method": 'WB97X',
+           "basis": '6-31G*',
            "threads": 8,
            "E_CONVERGENCE": 1e-9,
            "DFT_SPHERICAL_POINTS": 770,
            "D_CONVERGENCE": 1e-9,
-           "df_basis_scf": "def2-svp-RI",
            "wcombine": False,
            "scf_type": "direct",
            "DFT_RADIAL_POINTS":100}
 dft = DensityFunctionalTheory(atom_labels=species,
                               options=options,
                               force_field=ff)
-# Similarity object, decides if two points are the same or different
+# Similarity object, decides if two conformations are the same or different
 # Same if distance between points is less than distance_criterion
-# and the difference in function value is less than energy_criterion
-# Distance is a proportion of the range, in this case 0.05*1000.0
+# and the difference in energy is less than energy_criterion
 comparer = MolecularSimilarity(distance_criterion=0.3,
-                               energy_criterion=0.05,
+                               energy_criterion=1e-2,
                                weighted=False)
 # Kinetic transition network to store stationary points
 ktn = KineticTransitionNetwork()
 # Perturbation scheme for proposing new positions in configuration space
-# Standard perturbation just applies random perturbations
+# Molecular perturbations rotate about a random subset of the flexible
+# dihedrals up to a maximum angle max_displacement
 step_taking = MolecularPerturbation(max_displacement=180.0,
                                     max_bonds=2)
 # Global optimisation class that uses basin-hopping to locate
 # local minima and the global minimum
-optimiser = BasinHopping(ktn=ktn, potential=dft, similarity=comparer,
+optimiser = BasinHopping(ktn=ktn,
+                         potential=dft,
+                         similarity=comparer,
                          step_taking=step_taking)
 # Single ended transition state search object that locates transition
 # states from a single starting position, using hybrid eigenvector-following
 hef = HybridEigenvectorFollowing(potential=dft,
-                                 conv_crit=5e-5,
+                                 ts_conv_crit=1e-2,
                                  ts_steps=50,
-                                 pushoff=1e-1,
+                                 pushoff=0.8,
                                  max_uphill_step_size=0.3,
-                                 positive_eigenvalue_step=0.3)
+                                 positive_eigenvalue_step=0.1,
+                                 steepest_descent_conv_crit=1e-2,
+                                 eigenvalue_conv_crit=1e-3)
 # Double ended transition state search that locates approximate minimum energy
 # pathways between two points using the nudged elastic band algorithm
 neb = NudgedElasticBand(potential=dft,
-                        force_constant=250.0,
+                        force_constant=50.0,
                         image_density=5.0,
-                        max_images=20,
-                        neb_conv_crit=1e-2)
+                        max_images=10,
+                        neb_conv_crit=1.0)
 # Class for sampling configuration space by driving the global_optimisation
 # and transition state search methods
 explorer = NetworkSampling(ktn=ktn,
@@ -85,11 +90,25 @@ explorer = NetworkSampling(ktn=ktn,
 
 # BEGIN CALCULATIONS
 
-# Read in the original network computed at lower level of theory
-ktn.read_network('initial')
-# Reconverge every stationary point in the network within the
-# new dft potential
+# Read in the previous network
+ktn.read_network(text_string='.initial')
+
+# Reconverge the network
 explorer.reconverge_landscape(potential=dft,
-                              conv_crit=1e-5)
-# Write the updated network to file
+                              reconv_crit=1e-2)
+
+# Write the network to files to store
 ktn.dump_network()
+
+# Once basin-hopping has finished we store the minima
+# Drop the coordinates of each local minimum for visualisation in xyz file
+for i in range(ktn.n_minima):
+    coords.position = ktn.get_minimum_coords(i)
+    coords.write_xyz('min%i' %i)
+for u, v in ktn.G.edges():
+    coords.position = ktn.get_ts_coords(u, v)
+    coords.write_xyz('ts%i_%i' %(u, v))
+
+# Plot a disconnectivity graph
+plot_disconnectivity_graph(ktn=ktn,
+                           levels=100)
