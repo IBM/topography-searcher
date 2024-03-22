@@ -35,7 +35,9 @@ ktn = KineticTransitionNetwork()
 step_taking = StandardPerturbation(max_displacement=1.0,
                                    proportional_distance=True)
 # Global optimisation class using basin-hopping
-optimiser = BasinHopping(ktn=ktn, potential=schwefel, similarity=comparer,
+optimiser = BasinHopping(ktn=ktn,
+                         potential=schwefel,
+                         similarity=comparer,
                          step_taking=step_taking)
 # Object that deals with sampling of configuration space,
 # given the object for global optimisation
@@ -48,7 +50,11 @@ explorer = NetworkSampling(ktn=ktn, coords=coords,
 ## BEGIN CALCULATIONS
 
 # Perform global optimisation of 3D Schwefel function
-explorer.get_minima(coords, 500, 1e-5, 100.0, test_valid=True)
+explorer.get_minima(coords=coords,
+                    n_steps=500,
+                    conv_crit=1e-5,
+                    temperature=100.0,
+                    test_valid=True)
 # Dump the minima we found to files min.data and min.coords
 ktn.dump_network()
 # Give the energy and position of the global minimum

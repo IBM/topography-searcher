@@ -37,7 +37,8 @@ lj = LennardJones()
 # and the difference in function value is less than energy_criterion
 comparer = MolecularSimilarity(distance_criterion=0.1,
                                energy_criterion=5e-2,
-                               weighted=False)
+                               weighted=False,
+                               allow_inversion=True)
 # Kinetic transition network to store stationary points
 ktn = KineticTransitionNetwork()
 # Perturbation scheme for proposing new positions in configuration space
@@ -53,7 +54,7 @@ optimiser = BasinHopping(ktn=ktn,
 # Single ended transition state search object that locates transition
 # states from a single starting position, using hybrid eigenvector-following
 hef = HybridEigenvectorFollowing(potential=lj,
-                                 conv_crit=1e-4,
+                                 ts_conv_crit=1e-4,
                                  ts_steps=150,
                                  pushoff=1e-1,
                                  max_uphill_step_size=0.3,
@@ -77,17 +78,23 @@ explorer = NetworkSampling(ktn=ktn,
 # BEGIN CALCULATIONS
 
 # Perform global optimisation to locate all local minima of the function
-explorer.get_minima(coords, 150, 1e-5, 1.0, test_valid=True)
+explorer.get_minima(coords=coords,
+                    n_steps=150,
+                    conv_crit=1e-5,
+                    temperature=1.0,
+                    test_valid=True)
 for i in range(ktn.n_minima):
     coords.position = ktn.get_minimum_coords(i)
     coords.write_xyz('%i' %i)
 # Then get the transition states between them by attempting to connect
 # each minimum with its eight nearest neighbours
-explorer.get_transition_states('ClosestEnumeration', 4,
+explorer.get_transition_states(method='ClosestEnumeration',
+                               cycles=4,
                                remove_bounds_minima=False)
 for u, v in ktn.G.edges:
     coords.position = ktn.get_ts_coords(u, v)
     coords.write_xyz('%i_%i' %(u, v))
 # Write the network to files to store
 ktn.dump_network()
-plot_disconnectivity_graph(ktn, 100)
+plot_disconnectivity_graph(ktn=ktn,
+                           levels=100)

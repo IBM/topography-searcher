@@ -98,7 +98,8 @@ for i in pairs:
     print("Pair = ", i)
 
     # Get the corresponding data and normalise it
-    model_data.read_data('training.txt', 'response.txt')
+    model_data.read_data(training_file='training.txt',
+                         response_file='response.txt')
     model_data.feature_subset(i)
     model_data.remove_duplicates()
     model_data.normalise_training()
@@ -115,7 +116,11 @@ for i in pairs:
     for d_p in model_data.training:
         coords.position = d_p
         # Perform global optimisation of interpolated function
-        explorer.get_minima(coords, 5, 1e-4, 100.0, test_valid=True)
+        explorer.get_minima(coords=coords,
+                            n_steps=5,
+                            conv_crit=1e-4,
+                            temperature=100.0,
+                            test_valid=True)
 
     # Remove any minima that lie outside the convex hull of the original data
     # Outside of this region the interpolating function is untrustworthy due
@@ -129,18 +134,24 @@ for i in pairs:
 
     # Get the transition states between the remaining minima to produce
     # the complete landscape for this dataset interpolation
-    explorer.get_transition_states('ClosestEnumeration', 12,
+    explorer.get_transition_states(method='ClosestEnumeration',
+                                   cycles=12,
                                    remove_bounds_minima=False)
 
     # Compute the roughness of the dataset using the frustration metric
-    frustration = roughness_metric(ktn, lengthscale=0.8)
+    frustration = roughness_metric(ktn=ktn,
+                                   lengthscale=0.8)
     frustration_values.append(frustration)
 
     # Plot the relevant surface descriptions for the feature pair
-    plot_stationary_points(interpolation, ktn, bounds=coords.bounds, contour_levels=125,
-                           fineness=175, label='%i_%i' %(i[0], i[1]))
+    plot_stationary_points(potential=interpolation,
+                           ktn=ktn,
+                           bounds=coords.bounds,
+                           contour_levels=125,
+                           fineness=175,
+                           label='%i_%i' %(i[0], i[1]))
 
     # Store the landscape to file for future reference
-    ktn.dump_network('%i_%i' %(i[0], i[1]))
+    ktn.dump_network(text_string='%i_%i' %(i[0], i[1]))
 
 np.savetxt('frustration.txt', frustration_values)

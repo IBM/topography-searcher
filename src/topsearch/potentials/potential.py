@@ -58,7 +58,7 @@ class Potential:
         return function_val, grad
 
     def hessian(self, position: NDArray,
-                displacement: float = 1e-6) -> NDArray:
+                displacement: float = 1e-4) -> NDArray:
         """ Compute the matrix of second derivatives numerically
             Returns 2d array of second derivatives """
         ndim = position.size
@@ -82,7 +82,7 @@ class Potential:
             eigs = np.linalg.eigvalsh(hess)
             # If atomistic will have six zero eigenvalues
             if self.atomistic:
-                if eigs[0] > -1e-3 and np.all(eigs[6:] > 1e-6):
+                if eigs[0] > -1.0 and np.all(eigs[6:] > 1e-6):
                     return True
                 return False
             else:

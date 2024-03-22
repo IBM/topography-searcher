@@ -41,17 +41,27 @@ step_taking = StandardPerturbation(max_displacement=1.0,
                                    proportional_distance=True)
 # Global optimisation class that uses basin-hopping to locate
 # local minima and the global minimum
-optimiser = BasinHopping(ktn=ktn, potential=schwefel, similarity=comparer,
+optimiser = BasinHopping(ktn=ktn,
+                         potential=schwefel,
+                         similarity=comparer,
                          step_taking=step_taking)
 # Single ended transition state search object that locates transition
 # states from a single starting position, using hybrid eigenvector-following
-hef = HybridEigenvectorFollowing(schwefel, 1e-4, 75, 1.0)
+hef = HybridEigenvectorFollowing(potential=schwefel,
+                                 ts_conv_crit=1e-4,
+                                 ts_steps=75,
+                                 pushoff=1.0)
 # Double ended transition state search that locates approximate minimum energy
 # pathways between two points using the nudged elastic band algorithm
-neb = NudgedElasticBand(schwefel, 10.0, 50, 10, 1e-2)
+neb = NudgedElasticBand(potential=schwefel,
+                        force_constant=10.0,
+                        image_density=10.0,
+                        max_images=50,
+                        neb_conv_crit=1e-2)
 # Class for sampling configuration space by driving the global_optimisation
 # and transition state search methods
-explorer = NetworkSampling(ktn=ktn, coords=coords,
+explorer = NetworkSampling(ktn=ktn,
+                           coords=coords,
                            global_optimiser=optimiser,
                            single_ended_search=hef,
                            double_ended_search=neb,
@@ -60,14 +70,24 @@ explorer = NetworkSampling(ktn=ktn, coords=coords,
 # BEGIN CALCULATIONS
 
 # Perform global optimisation to locate all local minima of the function
-explorer.get_minima(coords, 1000, 1e-5, 100.0, test_valid=True)
+explorer.get_minima(coords=coords,
+                    n_steps=1000,
+                    conv_crit=1e-5,
+                    temperature=100.0,
+                    test_valid=True)
 # Then get the transition states between them by attempting to connect
 # each minimum with its eight nearest neighbours
-explorer.get_transition_states('ClosestEnumeration', 8, remove_bounds_minima=True)
+explorer.get_transition_states(method='ClosestEnumeration',
+                               cycles=8,
+                               remove_bounds_minima=True)
 # Write the network to files to store
 ktn.dump_network()
 # Plot the stationary points in various ways to visualise the surface
-plot_disconnectivity_graph(ktn, 100)
-plot_network(ktn)
-plot_stationary_points(schwefel, ktn, bounds=coords.bounds, contour_levels=100,
+plot_disconnectivity_graph(ktn=ktn,
+                           levels=100)
+plot_network(ktn=ktn)
+plot_stationary_points(potential=schwefel,
+                       ktn=ktn,
+                       bounds=coords.bounds,
+                       contour_levels=100,
                        fineness=150)

@@ -324,6 +324,16 @@ class HybridEigenvectorFollowing:
             descent path beginning from position. To avoid very large
             initial steps in LBFGS we constrain the local minimisation
             into several short steps """
+        # For molecules the default step size is fine
+        if isinstance(coords, (AtomicCoordinates, MolecularCoordinates)):
+            coords.position, current_energy, current_dict = \
+                lbfgs.minimise(func_grad=self.potential.function_gradient,
+                               initial_position=coords.position,
+                               bounds=coords.bounds,
+                               conv_crit=self.steepest_descent_conv_crit)
+            return coords.position, current_energy, current_dict
+        # For ML this can span the whole normalised feature space
+        # so to prevent errant paths we do it repeatedly over small range
         for i in range(50):
             # Get local bounds centered on current position to limit the LBFGS
             local_bounds = self.get_local_bounds(coords)
@@ -361,14 +371,20 @@ class HybridEigenvectorFollowing:
             before beginning a steepest-descent path.
             Returns the points to begin steepest-descent paths in the forwards
             and backwards direction """
-
         #  Find energy at transition state
         ts_energy = self.potential.function(transition_state.position)
         ts_position = transition_state.position.copy()
         # Set increment to a small percentage of the original pushoff
         increment = self.pushoff/10.0
         # Get eigenvector in both forwards and backwards directions
-        plus_eigenvector = eigenvector
+        # For atomistic systems we make pushoff equal to max atom displacement
+        if isinstance(transition_state, (AtomicCoordinates,
+                                         MolecularCoordinates)):
+            max_displacement = \
+                np.max(np.linalg.norm(eigenvector.reshape(-1, 3), axis=1))
+            plus_eigenvector = eigenvector*(self.pushoff/max_displacement)
+        else:
+            plus_eigenvector = eigenvector
         neg_eigenvector = -1.0*eigenvector
         # Find pushoff where energy decreases
         found_pushoff = False
@@ -377,7 +393,10 @@ class HybridEigenvectorFollowing:
                                                         plus_eigenvector,
                                                         increment, i)
             transition_state.move_to_bounds()
-            if ts_energy > self.potential.function(transition_state.position):
+            current_energy, current_grad = \
+                self.potential.function_gradient(transition_state.position)
+            if (ts_energy > current_energy) and \
+               (np.max(current_grad) > 5.0*self.steepest_descent_conv_crit):
                 positive_x = transition_state.position.copy()
                 found_pushoff = True
                 break
@@ -397,7 +416,10 @@ class HybridEigenvectorFollowing:
                                                         neg_eigenvector,
                                                         increment, i)
             transition_state.move_to_bounds()
-            if ts_energy > self.potential.function(transition_state.position):
+            current_energy, current_grad = \
+                self.potential.function_gradient(transition_state.position)
+            if (ts_energy > current_energy) and \
+               (np.max(current_grad) > 5.0*self.steepest_descent_conv_crit):
                 negative_x = transition_state.position.copy()
                 found_pushoff = True
                 break
@@ -426,7 +448,6 @@ class HybridEigenvectorFollowing:
     def project_onto_bounds(self, vector: NDArray, lower_bounds: NDArray,
                             upper_bounds: NDArray) -> NDArray:
         """ Project vector back to within the bounds if pointing outside """
-
         # If at upper bounds, and positive then make 0
         for i in range(vector.size):
             if lower_bounds[i] and vector[i] < 0.0:

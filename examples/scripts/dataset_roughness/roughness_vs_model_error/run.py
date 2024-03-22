@@ -106,7 +106,8 @@ for i in datasets:
             pairs.append([j, k])
 
     # Compute the regression model error for each of the datasets
-    model_data.read_data(f'training_{i}.txt', f'response_{i}.txt')
+    model_data.read_data(training_file=f'training_{i}.txt',
+                         response_file=f'response_{i}.txt')
     model_data.normalise_training()
     model_data.normalise_response()
     regression = DatasetRegression(model_data=model_data)
@@ -120,7 +121,8 @@ for i in datasets:
         print("Pair = ", j)
 
         # Get the subset of data and normalise it
-        model_data.read_data(f'training_{i}.txt', f'response_{i}.txt')
+        model_data.read_data(training_file=f'training_{i}.txt',
+                             response_file=f'response_{i}.txt')
         model_data.feature_subset(j)
         model_data.remove_duplicates()
         model_data.normalise_training()
@@ -137,7 +139,11 @@ for i in datasets:
         for d_p in model_data.training:
             coords.position = d_p
             # Perform global optimisation of acquisition function
-            explorer.get_minima(coords, 5, 1e-4, 100.0, test_valid=True)
+            explorer.get_minima(coords=coords,
+                                n_steps=5,
+                                conv_crit=1e-4,
+                                temperature=100.0,
+                                test_valid=True)
 
         # Remove any minima that lie outside the convex hull of the original data
         # Outside of this region the interpolating function is untrustworthy due
@@ -151,11 +157,13 @@ for i in datasets:
 
         # Get the transition states between the remaining minima to produce
         # the complete landscape for this dataset interpolation
-        explorer.get_transition_states('ClosestEnumeration', 10,
+        explorer.get_transition_states(method='ClosestEnumeration',
+                                       cycles=10,
                                        remove_bounds_minima=True)
 
         # Compute the roughness of the dataset using the frustration metric
-        frustration = roughness_metric(ktn, lengthscale=0.8)
+        frustration = roughness_metric(ktn=ktn,
+                                       lengthscale=0.8)
         frustration_values.append(frustration)
 
     # Add the overall frustration value to the list over datasets
