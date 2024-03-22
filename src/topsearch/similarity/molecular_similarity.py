@@ -32,10 +32,11 @@ class MolecularSimilarity(StandardSimilarity):
     """
 
     def __init__(self, distance_criterion: float, energy_criterion: float,
-                 weighted: bool = False):
+                 weighted: bool = False, allow_inversion: bool = False):
         self.distance_criterion = distance_criterion
         self.energy_criterion = energy_criterion
         self.weighted = weighted
+        self.allow_inversion = allow_inversion
 
     def permutational_alignment(self, coords1: type,
                                 coords2: NDArray) -> tuple:
@@ -186,6 +187,8 @@ class MolecularSimilarity(StandardSimilarity):
             atom_coords = position[3*i:(3*i)+3]
             cross_p = np.cross(-1.0*ref_coords,
                                atom_coords-ref_coords)
+            if np.linalg.norm(cross_p) == 0.0:
+                continue
             perp_vec = np.linalg.norm(cross_p) / \
                 np.linalg.norm(atom_coords-ref_coords)
             vec_dist = np.linalg.norm(perp_vec)
@@ -209,6 +212,7 @@ class MolecularSimilarity(StandardSimilarity):
             alignment from different starting orientations """
         coords1.position = self.centre(coords1.position,
                                        weights=coords1.atom_weights)
+        # Try without inversion first
         coords2 = self.centre(coords2, weights=coords1.atom_weights)
         # See if the two structures are identical first
         dist, coords2_aligned, permutation = \
@@ -233,6 +237,34 @@ class MolecularSimilarity(StandardSimilarity):
                 best_dist = dist
                 best_coords2 = coords_opt
                 best_perm = permutation
+        if self.allow_inversion:
+            # Try with inversion
+            coords2 = self.invert(coords2)
+            coords2 = self.centre(coords2, weights=coords1.atom_weights)
+            # See if the two structures are identical first
+            dist, coords2_aligned, permutation = \
+                self.test_exact_same(coords1, coords2)
+            # Return already if coords sufficiently close to be the same
+            if dist < self.distance_criterion:
+                return dist, coords1, coords2_aligned, permutation
+            # Not identical so try to find best permutation and rotation
+            if dist < best_dist:
+                best_dist = dist
+                best_coords2 = coords2_aligned
+                best_perm = permutation
+            # Iterate 50 times from different overall rotations
+            for i in range(50):
+                coords2_rotated = self.random_rotation(coords2)
+                dist, coords_opt, permutation = \
+                    self.align(coords1, coords2_rotated)
+                # If sufficiently close to be a match leave the loop early
+                if dist < self.distance_criterion:
+                    return dist, coords1, coords_opt, permutation
+                # If an improvement on previous closest alignment then update
+                if dist < best_dist:
+                    best_dist = dist
+                    best_coords2 = coords_opt
+                    best_perm = permutation
         return best_dist, coords1.position, best_coords2, best_perm
 
     def test_same(self, coords1: type, coords2: NDArray,
@@ -247,3 +279,7 @@ class MolecularSimilarity(StandardSimilarity):
     def closest_distance(self, coords1: type, coords2: NDArray) -> float:
         """ Align two structures and return the optimised distance """
         return self.optimal_alignment(coords1, coords2)[0]
+
+    def invert(self, position: NDArray) -> NDArray:
+        """ Invert a conformation  """
+        return -1.0*position

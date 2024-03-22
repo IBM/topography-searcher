@@ -4,7 +4,7 @@
 from timeit import default_timer as timer
 import numpy as np
 from topsearch.minimisation import lbfgs
-from topsearch.data.coordinates import MolecularCoordinates
+from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates
 from topsearch.potentials.dft import DensityFunctionalTheory
 
 
@@ -63,6 +63,8 @@ class BasinHopping:
             # Test for and remove atom clashes if density functional theory
             if isinstance(self.potential, DensityFunctionalTheory):
                 coords.remove_atom_clashes(self.potential.force_field)
+            elif isinstance(coords, AtomicCoordinates):
+                coords.remove_atom_clashes()
             # Perform local minimisation
             min_position, energy, results_dict = \
                 lbfgs.minimise(func_grad=self.potential.function_gradient,
@@ -70,15 +72,20 @@ class BasinHopping:
                                bounds=coords.bounds,
                                conv_crit=conv_crit)
             # Failed minimisation so don't accept
-            if results_dict['warnflag'] != 0:
+            if results_dict['warnflag'] != 0 or \
+                    results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH':
                 with open('logfile', 'a', encoding="utf-8") as outfile:
                     outfile.write(f"Step {i+1}: Could not converge \n")
+                # Revert to previous coordinates
+                coords.position = markov_coords
                 continue
             coords.position = min_position
             # Check that the bonds have not changed if molecular
-            if isinstance(coords, MolecularCoordinates):
+            if isinstance(coords, (AtomicCoordinates, MolecularCoordinates)):
                 # Bonds have been changed so reject step
                 if not coords.same_bonds():
+                    # Revert coordinates and reject step
+                    coords.position = markov_coords
                     continue
             # Check the Metropolis criterion for acceptance of new state
             if self.metropolis(markov_energy, energy, temperature):

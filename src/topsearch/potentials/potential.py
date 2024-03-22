@@ -24,7 +24,7 @@ class Potential:
     """
 
     def __init__(self) -> None:
-        pass
+        self.atomistic = False
 
     def function(self, position: NDArray) -> float:
         """ Evaluate the function at a given point """
@@ -58,7 +58,7 @@ class Potential:
         return function_val, grad
 
     def hessian(self, position: NDArray,
-                displacement: float = 1e-6) -> NDArray:
+                displacement: float = 1e-4) -> NDArray:
         """ Compute the matrix of second derivatives numerically
             Returns 2d array of second derivatives """
         ndim = position.size
@@ -80,9 +80,15 @@ class Potential:
             # Find the eigenvalues of the Hessian matrix
             hess = self.hessian(coords.position)
             eigs = np.linalg.eigvalsh(hess)
-            if np.all(eigs > 1e-11):
-                return True
-            return False
+            # If atomistic will have six zero eigenvalues
+            if self.atomistic:
+                if eigs[0] > -1.0 and np.all(eigs[6:] > 1e-6):
+                    return True
+                return False
+            else:
+                if np.all(eigs > 1e-9):
+                    return True
+                return False
         return True
 
     def check_valid_ts(self, coords: type) -> bool:
@@ -90,9 +96,14 @@ class Potential:
         if not coords.at_bounds():
             # Compute the eigenvalue spectrum
             hess = self.hessian(coords.position)
-            eigs = np.sort(np.linalg.eigvalsh(hess))
+            eigs = np.linalg.eigvalsh(hess)
             # If smallest eigenvalue is non-negative then not transition state
-            if eigs[0] < 0.0 and np.all(eigs[1:] > 1e-11):
-                return True
-            return False
+            if self.atomistic:
+                if eigs[0] < -1e-3 and np.all(eigs[7:] > 1e-6):
+                    return True
+                return False
+            else:
+                if eigs[0] < -1e-5 and np.all(eigs[1:] > 1e-9):
+                    return True
+                return False
         return True

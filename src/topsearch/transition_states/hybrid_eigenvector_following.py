@@ -54,16 +54,18 @@ class HybridEigenvectorFollowing:
 
     def __init__(self,
                  potential: type,
-                 conv_crit: float,
+                 ts_conv_crit: float,
                  ts_steps: int,
                  pushoff: float,
+                 steepest_descent_conv_crit: float = 1e-6,
                  min_uphill_step_size: float = 1e-7,
-                 max_uphill_step_size: float = 0.1,
+                 max_uphill_step_size: float = 1.0,
                  positive_eigenvalue_step: float = 0.1,
                  eigenvalue_conv_crit: float = 1e-5) -> None:
         self.potential = potential
-        self.conv_crit = conv_crit
+        self.ts_conv_crit = ts_conv_crit
         self.ts_steps = ts_steps
+        self.steepest_descent_conv_crit = steepest_descent_conv_crit
         self.max_uphill_step_size = max_uphill_step_size
         self.min_uphill_step_size = min_uphill_step_size
         self.positive_eigenvalue_step = positive_eigenvalue_step
@@ -99,7 +101,7 @@ class HybridEigenvectorFollowing:
         # Take steps to find transition states until convergence or too many
         for n_steps in range(self.ts_steps):
             # Find the smallest eigenvalue and associated eigenvector
-            eigenvector, eigenvalue = \
+            eigenvector, eigenvalue, eig_steps = \
                 self.get_smallest_eigenvector(eigenvector,
                                               coords,
                                               lower_bounds,
@@ -110,7 +112,7 @@ class HybridEigenvectorFollowing:
             # Take a step following the eigenvector uphill
             self.take_uphill_step(coords, eigenvector, eigenvalue)
             # If eigenvalue is below zero then minimise in orthogonal subspace
-            if eigenvalue < 0.0:
+            if eigenvalue < 0.0 and eig_steps < 5:
                 subspace_pos, energy, results_dict = \
                     self.subspace_minimisation(coords, eigenvector)
                 coords.position = subspace_pos
@@ -121,7 +123,7 @@ class HybridEigenvectorFollowing:
             if self.test_convergence(coords.position, lower_bounds,
                                      upper_bounds):
                 # Converged to transition state so recalculate eigenvector
-                eigenvector, eigenvalue = \
+                eigenvector, eigenvalue, eig_steps = \
                     self.get_smallest_eigenvector(eigenvector,
                                                   coords,
                                                   lower_bounds,
@@ -162,12 +164,13 @@ class HybridEigenvectorFollowing:
                            args=coords.position,
                            bounds=self.eigenvector_bounds,
                            conv_crit=self.eigenvalue_conv_crit)
+        bfgs_steps = results_dict['nit']
         # Normalise eigenvector
         if np.linalg.norm(eigenvector) != 0.0:
-            eigenvector = eigenvector / np.linalg.norm(eigenvector)
+            eigenvector /= np.linalg.norm(eigenvector)
         # If the eigenvector is not valid then return
         if not self.check_valid_eigenvector(eigenvector, eigenvalue, coords):
-            return None, None
+            return None, None, None
         eigenvector = self.check_eigenvector_direction(eigenvector,
                                                        coords.position)
         # If true direction points out of bounds then project onto bounds
@@ -179,7 +182,7 @@ class HybridEigenvectorFollowing:
             eigenvalue = \
                 self.rayleigh_ritz_function_gradient(
                     eigenvector, *coords.position.tolist())[0]
-        return eigenvector, eigenvalue
+        return eigenvector, eigenvalue, bfgs_steps
 
     def check_eigenvector_direction(self, eigenvector: NDArray,
                                     position: NDArray) -> NDArray:
@@ -236,7 +239,7 @@ class HybridEigenvectorFollowing:
                            initial_position=coords.position,
                            args=eigenvector,
                            bounds=subspace_bounds,
-                           conv_crit=self.conv_crit)
+                           conv_crit=self.steepest_descent_conv_crit)
         return position, energy, results_dict
 
     def get_local_bounds(self, coords: type) -> list:
@@ -247,7 +250,7 @@ class HybridEigenvectorFollowing:
         if isinstance(coords, (AtomicCoordinates, MolecularCoordinates)):
             step_sizes = np.array([0.05 for i in coords.bounds])
         else:
-            step_sizes = np.array([(i[1]-i[0])*0.05 for i in coords.bounds])
+            step_sizes = np.array([(i[1]-i[0])*0.02 for i in coords.bounds])
         upper_limit = coords.position + step_sizes
         lower_limit = coords.position - step_sizes
         limits = np.row_stack((lower_limit, upper_limit))
@@ -314,9 +317,6 @@ class HybridEigenvectorFollowing:
         connected_minimum.position = negative_x
         minus_min, minus_energy, d_minus = \
             self.steepest_descent_paths(connected_minimum)
-        # Check for successful convergence before returning
-        if (d_plus['warnflag'] != 0) or (d_minus['warnflag'] != 0):
-            return None, None, None, None
         return plus_min, plus_energy, minus_min, minus_energy
 
     def steepest_descent_paths(self, coords: type) -> tuple:
@@ -324,6 +324,16 @@ class HybridEigenvectorFollowing:
             descent path beginning from position. To avoid very large
             initial steps in LBFGS we constrain the local minimisation
             into several short steps """
+        # For molecules the default step size is fine
+        if isinstance(coords, (AtomicCoordinates, MolecularCoordinates)):
+            coords.position, current_energy, current_dict = \
+                lbfgs.minimise(func_grad=self.potential.function_gradient,
+                               initial_position=coords.position,
+                               bounds=coords.bounds,
+                               conv_crit=self.steepest_descent_conv_crit)
+            return coords.position, current_energy, current_dict
+        # For ML this can span the whole normalised feature space
+        # so to prevent errant paths we do it repeatedly over small range
         for i in range(50):
             # Get local bounds centered on current position to limit the LBFGS
             local_bounds = self.get_local_bounds(coords)
@@ -332,13 +342,15 @@ class HybridEigenvectorFollowing:
                 lbfgs.minimise(func_grad=self.potential.function_gradient,
                                initial_position=coords.position,
                                bounds=local_bounds,
-                               conv_crit=self.conv_crit)
+                               conv_crit=self.steepest_descent_conv_crit)
             # Check if converged at edges of local bounds or inside
             local_bounds = np.asarray(local_bounds)
             l_below_bounds = np.invert(coords.position > local_bounds[:, 0])
             l_above_bounds = np.invert(coords.position < local_bounds[:, 1])
             # Inside bounds so accept the converged point
-            if not np.any(l_below_bounds | l_above_bounds):
+            if not np.any(l_below_bounds | l_above_bounds) and \
+                    np.all(np.abs(current_dict['grad']) <
+                           self.steepest_descent_conv_crit):
                 return coords.position, current_energy, current_dict
             # Is at bounds, but could be allowed if the bounds are just
             # those imposed by coordinates
@@ -347,11 +359,10 @@ class HybridEigenvectorFollowing:
                 below_bounds, above_bounds = coords.active_bounds()
                 # If active bounds are all at total bounds then accept
                 if np.all(below_bounds == l_below_bounds) and \
-                        np.all(above_bounds == l_above_bounds):
+                        np.all(above_bounds == l_above_bounds) and \
+                        (np.any(l_below_bounds) or np.any(l_above_bounds)):
                     return coords.position, current_energy, current_dict
-        # Too many iterations. Highlight failure with the results dict
-        current_dict['warnflag'] = 10
-        return None, None, current_dict
+        return coords.position, current_energy, current_dict
 
     def find_pushoff(self, transition_state: type,
                      eigenvector: NDArray) -> tuple[NDArray, NDArray]:
@@ -360,14 +371,20 @@ class HybridEigenvectorFollowing:
             before beginning a steepest-descent path.
             Returns the points to begin steepest-descent paths in the forwards
             and backwards direction """
-
         #  Find energy at transition state
         ts_energy = self.potential.function(transition_state.position)
         ts_position = transition_state.position.copy()
         # Set increment to a small percentage of the original pushoff
         increment = self.pushoff/10.0
         # Get eigenvector in both forwards and backwards directions
-        plus_eigenvector = eigenvector
+        # For atomistic systems we make pushoff equal to max atom displacement
+        if isinstance(transition_state, (AtomicCoordinates,
+                                         MolecularCoordinates)):
+            max_displacement = \
+                np.max(np.linalg.norm(eigenvector.reshape(-1, 3), axis=1))
+            plus_eigenvector = eigenvector*(self.pushoff/max_displacement)
+        else:
+            plus_eigenvector = eigenvector
         neg_eigenvector = -1.0*eigenvector
         # Find pushoff where energy decreases
         found_pushoff = False
@@ -376,7 +393,10 @@ class HybridEigenvectorFollowing:
                                                         plus_eigenvector,
                                                         increment, i)
             transition_state.move_to_bounds()
-            if ts_energy > self.potential.function(transition_state.position):
+            current_energy, current_grad = \
+                self.potential.function_gradient(transition_state.position)
+            if (ts_energy > current_energy) and \
+               (np.max(current_grad) > 5.0*self.steepest_descent_conv_crit):
                 positive_x = transition_state.position.copy()
                 found_pushoff = True
                 break
@@ -396,7 +416,10 @@ class HybridEigenvectorFollowing:
                                                         neg_eigenvector,
                                                         increment, i)
             transition_state.move_to_bounds()
-            if ts_energy > self.potential.function(transition_state.position):
+            current_energy, current_grad = \
+                self.potential.function_gradient(transition_state.position)
+            if (ts_energy > current_energy) and \
+               (np.max(current_grad) > 5.0*self.steepest_descent_conv_crit):
                 negative_x = transition_state.position.copy()
                 found_pushoff = True
                 break
@@ -425,7 +448,6 @@ class HybridEigenvectorFollowing:
     def project_onto_bounds(self, vector: NDArray, lower_bounds: NDArray,
                             upper_bounds: NDArray) -> NDArray:
         """ Project vector back to within the bounds if pointing outside """
-
         # If at upper bounds, and positive then make 0
         for i in range(vector.size):
             if lower_bounds[i] and vector[i] < 0.0:
@@ -446,7 +468,7 @@ class HybridEigenvectorFollowing:
         non_bounds_dimensions = np.where(np.any(all_bounds, axis=0))[0]
         if non_bounds_dimensions.size > 0:
             grad[non_bounds_dimensions] = 0.0
-        if np.max(np.abs(grad)) < self.conv_crit:
+        if np.max(np.abs(grad)) < self.ts_conv_crit:
             return True
         return False
 
@@ -467,13 +489,14 @@ class HybridEigenvectorFollowing:
         """ Evaluate the Rayleigh-Ritz ratio to find the value of the
             eigenvalue for a given eigenvector vec computed at point
             coords, and the gradient with respect to changes in vec """
-        displacement = 1e-6
+        displacement = 1e-3
         central_point = np.array(args)
         if np.any(np.isnan(vec)):
             return 0.0, np.zeros(np.size(vec), dtype=float)
         if np.linalg.norm(vec) == 0.0:
             return 0.0, np.zeros(np.size(vec), dtype=float)
         if self.remove_trans_rot:
+            vec /= np.linalg.norm(vec)
             vec = self.remove_zero_eigenvectors(vec, central_point)
         vec /= np.linalg.norm(vec)
         # Gradient of the true potential with small displacements along y
