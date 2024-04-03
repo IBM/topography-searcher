@@ -4,8 +4,6 @@
 
 # TopSearch
 
-_This project is currently migrating to open source. Please check back regularly as more functionality is being added and updated_
-
 ## Introduction
 
 The TopSearch package provides functionality to map the topography of surfaces, and can be used to map the solution space of machine learning algorithms. Many machine learning algorithms have non-convex loss (or cost) functions, and the aim of fitting is usually to locate low-valued or diverse solutions. An understanding of the solution space organisation provides key understanding about the reproducibility, explainability and performance of ML methods. 
@@ -34,12 +32,12 @@ For more details of the methodology please refer to [`common_citations.md`](./co
 
 Instructions are for installation into a conda environment. First create the conda environment
 ```
-conda create -n topsearch_env python=3.10
+conda create -n topsearch_env python=3.11
 conda activate topsearch_env
 ```
 The package is available on PyPI and can be installed using pip
 ```
-pip install topsearch==0.0.1
+pip install topsearch==0.0.2
 ```
 
 For the source code you can clone the git repository locally using
