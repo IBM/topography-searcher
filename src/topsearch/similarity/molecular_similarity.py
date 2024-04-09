@@ -6,6 +6,8 @@ from nptyping import NDArray
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial import distance_matrix
 from scipy.spatial.transform import Rotation as rotations
+
+from topsearch.data.coordinates import MolecularCoordinates
 from .similarity import StandardSimilarity
 
 
@@ -38,7 +40,7 @@ class MolecularSimilarity(StandardSimilarity):
         self.weighted = weighted
         self.allow_inversion = allow_inversion
 
-    def permutational_alignment(self, coords1: type,
+    def permutational_alignment(self, coords1: MolecularCoordinates,
                                 coords2: NDArray) -> tuple:
         """ Hungarian algorithm adapted to solve the linear assignment problem
             for each atom of each distinct element. Finds the optimal
@@ -75,7 +77,7 @@ class MolecularSimilarity(StandardSimilarity):
                 permutation[element_atoms[0]] = element_atoms[0]
         return permuted_coords, permutation
 
-    def rotational_alignment(self, coords1: type, coords2: NDArray) -> tuple:
+    def rotational_alignment(self, coords1: MolecularCoordinates, coords2: NDArray) -> tuple:
         """ Find the rotation that minimises the distance between
             two sets of vectors using the Kabsch algorithm and apply it """
         if self.weighted:
@@ -112,7 +114,7 @@ class MolecularSimilarity(StandardSimilarity):
             position_centered[i*3:(i*3)+3] -= centre_of_mass
         return position_centered
 
-    def align(self, coords1: type, coords2: NDArray) -> tuple:
+    def align(self, coords1: MolecularCoordinates, coords2: NDArray) -> tuple:
         """ Perform permutational and rotational alignment of coords2
             relative to coords1 to find best alignment """
         coords2_permuted, permutation = \
@@ -121,7 +123,7 @@ class MolecularSimilarity(StandardSimilarity):
             self.rotational_alignment(coords1, coords2_permuted)
         return optimised_distance, coords2_optimised, permutation
 
-    def test_exact_same(self, coords1: type, coords2: NDArray) -> tuple:
+    def test_exact_same(self, coords1: MolecularCoordinates, coords2: NDArray) -> tuple:
         """ Routine to test if two conformations are identical by aligning
             furthest atom from centre in each, along with furthest in
             direction perpendicular to that """
@@ -206,7 +208,7 @@ class MolecularSimilarity(StandardSimilarity):
                 pairs.append([i, j])
         return pairs
 
-    def optimal_alignment(self, coords1: type, coords2: NDArray) -> tuple:
+    def optimal_alignment(self, coords1: MolecularCoordinates, coords2: NDArray) -> tuple:
         """ Try to find the optimal alignment between coords1 and coords2.
             Initially test if the structures are the same, and if not iterate
             alignment from different starting orientations """
@@ -267,7 +269,7 @@ class MolecularSimilarity(StandardSimilarity):
                     best_perm = permutation
         return best_dist, coords1.position, best_coords2, best_perm
 
-    def test_same(self, coords1: type, coords2: NDArray,
+    def test_same(self, coords1: MolecularCoordinates, coords2: NDArray,
                   energy1: float, energy2: float) -> bool:
         """ Test if two structures are the same to within a distance and energy
             criterion after finding the closest alignment """
@@ -276,7 +278,7 @@ class MolecularSimilarity(StandardSimilarity):
         within_energy = np.abs(energy1-energy2) < self.energy_criterion
         return bool(within_distance and within_energy)
 
-    def closest_distance(self, coords1: type, coords2: NDArray) -> float:
+    def closest_distance(self, coords1: MolecularCoordinates, coords2: NDArray) -> float:
         """ Align two structures and return the optimised distance """
         return self.optimal_alignment(coords1, coords2)[0]
 
