@@ -176,13 +176,15 @@ class NudgedElasticBand:
         dihedral_differences = []
         # Accounting for periodicity in dihedrals
         for i in range(len(represent1[5])):
-            plus_dist = np.abs(represent2[2][i] - represent1[5][i])
-            minus_dist = np.abs(represent2[2][i] + 360.0 - represent1[5][i])
-            if plus_dist < minus_dist:
-                dihedral_differences.append(represent2[2][i]-represent1[5][i])
+            dist1 = represent2[2][i] - represent1[5][i]
+            dist2 = dist1 + 360.0
+            dist3 = dist1 - 360.0
+            if np.abs(dist1) < np.abs(dist2) and np.abs(dist1) < np.abs(dist3):
+                dihedral_differences.append(dist1)
+            elif np.abs(dist2) < np.abs(dist1) and np.abs(dist2) < np.abs(dist3):
+                dihedral_differences.append(dist2)
             else:
-                dihedral_differences.append(represent2[2][i] + 360.0
-                                            - represent1[5][i])
+                dihedral_differences.append(dist3)
         dihedral_differences = \
             np.asarray(dihedral_differences)/(self.n_images-1)
         # Make the linear interpolation

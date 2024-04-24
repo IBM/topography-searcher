@@ -145,6 +145,10 @@ class AtomicCoordinates(StandardCoordinates):
         # Test if all nodes are connected
         return nx.is_connected(adj_graph)
 
+    def get_connected_atoms(self) -> list:
+        """ Get the connected atom labels of each atom in molecule """
+        return [['H']]*self.n_atoms
+
     def remove_atom_clashes(self):
         """ Routine to remove clashes between atoms that result in
             very large gradient and explosion of the cluster.
@@ -240,6 +244,20 @@ class MolecularCoordinates(AtomicCoordinates):
         if sorted(current_bond_labels) == sorted(ref_bond_labels):
             return True
         return False
+
+    def get_connected_atoms(self) -> list:
+        """ Get the connected atom labels of each atom in molecule """
+        current_bonds = self.get_bonds()
+        bond_labels = []
+        # Loop over all atoms
+        for i in range(self.n_atoms):
+            labels_i = []
+            # Add the atom label for all connections out of node i
+            for j in current_bonds.edges(i):
+                labels_i.append(self.atom_labels[j[1]])
+            # Append to the list for each atom in turn
+            bond_labels.append(sorted(labels_i))
+        return bond_labels
 
     def get_planar_rings(self) -> list:
         """ Find the atoms that belong to a planar ring in the molecule """

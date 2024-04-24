@@ -321,6 +321,19 @@ def test_remove_atom_clashes_atomic2():
                           -0.82094167, -0.66609956])
     assert np.all(coords.position == pytest.approx(unclashed, abs=1e-5))
 
+def test_get_connected_atoms():
+    position = np.array([0.7430002202, 0.2647603899, -0.0468575389,
+                       -0.7430002647, -0.2647604843, 0.0468569750,
+                        0.1977276118, -0.4447220146, 0.6224700350,
+                        -0.1977281310, 0.4447221826, -0.6224697723,
+                        -0.1822009635, 0.5970484122, 0.4844363476,
+                         0.1822015272, -0.5970484858, -0.4844360463])
+    atom_labels = ['C','C','C','C','C','C']
+    coords = AtomicCoordinates(atom_labels, position)
+    conn_atoms = coords.get_connected_atoms()
+    assert conn_atoms == [['H'], ['H'], ['H'], ['H'], ['H'], ['H']]
+
+
 ####### TEST MOLECULAR COORDINATES CLASS
 
 def test_mol_initialisation():
@@ -906,3 +919,23 @@ def test_remove_atom_clashes():
     unclashed_position = coords.position.copy()
     coords.remove_atom_clashes(ff)
     assert np.all(coords.position == unclashed_position)
+
+def test_get_connected_atoms2():
+    atoms = ase.io.read('test_data/hexane.xyz')
+    species = atoms.get_chemical_symbols()
+    position = atoms.get_positions()
+    coords = MolecularCoordinates(species, position.flatten())
+    conn_atoms = coords.get_connected_atoms()
+    assert conn_atoms == [['C', 'H', 'H', 'H'], ['C', 'C', 'H', 'H'], ['C', 'C', 'H', 'H'],
+                          ['C', 'C', 'H', 'H'], ['C', 'C', 'H', 'H'], ['C', 'H', 'H', 'H'],
+                          ['C'], ['C'], ['C'], ['C'], ['C'], ['C'], ['C'], ['C'], ['C'],
+                          ['C'], ['C'], ['C'], ['C'], ['C']]
+
+def test_get_connected_atoms3():
+    atoms = ase.io.read('test_data/ethanol.xyz')
+    species = atoms.get_chemical_symbols()
+    position = atoms.get_positions()
+    coords = MolecularCoordinates(species, position.flatten())
+    conn_atoms = coords.get_connected_atoms()
+    assert conn_atoms == [['C', 'H', 'H', 'O'], ['C', 'H', 'H', 'H'],
+                          ['C', 'H'], ['C'], ['C'], ['C'], ['C'], ['C'], ['O']]

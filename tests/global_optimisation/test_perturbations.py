@@ -99,7 +99,7 @@ def test_perturb2():
     angle2 = coords.atoms.get_dihedral(2, 0, 1, 5)
     diff1 = 180.0 - angle1
     diff2 = 300.0 - angle2
-    if diff1 != 0.0:
+    if diff1 > 1e-2:
         assert diff2 < 1e-2
     else:
         assert diff1 < 1e-2

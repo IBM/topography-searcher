@@ -159,8 +159,6 @@ def test_prepare_connection_attempt3():
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     init_position = position.copy()
-    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     similarity = MolecularSimilarity(0.01, 0.05, weighted=False)
@@ -169,7 +167,7 @@ def test_prepare_connection_attempt3():
     ktn.add_minimum(coords.position, 2.0)
     sampler = NetworkSampling(ktn, None, None, None, None, similarity)
     min1, min2, reps, perm = sampler.prepare_connection_attempt(coords, [0, 1])
-    assert np.all(perm == np.array([1, 0, 2, 5, 4, 3, 6, 7, 8]))
+    assert np.all(perm == np.array([0, 1, 2, 5, 4, 3, 6, 7, 8]))
 
 def test_connection_attempt():
     similarity = StandardSimilarity(0.1, 0.1)

@@ -47,33 +47,79 @@ class MolecularSimilarity(StandardSimilarity):
         permutation = np.zeros((coords1.n_atoms), dtype=int)
         # Copy second coordinates to leave unchanged
         permuted_coords = coords2.copy()
-        # Loop over each element to perform alignment w.r.t each in turn
-        elements = list(set(coords1.atom_labels))
-        for element in elements:
+        perm_group1, perm_group2 = self.get_permutable_groups(coords1, coords2)
+        # Loop over each perm group to perform alignment w.r.t each in turn
+        for i in range(len(perm_group1)):
             # Get atoms of the given element
-            element_atoms = \
-                [i for i, x in enumerate(coords1.atom_labels) if x == element]
-            if len(element_atoms) > 1:
+            perm_atoms1 = perm_group1[i]
+            perm_atoms2 = perm_group2[i]
+            if len(perm_atoms1) > 1:
                 # Get coordinates of just atoms of this element
                 coords1_element = np.take(coords1.position.reshape(-1, 3),
-                                          element_atoms, axis=0)
+                                          perm_atoms1, axis=0)
                 coords2_element = np.take(coords2.reshape(-1, 3),
-                                          element_atoms, axis=0)
+                                          perm_atoms2, axis=0)
                 # Calculate distance matrix for these subset of atoms
                 dist_matrix = distance_matrix(coords1_element,
                                               coords2_element)
                 # Optimal permutational alignment
                 col_ind = linear_sum_assignment(dist_matrix**2)[1]
                 # Update coordinates and permutation vector
-                for idx, atom in enumerate(element_atoms):
-                    permutation[atom] = element_atoms[col_ind[idx]]
+                for idx, atom in enumerate(perm_atoms1):
+                    permutation[atom] = perm_atoms1[col_ind[idx]]
                     permuted_coords[atom*3:(atom*3)+3] = \
-                        coords2[element_atoms[col_ind[idx]]*3:
-                                (element_atoms[col_ind[idx]]*3)+3]
+                        coords2[perm_atoms2[col_ind[idx]]*3:
+                                (perm_atoms2[col_ind[idx]]*3)+3]
             # Only one atom so no need for permutational alignment
             else:
-                permutation[element_atoms[0]] = element_atoms[0]
+                permutation[perm_atoms1[0]] = perm_atoms1[0]
         return permuted_coords, permutation
+
+    def get_permutable_groups(self, coords1: type, coords2: NDArray) -> list:
+        """ Determine the subsets of atoms that are allowed to be permuted
+            when minimising the distance between conformations. Must be
+            of the same element and have the same bonds """
+        # Initialise the sets of permutable atoms from coords1 and 2
+        permutable_groups1 = []
+        permutable_groups2 = []
+        # Get the connected species for each atom as we
+        # only want to allow permutation of atoms with same bonding
+        original_coords = coords1.position.copy()
+        bond_labels1 = coords1.get_connected_atoms()
+        coords1.position = coords2
+        bond_labels2 = coords1.get_connected_atoms()
+        coords1.position = original_coords
+        # Find the set of different elements in the molecule
+        elements = list(set(coords1.atom_labels))
+        # Loop over each species separately
+        for element in elements:
+            # Get each atom of a given element
+            element_atoms = \
+                [i for i, x in enumerate(coords1.atom_labels) if x == element]
+            # Initialise the arrays to store the connected atoms of each in set
+            elements_bonds1 = []
+            elements_bonds2 = []
+            # Loop over all atoms of element, adding their connections
+            for i in element_atoms:
+                elements_bonds1.append(bond_labels1[i])
+                elements_bonds2.append(bond_labels2[i])
+            # Find the unique set of environments for these atoms
+            unique_envs1 = \
+                list(set(tuple(sorted(row)) for row in elements_bonds1))
+            # Loop over each unique environment finding the atoms with it
+            for i in unique_envs1:
+                perm_atoms1 = []
+                perm_atoms2 = []
+                # Loop over all the atoms of this element checking which
+                # match the current environment
+                for j in element_atoms:
+                    if bond_labels1[j] == list(i):
+                        perm_atoms1.append(j)
+                    if bond_labels2[j] == list(i):
+                        perm_atoms2.append(j)
+                permutable_groups1.append(perm_atoms1)
+                permutable_groups2.append(perm_atoms2)
+        return permutable_groups1, permutable_groups2
 
     def rotational_alignment(self, coords1: type, coords2: NDArray) -> tuple:
         """ Find the rotation that minimises the distance between
@@ -225,7 +271,7 @@ class MolecularSimilarity(StandardSimilarity):
         best_coords2 = coords2_aligned
         best_perm = permutation
         # Iterate 50 times from different overall rotations
-        for i in range(50):
+        for i in range(150):
             coords2_rotated = self.random_rotation(coords2)
             dist, coords_opt, permutation = \
                 self.align(coords1, coords2_rotated)
@@ -253,7 +299,7 @@ class MolecularSimilarity(StandardSimilarity):
                 best_coords2 = coords2_aligned
                 best_perm = permutation
             # Iterate 50 times from different overall rotations
-            for i in range(50):
+            for i in range(150):
                 coords2_rotated = self.random_rotation(coords2)
                 dist, coords_opt, permutation = \
                     self.align(coords1, coords2_rotated)
