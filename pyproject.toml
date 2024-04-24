@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "topsearch"
-version = "0.1.0"
+version = "0.0.3"
 description = "A Python package for topographical analysis of machine learning models and physical systems"
 license = "MIT"
 authors = ["Luke Dicks <luke.dicks@ibm.com>"]
