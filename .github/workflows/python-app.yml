@@ -19,6 +19,7 @@ jobs:
           python -m pip install .
       - name: Test with pytest
         run: |
-          pip install pytest pytest-cov latex
-          sudo apt-get install latex
+          pip install pytest pytest-cov
+          sudo apt install texlive
+          sudo apt install dvipng texlive-latex-extra texlive-fonts-recommended
           pytest
