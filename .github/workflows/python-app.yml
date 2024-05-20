@@ -20,4 +20,5 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov latex
+          sudo apt-get install latex
           pytest
