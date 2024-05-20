@@ -63,7 +63,7 @@ For a successful build we should have all tests pass. If this is the case then e
 
 _Note_: By default we do not specify the dependencies for molecular potentials (`dft.py`, `ml_potentials.py`) due to the large increase in environment size, which is unnecessary for machine learning applications. The dependencies for a given potential should be installed in addition if required. Therefore, we do not run the tests in `molecular_potentials` by default, but these can be run manually with
 ```
-cd tests\molecular_potentials
+cd tests/molecular_potentials
 pytest test*
 ```
 
