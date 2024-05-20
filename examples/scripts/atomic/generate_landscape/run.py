@@ -3,6 +3,7 @@
 # IMPORTS
 
 import numpy as np
+import networkx as nx
 from topsearch.data.coordinates import AtomicCoordinates
 from topsearch.potentials.atomic import LennardJones
 from topsearch.similarity.molecular_similarity import MolecularSimilarity
@@ -35,8 +36,8 @@ lj = LennardJones()
 # Similarity object, decides if two points are the same or different
 # Same if distance between points is less than distance_criterion
 # and the difference in function value is less than energy_criterion
-comparer = MolecularSimilarity(distance_criterion=0.1,
-                               energy_criterion=5e-2,
+comparer = MolecularSimilarity(distance_criterion=0.2,
+                               energy_criterion=1e-1,
                                weighted=False,
                                allow_inversion=True)
 # Kinetic transition network to store stationary points
@@ -91,6 +92,11 @@ for i in range(ktn.n_minima):
 explorer.get_transition_states(method='ClosestEnumeration',
                                cycles=4,
                                remove_bounds_minima=False)
+# If not all minima are connected attempt again
+if not nx.is_connected(ktn.G):
+    explorer.get_transition_states(method='ClosestEnumeration',
+                                   cycles=4,
+                                   remove_bounds_minima=False)
 for u, v in ktn.G.edges:
     coords.position = ktn.get_ts_coords(u, v)
     coords.write_xyz('%i_%i' %(u, v))
