@@ -19,5 +19,5 @@ jobs:
           python -m pip install .
       - name: Test with pytest
         run: |
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov latex
           pytest
