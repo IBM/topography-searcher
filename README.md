@@ -44,13 +44,15 @@ For the source code you can clone the git repository locally using
 ```
 git clone https://github.com/IBM/topography-searcher.git
 ```
-and then install the dependencies using either
+and then install the dependencies using pip
 ```
-pip install -r requirements.txt
+cd topography-searcher
+python -m pip install .
 ```
-or from the pyproject.toml file with
+or in editable mode using
 ```
-poetry install
+cd topography-searcher
+python -m pip install -e .
 ```
 
 We can test the environment build by running
@@ -61,8 +63,7 @@ For a successful build we should have all tests pass. If this is the case then e
 
 _Note_: By default we do not specify the dependencies for molecular potentials (`dft.py`, `ml_potentials.py`) due to the large increase in environment size, which is unnecessary for machine learning applications. The dependencies for a given potential should be installed in addition if required. Therefore, we do not run the tests in `molecular_potentials` by default, but these can be run manually with
 ```
-cd tests
-cd molecular_potentials
+cd tests\molecular_potentials
 pytest test*
 ```
 
