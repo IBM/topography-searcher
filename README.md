@@ -44,7 +44,7 @@ For the source code you can clone the git repository locally using
 ```
 git clone https://github.com/IBM/topography-searcher.git
 ```
-and then install the dependencies using pip
+and then install the dependencies locally using pip
 ```
 cd topography-searcher
 python -m pip install .
