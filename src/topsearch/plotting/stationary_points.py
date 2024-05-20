@@ -22,7 +22,7 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
         joined by solid black lines """
 
     plt.figure()
-    cmap = plt.cm.get_cmap(colour_scheme, contour_levels+1)
+    cmap = plt.get_cmap(colour_scheme, contour_levels+1)
     # Get the coordinates of all minima and their labels
     min_labels = []
     minima = np.zeros((ktn.n_minima, 2))
