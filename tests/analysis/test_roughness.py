@@ -1,11 +1,14 @@
 import pytest
 import numpy as np
+import os
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.analysis.roughness import get_population, roughness_metric
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_get_population():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     population0_1 = get_population(ktn, min_node=0, ts_node=1, lengthscale=1.0)
     population1_0 = get_population(ktn, min_node=1, ts_node=0, lengthscale=1.0)
@@ -18,7 +21,7 @@ def test_get_population():
 
 def test_roughness_metric_barrier():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ktn.remove_minima(np.array([2,3,4,5,6,7,8]))
     roughness_default = roughness_metric(ktn, lengthscale=1.0)
@@ -31,14 +34,14 @@ def test_roughness_metric_barrier():
 
 def test_roughness_metric():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     roughness = roughness_metric(ktn)
     assert roughness == pytest.approx(0.004325301709779069)
 
 def test_roughness_metric_empty():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ktn.reset_network()
     roughness = roughness_metric(ktn)
@@ -46,7 +49,7 @@ def test_roughness_metric_empty():
 
 def test_roughness_metric_one_minimum():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ktn.reset_network()
     ktn.add_minimum(np.array([1.0, 1.0, 1.0]), 0.0)

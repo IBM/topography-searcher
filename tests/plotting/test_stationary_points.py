@@ -6,10 +6,12 @@ from topsearch.potentials.test_functions import Camelback
 from topsearch.plotting.stationary_points import plot_stationary_points, \
         self_connected
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_plot_stationary_points():
     camelback = Camelback()
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sp')
     plot_stationary_points(camelback, ktn, bounds=[(-3.0, 3.0), (-2.0, 2.0)],
                            label='1')
@@ -30,7 +32,7 @@ def test_plot_stationary_points():
 def test_self_connected():
     camelback = Camelback()
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sp')
     assert self_connected(ktn) == 0
     ktn.add_ts(np.array([0.1, 0.1]), -1.0, 0, 0)

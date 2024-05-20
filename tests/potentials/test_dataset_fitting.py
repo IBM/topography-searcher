@@ -1,12 +1,15 @@
 import pytest
 import numpy as np
+import os
 from topsearch.potentials.dataset_fitting import DatasetRegression, \
     DatasetInterpolation
 from topsearch.data.model_data import ModelData
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_function_regression():
-    model_data = ModelData(training_file='test_data/training_fitting2.txt',
-                           response_file='test_data/response_fitting2.txt')
+    model_data = ModelData(training_file=f'{current_dir}/test_data/training_fitting2.txt',
+                           response_file=f'{current_dir}/test_data/response_fitting2.txt')
     regression = DatasetRegression(model_data)
     position = np.array([7.9, 3.8, 6.4])
     f_val = regression.function(position)
@@ -22,15 +25,15 @@ def test_function_regression():
     assert score == pytest.approx(0.4650225296543671)
 
 def test_get_model_error():
-    model_data = ModelData(training_file='test_data/training_fitting2.txt',
-                           response_file='test_data/response_fitting2.txt')
+    model_data = ModelData(training_file=f'{current_dir}/test_data/training_fitting2.txt',
+                           response_file=f'{current_dir}/test_data/response_fitting2.txt')
     regression = DatasetRegression(model_data)
     error = regression.get_model_error()
     assert error == pytest.approx(0.23901445200699975)
 
 def test_regression_refit_model():
-    model_data = ModelData(training_file='test_data/training_fitting2.txt',
-                           response_file='test_data/response_fitting2.txt')
+    model_data = ModelData(training_file=f'{current_dir}/test_data/training_fitting2.txt',
+                           response_file=f'{current_dir}/test_data/response_fitting2.txt')
     regression = DatasetRegression(model_data)
     error = regression.get_model_error()
     assert error == pytest.approx(0.23901445200699975)
@@ -40,8 +43,8 @@ def test_regression_refit_model():
     assert error2 == pytest.approx(0.110453626329787)
 
 def test_function_interpolation():
-    model_data = ModelData(training_file='test_data/training_fitting1.txt',
-                           response_file='test_data/response_fitting1.txt')
+    model_data = ModelData(training_file=f'{current_dir}/test_data/training_fitting1.txt',
+                           response_file=f'{current_dir}/test_data/response_fitting1.txt')
     interpolation = DatasetInterpolation(model_data)
     position = np.array([-0.5, 1.2])
     f_val = interpolation.function(position)
@@ -54,8 +57,8 @@ def test_function_interpolation():
     assert f_val == pytest.approx(8.05163747)
 
 def test_interpolation_refit_model():
-    model_data = ModelData(training_file='test_data/training_fitting1.txt',
-                           response_file='test_data/response_fitting1.txt')
+    model_data = ModelData(training_file=f'{current_dir}/test_data/training_fitting1.txt',
+                           response_file=f'{current_dir}/test_data/response_fitting1.txt')
     interpolation = DatasetInterpolation(model_data)
     position = np.array([-0.5, 1.2])
     f_val = interpolation.function(position)

@@ -37,7 +37,7 @@ conda activate topsearch_env
 ```
 The package is available on PyPI and can be installed using pip
 ```
-pip install topsearch==0.0.2
+pip install topsearch
 ```
 
 For the source code you can clone the git repository locally using
@@ -55,7 +55,6 @@ poetry install
 
 We can test the environment build by running
 ```
-cd tests
 pytest
 ```
 For a successful build we should have all tests pass. If this is the case then enjoy using TopSearch!

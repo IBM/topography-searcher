@@ -1,15 +1,18 @@
 import pytest
 import numpy as np
 import networkx as nx
+import os
 import os.path
 from topsearch.potentials.test_functions import Schwefel
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.data.coordinates import StandardCoordinates
 from topsearch.similarity.similarity import StandardSimilarity
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_read_network():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     edges = []
     for i in ktn.G.edges:
@@ -21,7 +24,7 @@ def test_read_network():
 
 def test_dump_network():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     ktn.dump_network(text_string='.new')
     ktn_new = KineticTransitionNetwork()
@@ -43,7 +46,7 @@ def test_dump_network():
 
 def test_reset_network():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     assert ktn.n_minima == 9
     assert ktn.n_ts == 8
@@ -53,7 +56,7 @@ def test_reset_network():
 
 def test_get_minimum_coords():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     coords1 = ktn.get_minimum_coords(1)
     coords4 = ktn.get_minimum_coords(4)
@@ -66,7 +69,7 @@ def test_get_minimum_coords():
 
 def test_get_minimum_energy():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     energy2 = ktn.get_minimum_energy(2)
     energy3 = ktn.get_minimum_energy(3)
@@ -75,7 +78,7 @@ def test_get_minimum_energy():
 
 def test_get_ts_coords():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     coords0_1 = ktn.get_ts_coords(0, 1)
     coords4_8 = ktn.get_ts_coords(4, 8)
@@ -88,7 +91,7 @@ def test_get_ts_coords():
 
 def test_get_ts_energy():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     energy0_1 = ktn.get_ts_energy(0, 1)
     energy4_8 = ktn.get_ts_energy(4, 8)
@@ -140,7 +143,7 @@ def test_add_ts():
 
 def test_remove_minimum():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     ktn.remove_minimum(4)
     assert ktn.n_minima == 8
@@ -164,7 +167,7 @@ def test_remove_minimum():
 
 def test_remove_minima():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     ktn.remove_minima(np.array([5, 2]))
     assert ktn.n_minima == 7
@@ -186,7 +189,7 @@ def test_remove_minima():
 
 def test_remove_ts():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     ktn.remove_ts(3, 7)
     edges = []
@@ -198,7 +201,7 @@ def test_remove_ts():
 
 def test_remove_tss():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     ktn.remove_tss([(3, 7), (1, 2)])
     edges = []
@@ -210,7 +213,7 @@ def test_remove_tss():
 
 def test_dump_minima_csv():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn')
     ktn.dump_minima_csv()
     assert os.path.exists('mol_data.csv') == True
@@ -218,10 +221,10 @@ def test_dump_minima_csv():
 
 def test_combine_networks():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.ktn_combined')
     other_ktn = KineticTransitionNetwork()
-    other_ktn.read_network(text_path='test_data/',
+    other_ktn.read_network(text_path=f'{current_dir}/test_data/',
                            text_string='.ktn')
     similarity = StandardSimilarity(0.05, 0.1, proportional_distance=True)
     coords = StandardCoordinates(ndim=3, bounds=[(-5.0, 5.0), (-5.0, 5.0),

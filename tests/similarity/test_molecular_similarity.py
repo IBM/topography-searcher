@@ -1,8 +1,11 @@
 import pytest
 import numpy as np
 import ase
+import os
 from topsearch.similarity.molecular_similarity import MolecularSimilarity
 from topsearch.data.coordinates import AtomicCoordinates, MolecularCoordinates
+
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
 ### ATOMIC SYSTEMS
 
@@ -384,13 +387,11 @@ def test_generate_pairs():
 ######## MOLECULAR TESTING
 
 def test_permutational_alignment_mol():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     init_position = position.copy()
-#    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-#    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     similarity = MolecularSimilarity(0.01, 0.05, weighted=False)
@@ -400,13 +401,11 @@ def test_permutational_alignment_mol():
     assert np.all(p_coords == pytest.approx(coords.position))
 
 def test_permutational_alignment_mol2():
-    atoms = ase.io.read('test_data/ethanol_rot.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     init_position = position.copy()
-#    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-#    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     coords.position[12:15] = np.array([-1.3175, 0.8783999999999994, -0.8899999999999996])
@@ -418,7 +417,7 @@ def test_permutational_alignment_mol2():
     assert np.all(p_coords == pytest.approx(coords.position))
 
 def test_get_permutable_groups2():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -435,7 +434,7 @@ def test_get_permutable_groups2():
         assert p1[i] == p2[i]
 
 def test_get_permutable_groups3():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -460,7 +459,7 @@ def test_get_permutable_groups3():
             assert p1[i] == p2[i]
 
 def test_get_permutable_groups4():
-    atoms = ase.io.read('test_data/benzene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/benzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -473,7 +472,7 @@ def test_get_permutable_groups4():
     assert p2_set == {(6, 7, 8, 9, 10, 11), (0, 1, 2, 3, 4, 5)}
 
 def test_rotational_alignment_mol():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
@@ -485,11 +484,11 @@ def test_rotational_alignment_mol():
     assert np.all(r_coords == pytest.approx(coords.position))
 
 def test_rotational_alignment_mol2():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
-    atom2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     position2 = similarity.random_rotation(position2)
@@ -497,13 +496,11 @@ def test_rotational_alignment_mol2():
     assert dist == pytest.approx(1.473644922799864)
 
 def test_test_exact_same_mol():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     position2 = position.copy()
-#    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-#    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     similarity = MolecularSimilarity(0.01, 0.05, weighted=False)
@@ -513,15 +510,13 @@ def test_test_exact_same_mol():
     assert np.all(aligned == pytest.approx(coords.position))
 
 def test_test_exact_same_mol2():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
-    atom2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
-#    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-#    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     position2 = similarity.random_rotation(position2)
@@ -529,13 +524,11 @@ def test_test_exact_same_mol2():
     assert dist == pytest.approx(1.473644922799864)
 
 def test_optimal_alignment_mol():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     position2 = position.copy()
-#    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-#    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     similarity = MolecularSimilarity(0.01, 0.05, weighted=False)
@@ -546,15 +539,13 @@ def test_optimal_alignment_mol():
     assert np.all(permutation == np.array([0, 1, 2, 5, 4, 3, 6, 7, 8]))
 
 def test_optimal_alignment_mol2():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
-    atom2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
-#    coords.position[0:3] = np.array([-1.2854, 0.2499, 0.0])
-#    coords.position[3:6] = np.array([0.0072, -0.5687, 0.0])
     coords.position[9:12] = np.array([-1.3175, 0.8784, 0.89])
     coords.position[15:18] = np.array([0.0392, -1.1972, 0.89])
     position2 = similarity.random_rotation(position2)
@@ -563,11 +554,11 @@ def test_optimal_alignment_mol2():
     assert np.all(permutation == np.array([0, 1, 2, 5, 4, 3, 6, 7, 8]))
 
 def test_optimal_alignment_mol3():
-    atoms = ase.io.read('test_data/salicylic1.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/salicylic1.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
-    atom2 = ase.io.read('test_data/salicylic2.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/salicylic2.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     position2 = similarity.random_rotation(position2)
@@ -577,11 +568,11 @@ def test_optimal_alignment_mol3():
                                            10, 11, 12, 13, 14, 15]))
 
 def test_optimal_alignment_mol4():
-    atoms = ase.io.read('test_data/salicylic1.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/salicylic1.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
-    atom2 = ase.io.read('test_data/salicylic2.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/salicylic2.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     # 5-7, 14-15, 11-12
@@ -598,12 +589,12 @@ def test_optimal_alignment_mol4():
                                            10, 12, 11, 13, 15, 14]))
 
 def test_optimal_alignment_mol5():
-    atoms = ase.io.read('test_data/paracetamol1.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/paracetamol1.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.rotate_dihedral([0, 1], 10.0, [11, 12, 13])
-    atom2 = ase.io.read('test_data/paracetamol2.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/paracetamol2.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     position2 = similarity.random_rotation(position2)
@@ -611,12 +602,12 @@ def test_optimal_alignment_mol5():
     assert dist == pytest.approx(10.56782808628859, abs=1e-2)
 
 def test_optimal_alignment_mol6():
-    atoms = ase.io.read('test_data/paracetamol1.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/paracetamol1.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())
     coords.rotate_dihedral([0, 1], 10.0, [11, 12, 13])
-    atom2 = ase.io.read('test_data/paracetamol2.xyz')
+    atom2 = ase.io.read(f'{current_dir}/test_data/paracetamol2.xyz')
     position2 = atom2.get_positions().flatten()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     position2 = similarity.random_rotation(position2)
@@ -627,22 +618,20 @@ def test_optimal_alignment_mol6():
     coords.position[36:39] = np.array([1.6380757520911244, 0.8284606072010503, 2.12956481843749])
     coords.position[45:48] = np.array([1.8275606179952912, -0.7542999101540282, 0.11210399009400124])
     coords.position[57:60] = np.array([-1.6808653883470404, 1.2449409619057872, -1.309108774449683])
-    coords.write_xyz('yolo')
     dist, coords1, aligned, permutation = similarity.optimal_alignment(coords, position2)
     assert dist == pytest.approx(10.56782808628859, abs=1e-2)
-    print("permutation = ", permutation)
     assert np.all(permutation == np.array([0, 1, 2, 3, 4, 9, 6, 7, 8, 5,
                                            10, 12, 13, 11, 14, 19, 16, 17, 18, 15]))
 
 def test_get_furthest_from_centre():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     position = atoms.get_positions()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     furthest = similarity.get_furthest_from_centre(position.flatten())
     assert furthest == [7]
 
 def test_get_furthest_perpendicular():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     position = atoms.get_positions()
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     furthest = similarity.get_furthest_perpendicular(position.flatten(), 7)

@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import os
 from topsearch.analysis.batch_selection import get_excluded_minima, \
         monotonic_batch_selector, lowest_batch_selector, \
         barrier_batch_selector, sufficient_barrier, evaluate_batch, \
@@ -9,12 +10,14 @@ from topsearch.data.coordinates import StandardCoordinates
 from topsearch.potentials.test_functions import Camelback
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_get_excluded_minima():
     coords = StandardCoordinates(ndim=3, bounds=[(-5.0, 5.0),
                                                  (-5.0, 5.0),
                                                  (-5.0, 5.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     excluded = get_excluded_minima(ktn=ktn, energy_cutoff=1.0,
                                    penalise_edge=False,
@@ -39,7 +42,7 @@ def test_get_excluded_minima():
 
 def test_select_batch():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices, points = select_batch(ktn, 3, 'Lowest', False)
     assert indices == [1, 0, 5]
@@ -50,7 +53,7 @@ def test_select_batch():
 
 def test_generate_batch():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices = generate_batch(ktn, 'Lowest', [0, 2, 4], 1.0)
     assert indices == [1, 5, 3, 6, 8, 7]
@@ -63,7 +66,7 @@ def test_generate_batch():
 
 def test_lowest_batch_selector():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     excluded_minima = []
     indices = lowest_batch_selector(ktn, excluded_minima)
@@ -74,14 +77,14 @@ def test_lowest_batch_selector():
 
 def test_fill_batch():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices = fill_batch(ktn, [5, 4, 6], [0, 8])
     assert indices == [5, 4, 6, 1, 2, 3, 7]
 
 def test_topographical_batch_selector():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices = topographical_batch_selector(ktn, [], 1.0)
     assert indices == [1, 5, 3]
@@ -92,7 +95,7 @@ def test_topographical_batch_selector():
 
 def test_barrier_batch_selector():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices = barrier_batch_selector(ktn, [], 1.0)
     assert indices == [1, 0]
@@ -105,7 +108,7 @@ def test_barrier_batch_selector():
 
 def test_sufficient_barrier():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     allowed = sufficient_barrier(ktn, 0, 1, -0.46971, 1.37082, 0.5)
     assert allowed == True
@@ -117,7 +120,7 @@ def test_sufficient_barrier():
 
 def test_monotonic_batch_selector():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices = monotonic_batch_selector(ktn, excluded_minima=[])
     assert indices == [1, 5, 3]
@@ -127,7 +130,7 @@ def test_monotonic_batch_selector():
 def test_evaluate_batch():
     camelback = Camelback()
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     indices = np.array([1, 3])
     points = np.array([[0.0898, -0.7126], [-0.0898, 0.7126]])
@@ -136,7 +139,7 @@ def test_evaluate_batch():
 
 def test_get_batch_positions():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     batch_points = get_batch_positions(ktn, [1, 4])
     assert np.all(batch_points == np.array([[4.109132805750269846e+00,

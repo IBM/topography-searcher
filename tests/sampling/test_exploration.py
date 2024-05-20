@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import ase.io
+import os
 from topsearch.similarity.similarity import StandardSimilarity
 from topsearch.similarity.molecular_similarity import MolecularSimilarity
 from topsearch.potentials.test_functions import Camelback
@@ -14,6 +15,8 @@ from topsearch.sampling.exploration import NetworkSampling
 from topsearch.analysis.minima_properties import get_minima_energies
 from topsearch.transition_states.hybrid_eigenvector_following import HybridEigenvectorFollowing
 from topsearch.transition_states.nudged_elastic_band import NudgedElasticBand
+
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
 def test_get_minima():
     step_taking = StandardPerturbation(max_displacement=0.7,
@@ -52,7 +55,7 @@ def test_get_minima2():
 
 def test_check_pair():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling')
     sampler = NetworkSampling(ktn, None, None, None, None, None)
     good, reps = sampler.check_pair(4, 4)
@@ -99,7 +102,7 @@ def test_select_minima():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling')
     ktn.remove_ts(3, 4)
     camelback = Camelback()
@@ -116,7 +119,7 @@ def test_select_minima2():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling')
     camelback = Camelback()
     basin_hopping = BasinHopping(ktn=ktn, potential=camelback,
@@ -131,7 +134,7 @@ def test_prepare_connection_attempt():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling')
     sampler = NetworkSampling(ktn, None, None, None, None, similarity)
     min1, min2, reps, perm = sampler.prepare_connection_attempt(coords, [0, 1])
@@ -142,7 +145,7 @@ def test_prepare_connection_attempt2():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling')
     sampler = NetworkSampling(ktn, None, None, None, None, similarity)
     min1, min2, reps, perm = sampler.prepare_connection_attempt(coords, [0, 8])
@@ -154,7 +157,7 @@ def test_prepare_connection_attempt2():
                                                   3.373227339563876548e+00])))
 
 def test_prepare_connection_attempt3():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -173,7 +176,7 @@ def test_connection_attempt():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling2')
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 5e-1)
@@ -200,8 +203,8 @@ def test_connection_attempt2():
     ktn = KineticTransitionNetwork()
     ktn.add_minimum(np.array([0.2442886393482816554, 0.2223237906150130339]), 0.37907)
     ktn.add_minimum(np.array([0.2664846253865226222, 0.2771414190591802718]), 0.49790)
-    model_data = ModelData('test_data/training_sampling.txt',
-                           'test_data/response_sampling.txt')
+    model_data = ModelData(f'{current_dir}/test_data/training_sampling.txt',
+                           f'{current_dir}/test_data/response_sampling.txt')
     model_data.feature_subset([0, 1])
     model_data.remove_duplicates()
     model_data.normalise_training()
@@ -242,8 +245,8 @@ def test_connection_attempt3():
     ktn = KineticTransitionNetwork()
     ktn.add_minimum(np.array([0.2316999844237584150, 0.2223066239688433754]), 0.35659)
     ktn.add_minimum(np.array([0.1744027872860626494, 0.1636957501001815307]), -0.10940)
-    model_data = ModelData('test_data/training_sampling.txt',
-                           'test_data/response_sampling.txt')
+    model_data = ModelData(f'{current_dir}/test_data/training_sampling.txt',
+                           f'{current_dir}/test_data/response_sampling.txt')
     model_data.feature_subset([0, 1])
     model_data.remove_duplicates()
     model_data.normalise_training()
@@ -282,7 +285,7 @@ def test_run_connection_attempts():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling2')
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 5e-1)
@@ -301,7 +304,7 @@ def test_run_connection_attempts2():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling2')
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 5e-1)
@@ -321,7 +324,7 @@ def test_get_transition_states():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling2')
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 5e-1)
@@ -348,7 +351,7 @@ def test_get_transition_states2():
     similarity = StandardSimilarity(0.1, 0.1)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling2')
     ktn.add_minimum(np.array([-3.0, 2.0]), 1.0)
     ktn.add_minimum(np.array([-3.0, 1.0]), 1.0)
@@ -365,7 +368,7 @@ def test_reconverge_minima():
     similarity = StandardSimilarity(0.05, 0.01)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling3')
     camel = Camelback()
     sampler = NetworkSampling(ktn, coords, None, None, None, similarity)
@@ -382,7 +385,7 @@ def test_reconverge_landscape():
     similarity = StandardSimilarity(0.05, 0.01)
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sampling4')
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 5e-1)

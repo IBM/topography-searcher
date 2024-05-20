@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import math
+import os
 from topsearch.data.coordinates import StandardCoordinates, AtomicCoordinates
 from topsearch.transition_states.hybrid_eigenvector_following import HybridEigenvectorFollowing
 from topsearch.potentials.test_functions import Camelback, Schwefel
@@ -8,8 +9,10 @@ from topsearch.potentials.atomic import LennardJones
 from topsearch.potentials.dataset_fitting import DatasetInterpolation
 from topsearch.data.model_data import ModelData
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 # Smallest eigenvalue tests
-    
+
 def test_generate_random_vector():
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
@@ -19,7 +22,7 @@ def test_generate_random_vector():
     vec = single_ended.generate_random_vector(4)
     assert vec.size == 4
     assert np.linalg.norm(vec) == pytest.approx(1.0)
-    
+
 def test_rayleigh_ritz_function_gradient():
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
@@ -224,8 +227,8 @@ def test_get_smallest_eigenvalue3():
 
 def test_get_smallest_eigenvalue4():
     coords = StandardCoordinates(ndim=2, bounds=[(0.0, 1.0), (0.0, 1.0)])
-    model_data = ModelData('test_data/training_ts.txt',
-                           'test_data/response_ts.txt')
+    model_data = ModelData(f'{current_dir}/test_data/training_ts.txt',
+                           f'{current_dir}/test_data/response_ts.txt')
     model_data.feature_subset([0, 1])
     model_data.remove_duplicates()
     model_data.normalise_training()
@@ -509,7 +512,7 @@ def test_run():
         assert e_plus == pytest.approx(-1.0316284534898772)
 
 def test_remove_zero_eigenvectors():
-    position = np.genfromtxt('test_data/lj13.xyz')
+    position = np.genfromtxt(f'{current_dir}/test_data/lj13.xyz')
     lj = LennardJones()
     single_ended = HybridEigenvectorFollowing(lj, 1e-6, 50, 5e-1)
     vec = np.array([  2.94274405e-02,  2.30205592e-01,  3.49224659e-02,
@@ -538,7 +541,7 @@ def test_remove_zero_eigenvectors():
                                                  -0.09880458, -0.11817034, 0.18210343]), abs=1e-4))
 
 def test_rayleigh_ritz_function_gradient5():
-    position = np.genfromtxt('test_data/lj13.xyz')
+    position = np.genfromtxt(f'{current_dir}/test_data/lj13.xyz')
     lj = LennardJones()
     single_ended = HybridEigenvectorFollowing(lj, 1e-6, 50, 5e-1)
     single_ended.remove_trans_rot = True
@@ -567,7 +570,7 @@ def test_rayleigh_ritz_function_gradient5():
                                                    -4.95709362, -58.0442718, -87.99869339, 150.55134906]), abs=1e-3))
 
 def test_run2():
-    position = np.genfromtxt('test_data/lj13.xyz')
+    position = np.genfromtxt(f'{current_dir}/test_data/lj13.xyz')
     atom_labels = ['C', 'C', 'C', 'C', 'C', 'C', 'C',
                    'C', 'C', 'C', 'C', 'C', 'C']
     coords = AtomicCoordinates(atom_labels, position.flatten())

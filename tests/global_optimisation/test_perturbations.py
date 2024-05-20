@@ -5,6 +5,9 @@ from topsearch.data.coordinates import StandardCoordinates, \
 from topsearch.global_optimisation.perturbations import StandardPerturbation, \
     AtomicPerturbation, MolecularPerturbation
 import ase
+import os
+
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
 def test_step_size():
     coords = StandardCoordinates(ndim=3, bounds=[(-500.0, 500.0),
@@ -87,7 +90,7 @@ def test_perturb():
 ### MOLECULAR
 
 def test_perturb2():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions()
     coords = MolecularCoordinates(species, position.flatten())

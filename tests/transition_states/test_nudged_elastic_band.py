@@ -2,10 +2,13 @@ import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 import ase.io
+import os
 from topsearch.transition_states.nudged_elastic_band import NudgedElasticBand
 from topsearch.potentials.test_functions import Camelback
 from topsearch.data.coordinates import StandardCoordinates, MolecularCoordinates
 from topsearch.similarity.molecular_similarity import MolecularSimilarity
+
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
 def test_perpendicular_component():
     camel = Camelback()
@@ -302,10 +305,10 @@ def test_double_ended_ts_search():
     assert np.linalg.norm(positions[2, :] - ts3) < 0.1
 
 def test_dihedral_interpolation():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
-    atoms2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atoms2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atoms2.get_positions().flatten()
     coords1 = MolecularCoordinates(species, position)
     double_ended_search = NudgedElasticBand(None, 10.0, 1000.0, 15, 1e-4)
@@ -348,10 +351,10 @@ def test_dihedral_interpolation():
                                                         1.16651562e+00, 9.05052978e-01, -7.65048073e-01])))
 
 def test_dihedral_interpolation2():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
-    atoms2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atoms2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atoms2.get_positions().flatten()
     coords1 = MolecularCoordinates(species, position)
     coords1.change_bond_length([0, 2], 0.3, [2, 8])
@@ -397,10 +400,10 @@ def test_dihedral_interpolation2():
 
 def test_dihedral_interpolation3():
     comparer = MolecularSimilarity(0.01, 0.05)
-    atoms = ase.io.read('test_data/ethanol_scramble.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol_scramble.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
-    atoms2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atoms2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atoms2.get_positions().flatten()
     coords1 = MolecularCoordinates(species, position)
     d, coords1a, coords2, permutation = comparer.optimal_alignment(coords1, position2)
@@ -444,10 +447,10 @@ def test_dihedral_interpolation3():
                                                          -1.01121819e+00, 1.00558802e+00, -8.90002143e-01])))
 
 def test_initial_interpolation3():
-    atoms = ase.io.read('test_data/ethanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
-    atoms2 = ase.io.read('test_data/ethanol_rot.xyz')
+    atoms2 = ase.io.read(f'{current_dir}/test_data/ethanol_rot.xyz')
     position2 = atoms2.get_positions().flatten()
     coords1 = MolecularCoordinates(species, position)
     double_ended_search = NudgedElasticBand(None, 10.0, 1000.0, 15, 1e-4)

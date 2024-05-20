@@ -4,9 +4,11 @@ import os.path
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.plotting.network import plot_network, barrier_reweighting
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_barrier_reweighting():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.network')
     ktn.G.edges[0,1]['energy'] = -3.0
     weighted_graph = barrier_reweighting(ktn)
@@ -23,7 +25,7 @@ def test_barrier_reweighting():
 
 def test_plot_network():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.network')
     plot_network(ktn)
     assert os.path.exists('Network.png') == True

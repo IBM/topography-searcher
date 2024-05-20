@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import os
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.data.coordinates import StandardCoordinates
 from topsearch.similarity.similarity import StandardSimilarity
@@ -9,13 +10,15 @@ from topsearch.analysis.minima_properties import get_bounds_minima, \
         get_all_bounds_minima, get_similar_minima, get_invalid_minima, \
         get_distance_matrix, get_distance_from_minimum
 
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
+
 def test_get_invalid_minima():
     coords = StandardCoordinates(ndim=3, bounds=[(-5.0, 5.0),
                                                  (-5.0, 5.0),
                                                  (-5.0, 5.0)])
     schwefel = Schwefel()
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     for i in range(ktn.n_minima):
         minimum = ktn.get_minimum_coords(i)
@@ -31,7 +34,7 @@ def test_get_bounds_minima():
                                                  (-5.0, 5.0),
                                                  (-5.0, 5.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     minima = get_bounds_minima(ktn, coords)
     assert minima == [0, 6, 7]
@@ -41,7 +44,7 @@ def test_get_all_bounds_minima():
                                                  (-5.0, 5.0),
                                                  (-5.0, 5.0)])
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ktn.add_minimum(np.array([5.0, 5.0, 5.0]), 0.0)
     minima = get_all_bounds_minima(ktn, coords)
@@ -49,7 +52,7 @@ def test_get_all_bounds_minima():
 
 def test_get_similar_minima():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     points = np.array([[5.0, -3.3082, 4.245]])
     similar_minima = get_similar_minima(ktn, 0.1, points)
@@ -62,7 +65,7 @@ def test_get_similar_minima():
 
 def test_get_minima_above_cutoff():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     minima = get_minima_above_cutoff(ktn, -2.0)
     assert np.all(minima == np.array([2, 3, 4, 5, 6, 7, 8]))
@@ -71,7 +74,7 @@ def test_get_minima_above_cutoff():
 
 def test_get_minima_energies():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     energies = get_minima_energies(ktn)
     assert np.all(energies == pytest.approx(np.array([-2.29238, -2.58207,
@@ -82,7 +85,7 @@ def test_get_minima_energies():
 
 def test_get_ordered_minima():
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ordered_indices = get_ordered_minima(ktn)
     assert np.all(ordered_indices == np.array([1, 0, 5, 2,
@@ -94,7 +97,7 @@ def test_get_distance_matrix():
                                                  (-5.0, 5.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ktn.remove_minima(np.array([4, 5, 6, 7, 8]))
     dist_matrix = get_distance_matrix(ktn, similarity, coords)
@@ -113,7 +116,7 @@ def test_get_distance_matrix():
                                                  (-5.0, 5.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.analysis')
     ktn.remove_minima(np.array([4, 5, 6, 7, 8]))
     dist_vector = get_distance_from_minimum(ktn, similarity, coords, 0)

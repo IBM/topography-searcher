@@ -1,8 +1,11 @@
 import pytest
 import numpy as np
+import os
 from topsearch.similarity.similarity import StandardSimilarity
 from topsearch.data.coordinates import StandardCoordinates
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
 def test_closest_distance():
 
@@ -98,7 +101,7 @@ def test_is_new_minimum():
                                                  (-500.0, 500.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.similarity')
     coords.position = np.array([5.0, -3.3082, 4.245])
     min_energy = -2.2938
@@ -115,7 +118,7 @@ def test_is_new_ts():
                                                  (-500.0, 500.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.similarity')
     coords.position = np.array([-1.0277237, -4.53884, -2.0018477])
     ts_energy = -1.26930
@@ -133,7 +136,7 @@ def test_test_new_minimum():
                                                  (-500.0, 500.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.similarity')
     coords.position = np.array([5.0, -3.3082, 4.245])
     min_energy = -2.2938
@@ -152,7 +155,7 @@ def test_test_new_ts():
                                                  (-500.0, 500.0)])
     similarity = StandardSimilarity(0.1, 0.1)
     ktn = KineticTransitionNetwork()
-    ktn.read_network(text_path='test_data/',
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.similarity')
     coords.position = np.array([-1.0277237, -4.53884, -2.0018477])
     ts_energy = -1.26930
