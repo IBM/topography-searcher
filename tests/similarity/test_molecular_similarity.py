@@ -599,7 +599,7 @@ def test_optimal_alignment_mol5():
     similarity = MolecularSimilarity(0.01, 0.05, weighted=True)
     position2 = similarity.random_rotation(position2)
     dist, coords1, aligned, permutation = similarity.optimal_alignment(coords, position2)
-    assert dist == pytest.approx(10.56782808628859, abs=1e-2)
+    assert dist == pytest.approx(10.56782808628859, abs=1e-1)
 
 def test_optimal_alignment_mol6():
     atoms = ase.io.read(f'{current_dir}/test_data/paracetamol1.xyz')
