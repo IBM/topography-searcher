@@ -30,8 +30,7 @@ For more details of the methodology please refer to [`common_citations.md`](./co
 
 ## Documentation
 
-A complete documentation for the package can be found at the GitHub pages: [
-](https://ibm.github.io/topography-searcher/)
+A complete documentation for the package can be found at the [GitHub pages](https://ibm.github.io/topography-searcher/)
 
 ## Installation
 
