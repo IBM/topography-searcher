@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nudged Elastic Band &mdash; topsearch 0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=47de8214"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            topsearch
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">topsearch</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Nudged Elastic Band</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/modules/transition_states/nudged_elastic_band.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-topsearch.transition_states.nudged_elastic_band">
+<span id="nudged-elastic-band"></span><h1>Nudged Elastic Band<a class="headerlink" href="#module-topsearch.transition_states.nudged_elastic_band" title="Link to this heading"></a></h1>
+<p>Module that performs double ended transition states by the nudged
+elastic band. Double ended searches take two endpoint minima and
+aim to locate a minimum energy pathway between them, the maxima
+on this path are candidates for transition states.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topsearch.transition_states.nudged_elastic_band.</span></span><span class="sig-name descname"><span class="pre">NudgedElasticBand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">potential</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_constant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neb_conv_crit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand" title="Link to this definition"></a></dt>
+<dd><section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
+<p>Takes in the coordinates of two endpoint minima and perform a double-ended
+transition state search using the nudged elastic band
+Produces an initial linear interpolation with linear_interpolation
+Optimise this initial guess using minimise_interpolation
+And pick out transition state candidates using find_ts_candidates
+The whole process is performed by run</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.potential">
+<span class="sig-name descname"><span class="pre">potential</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.potential" title="Link to this definition"></a></dt>
+<dd><p>The function which we are finding minimum energy paths on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>class instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.minimiser">
+<span class="sig-name descname"><span class="pre">minimiser</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.minimiser" title="Link to this definition"></a></dt>
+<dd><p>The local minimiser used for optimising the band</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>class instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.force_constant">
+<span class="sig-name descname"><span class="pre">force_constant</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.force_constant" title="Link to this definition"></a></dt>
+<dd><p>The value of the force constant used in harmonic part of band energy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.image_density">
+<span class="sig-name descname"><span class="pre">image_density</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.image_density" title="Link to this definition"></a></dt>
+<dd><p>The density of images, per distance unit, in the initial band
+interpolations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.original_image_density">
+<span class="sig-name descname"><span class="pre">original_image_density</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.original_image_density" title="Link to this definition"></a></dt>
+<dd><p>Store of image_density to return image_density to value once updated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.max_images">
+<span class="sig-name descname"><span class="pre">max_images</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.max_images" title="Link to this definition"></a></dt>
+<dd><p>The maximum allowed number of images in the nudged elastic band</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.force_constants">
+<span class="sig-name descname"><span class="pre">force_constants</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.force_constants" title="Link to this definition"></a></dt>
+<dd><p>An array of force constants for the nudged elastic band, one per image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.n_images">
+<span class="sig-name descname"><span class="pre">n_images</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.n_images" title="Link to this definition"></a></dt>
+<dd><p>The number of images in the given band after initial interpolation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.band_bounds">
+<span class="sig-name descname"><span class="pre">band_bounds</span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.band_bounds" title="Link to this definition"></a></dt>
+<dd><p>The bounds on the function range that can be passed to optimiser
+Same as potential bounds, but one per image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.band_function_gradient">
+<span class="sig-name descname"><span class="pre">band_function_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.band_function_gradient" title="Link to this definition"></a></dt>
+<dd><p>Return the total energy and the gradient of the nudged elastic
+band, this involves the summation of the true function and
+a series of harmonic terms between adjacent images</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.band_potential_function">
+<span class="sig-name descname"><span class="pre">band_potential_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.band_potential_function" title="Link to this definition"></a></dt>
+<dd><p>Return the total energy of the band, and an array giving the
+true function evaluated at each image of the band</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.dihedral_interpolation">
+<span class="sig-name descname"><span class="pre">dihedral_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.dihedral_interpolation" title="Link to this definition"></a></dt>
+<dd><p>Interpolate linearly in the space of dihedrals, angles and
+bond lengths, which will be much more appropriate for molecules</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.find_tangent_differences">
+<span class="sig-name descname"><span class="pre">find_tangent_differences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.find_tangent_differences" title="Link to this definition"></a></dt>
+<dd><p>Compute the tangent vectors between consecutive images
+in the band, these are calculated from lower to higher
+connected images in the Upwind scheme. Returns array
+of tangents, one for each image (apart from endpoints)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.find_ts_candidates">
+<span class="sig-name descname"><span class="pre">find_ts_candidates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.find_ts_candidates" title="Link to this definition"></a></dt>
+<dd><p>Find the local maxima of the nudged elastic band and return the
+indices of these candidate transition states and their coordinates</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.get_force_constants">
+<span class="sig-name descname"><span class="pre">get_force_constants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.get_force_constants" title="Link to this definition"></a></dt>
+<dd><p>Get the array of force constants for the harmonic potential</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.initial_interpolation">
+<span class="sig-name descname"><span class="pre">initial_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.initial_interpolation" title="Link to this definition"></a></dt>
+<dd><p>Return initial interpolation band using the appropriate number
+of images based on previous attempts. Set force constants and
+bounds attributes for use in other methods</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.linear_interpolation">
+<span class="sig-name descname"><span class="pre">linear_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.linear_interpolation" title="Link to this definition"></a></dt>
+<dd><p>Produce a linear interpolation between two points with a number of
+images specified by self.image_density</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.minimise_interpolation">
+<span class="sig-name descname"><span class="pre">minimise_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.minimise_interpolation" title="Link to this definition"></a></dt>
+<dd><p>Perform minimisation of the given interpolation between
+endpoints using box-contrained LBFGS and return the
+optimised band</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.perpendicular_component">
+<span class="sig-name descname"><span class="pre">perpendicular_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vec2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.perpendicular_component" title="Link to this definition"></a></dt>
+<dd><p>Return perpendicular component of vector vec1 relative to vec2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.revert_image_density">
+<span class="sig-name descname"><span class="pre">revert_image_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.revert_image_density" title="Link to this definition"></a></dt>
+<dd><p>Revert the image density to its original value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.run" title="Link to this definition"></a></dt>
+<dd><p>Complete double-ended transition state search when provided with
+two minima. Returns an array of transition state candidates taken
+as maxima on the approximate minimum energy path</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.update_image_density">
+<span class="sig-name descname"><span class="pre">update_image_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attempts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#topsearch.transition_states.nudged_elastic_band.NudgedElasticBand.update_image_density" title="Link to this definition"></a></dt>
+<dd><p>Update the image density parameter</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Luke Dicks.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

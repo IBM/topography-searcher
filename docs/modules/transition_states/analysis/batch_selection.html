@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batch selection &mdash; topsearch 0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=47de8214"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            topsearch
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">topsearch</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Batch selection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/modules/analysis/batch_selection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-topsearch.analysis.batch_selection">
+<span id="batch-selection"></span><h1>Batch selection<a class="headerlink" href="#module-topsearch.analysis.batch_selection" title="Link to this heading"></a></h1>
+<p>Module containing batch selection methods for Bayesian optimisation.
+The methods take in a network encoding of the surface topography,
+and analyse it to select a diverse set of minima.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.barrier_batch_selector">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">barrier_batch_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_barrier_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_batch_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#topsearch.analysis.batch_selection.barrier_batch_selector" title="Link to this definition"></a></dt>
+<dd><p>Select a batch of points that are all separated by barrier heights
+greater than absolute_barrier_cutoff. Returns the indices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.evaluate_batch">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">evaluate_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">true_potential</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.evaluate_batch" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the true potential at each point in the given batch
+Return the training and corresponding response values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.fill_batch">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">fill_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.fill_batch" title="Link to this definition"></a></dt>
+<dd><p>Return the batch after adding the remaining
+lowest minima in order</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.generate_batch">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">generate_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_selection_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_barrier_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.generate_batch" title="Link to this definition"></a></dt>
+<dd><p>Generate the batch given the specified method</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.get_batch_positions">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">get_batch_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.get_batch_positions" title="Link to this definition"></a></dt>
+<dd><p>Get the corresponding batch position from the list of indices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.get_excluded_minima">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">get_excluded_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalise_edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalise_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proximity_measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.get_excluded_minima" title="Link to this definition"></a></dt>
+<dd><p>Apply specified criteria to decide if the minima should
+be allowed in the BayesOpt batch. Returns the list of those
+that should be excluded</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.lowest_batch_selector">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">lowest_batch_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.lowest_batch_selector" title="Link to this definition"></a></dt>
+<dd><p>Simply select the lowest minima of the acquisition function
+Returns list of indices the selected minima correspond to</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.monotonic_batch_selector">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">monotonic_batch_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.monotonic_batch_selector" title="Link to this definition"></a></dt>
+<dd><p>Find all monotonic sequence basins when excluding excluded_minima,
+and return their indices in increasing function value</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.select_batch">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">select_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_selection_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barrier_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.select_batch" title="Link to this definition"></a></dt>
+<dd><p>Method to select the batch of points from a given network
+Returns the indices of the minima and their coordinates
+Type of batch selection depends on batch_selection_method
+Lowest - Select the batch_size lowest minima in value
+Monotonic - Select monotonic sequence basins of the network
+Barrier - Select minima that are separated by sufficiently large</p>
+<blockquote>
+<div><p>barriers counting from lowest in acquisition</p>
+</div></blockquote>
+<p>Topographical - First perform Monotonic, then fill batch using Barrier</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.sufficient_barrier">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">sufficient_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_ts_energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_barrier_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.sufficient_barrier" title="Link to this definition"></a></dt>
+<dd><p>Check if minima pass criteria to be added to the batch
+Returns logical specified if pass or fail</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topsearch.analysis.batch_selection.topographical_batch_selector">
+<span class="sig-prename descclassname"><span class="pre">topsearch.analysis.batch_selection.</span></span><span class="sig-name descname"><span class="pre">topographical_batch_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ktn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_minima</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_barrier_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.analysis.batch_selection.topographical_batch_selector" title="Link to this definition"></a></dt>
+<dd><p>Select a batch of minima based on the surface topography
+First finds monotonic sequence basins, and if not batch_size
+of them then use barrier_batch_selector to generate remaining
+Returns the indices of the selected nodes, and their
+corresponding coordinates</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Luke Dicks.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

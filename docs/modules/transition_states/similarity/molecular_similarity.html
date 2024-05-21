@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Molecular similarity &mdash; topsearch 0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=47de8214"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            topsearch
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">topsearch</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Molecular similarity</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/modules/similarity/molecular_similarity.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-topsearch.similarity.molecular_similarity">
+<span id="molecular-similarity"></span><h1>Molecular similarity<a class="headerlink" href="#module-topsearch.similarity.molecular_similarity" title="Link to this heading"></a></h1>
+<p>Module that contains the classes for evaluating similarity of
+atomic or molecular conformations</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topsearch.similarity.molecular_similarity.</span></span><span class="sig-name descname"><span class="pre">MolecularSimilarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance_criterion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_criterion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_inversion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity" title="Link to this definition"></a></dt>
+<dd><section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
+<p>Separate class to deal with the extra complexity of atomic systems.
+They require translation, rotation, centering and permutation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.distance_criterion">
+<span class="sig-name descname"><span class="pre">distance_criterion</span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.distance_criterion" title="Link to this definition"></a></dt>
+<dd><p>The distance under which two minima are considered the same, for
+proportional_distance set to True this is not an absolute value,
+but the proportion of the total function range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.energy_criterion">
+<span class="sig-name descname"><span class="pre">energy_criterion</span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.energy_criterion" title="Link to this definition"></a></dt>
+<dd><p>The value that the difference in function values must be below
+to be considered the same</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.weighted">
+<span class="sig-name descname"><span class="pre">weighted</span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.weighted" title="Link to this definition"></a></dt>
+<dd><p>Flag that specifies whether we include the relative atomic weights
+in alignment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.align">
+<span class="sig-name descname"><span class="pre">align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.align" title="Link to this definition"></a></dt>
+<dd><p>Perform permutational and rotational alignment of coords2
+relative to coords1 to find best alignment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.centre">
+<span class="sig-name descname"><span class="pre">centre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.centre" title="Link to this definition"></a></dt>
+<dd><p>Returns coords after centre of mass has been moved to origin</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.closest_distance">
+<span class="sig-name descname"><span class="pre">closest_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.closest_distance" title="Link to this definition"></a></dt>
+<dd><p>Align two structures and return the optimised distance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.generate_pairs">
+<span class="sig-name descname"><span class="pre">generate_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.generate_pairs" title="Link to this definition"></a></dt>
+<dd><p>Generate a list of all possible pairs from two input lists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.get_furthest_from_centre">
+<span class="sig-name descname"><span class="pre">get_furthest_from_centre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.get_furthest_from_centre" title="Link to this definition"></a></dt>
+<dd><p>Find the atom furthest from the origin in position,
+and any other within 0.05 of this</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.get_furthest_perpendicular">
+<span class="sig-name descname"><span class="pre">get_furthest_perpendicular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_atom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.get_furthest_perpendicular" title="Link to this definition"></a></dt>
+<dd><p>Find the atoms furthest from the origin in position,
+perpendicular to the vector to position[ref_atom]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.get_permutable_groups">
+<span class="sig-name descname"><span class="pre">get_permutable_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.get_permutable_groups" title="Link to this definition"></a></dt>
+<dd><p>Determine the subsets of atoms that are allowed to be permuted
+when minimising the distance between conformations. Must be
+of the same element and have the same bonds</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.invert">
+<span class="sig-name descname"><span class="pre">invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.invert" title="Link to this definition"></a></dt>
+<dd><p>Invert a conformation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.optimal_alignment">
+<span class="sig-name descname"><span class="pre">optimal_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.optimal_alignment" title="Link to this definition"></a></dt>
+<dd><p>Try to find the optimal alignment between coords1 and coords2.
+Initially test if the structures are the same, and if not iterate
+alignment from different starting orientations</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.permutational_alignment">
+<span class="sig-name descname"><span class="pre">permutational_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.permutational_alignment" title="Link to this definition"></a></dt>
+<dd><p>Hungarian algorithm adapted to solve the linear assignment problem
+for each atom of each distinct element. Finds the optimal
+permutation of all atoms respecting the atomic species</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.random_rotation">
+<span class="sig-name descname"><span class="pre">random_rotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.random_rotation" title="Link to this definition"></a></dt>
+<dd><p>Apply a uniformly distributed random rotation matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.rotational_alignment">
+<span class="sig-name descname"><span class="pre">rotational_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.rotational_alignment" title="Link to this definition"></a></dt>
+<dd><p>Find the rotation that minimises the distance between
+two sets of vectors using the Kabsch algorithm and apply it</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.test_exact_same">
+<span class="sig-name descname"><span class="pre">test_exact_same</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.test_exact_same" title="Link to this definition"></a></dt>
+<dd><p>Routine to test if two conformations are identical by aligning
+furthest atom from centre in each, along with furthest in
+direction perpendicular to that</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topsearch.similarity.molecular_similarity.MolecularSimilarity.test_same">
+<span class="sig-name descname"><span class="pre">test_same</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#topsearch.similarity.molecular_similarity.MolecularSimilarity.test_same" title="Link to this definition"></a></dt>
+<dd><p>Test if two structures are the same to within a distance and energy
+criterion after finding the closest alignment</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Luke Dicks.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
