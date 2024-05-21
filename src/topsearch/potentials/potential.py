@@ -1,7 +1,7 @@
 """ Potential module contains the base Potential class. This class
-    provides the function that can be explored and gives the
-    Each class provides the function value, first and second
-    derivatives """
+    provides the function that can be explored and gives the numerical
+    first and second derivatives. All other potential class inherit
+    the numerical derivatives from this class """
 
 from typing import Tuple
 import numpy as np
@@ -33,8 +33,8 @@ class Potential:
     def gradient(self, position: NDArray,
                  displacement: float = 1e-6) -> NDArray:
         """
-        Evaluate the numerical gradient of the function a point coords
-        Useful default to fall on if no analytical derivatives
+        Evaluate the numerical gradient of the function a point coords.
+        Useful default to fall on if no analytical derivatives.
         Returns 1d array with gradient w.r.t all components
         """
         ndim = position.size
@@ -75,7 +75,7 @@ class Potential:
         return hess
 
     def check_valid_minimum(self, coords: type) -> bool:
-        """ Determines if a minimum is allowed based on eigenvalues """
+        """ Determines if a point is a minimum based on its eigenvalues """
         if not coords.at_bounds():
             # Find the eigenvalues of the Hessian matrix
             hess = self.hessian(coords.position)
@@ -92,7 +92,8 @@ class Potential:
         return True
 
     def check_valid_ts(self, coords: type) -> bool:
-        """ Check if transition state one negative eigenvalue """
+        """ Check if position is a valid transition state
+            with only one negative eigenvalue of the Hessian matrix """
         if not coords.at_bounds():
             # Compute the eigenvalue spectrum
             hess = self.hessian(coords.position)

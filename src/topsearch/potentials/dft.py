@@ -1,4 +1,5 @@
-""" Module containing the class for electronic structure calculations """
+""" Module containing the class for performing electronic structure
+    calculations to compute the potential energy of atomistic systems """
 
 import numpy as np
 from nptyping import NDArray
@@ -11,8 +12,9 @@ class DensityFunctionalTheory(Potential):
     """
     Description
     ---------------
-    Evaluate the energy and force of a molecular system using ase
-    calculators for electronic structure calculations
+    Evaluate the energy and force of a molecular system using the Psi4
+    package via its ase calculators. The energy is computed using
+    density functional theory
 
     Attributes
     ----------------
@@ -23,8 +25,8 @@ class DensityFunctionalTheory(Potential):
     options : dict
         keyword arguments that will be passed to the ase calculator
     force_field : class
-        DFT calls can fail with significant overlap so force_field is used
-        in these cases
+        DFT calls can fail with significant atomic overlap so the force_field
+        object is used in these cases to remove clashes without failure
     """
 
     def __init__(self, atom_labels: list, options: dict,

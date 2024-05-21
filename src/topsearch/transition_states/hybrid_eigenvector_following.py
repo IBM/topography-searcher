@@ -1,4 +1,4 @@
-""" The single_ended_search module employs different methods for locating
+""" The single_ended_search module contains methods for locating
     transition states starting from a single point """
 
 from math import inf
@@ -15,8 +15,9 @@ class HybridEigenvectorFollowing:
     Description
     ------------
 
-    Class for single-ended transition state searches, starting
+    Class for single-ended transition state searches. Starting
     from a given position the hybrid eigenvector-following algorithm
+    (https://doi.org/10.1103/PhysRevB.59.3969)
     is used to take steps uphill until a Hessian index one point is found.
     i) Finds eigenvector corresponding to the lowest eigenvalue
     ii) Take a step along that eigenvector
@@ -44,7 +45,7 @@ class HybridEigenvectorFollowing:
         connected minima for each transition state
     eig_bounds : list
         Bounds placed on the eigenvector during minimisation, updated
-        throughout the search based on the bounds coords is at
+        throughout the search based on active bounds
     failure : string
         Contains the reason for failure to find a transition state to report
     remove_trans_rot : bool
@@ -76,10 +77,10 @@ class HybridEigenvectorFollowing:
         self.remove_trans_rot = None
 
     def run(self, coords: type) -> tuple:
-        """ Perform a single-ended transition state search starting from coords
-            Returns the information about transition states and their connected
-            minima that is needed for testing similarity and adding to
-            stationary point network """
+        """ Perform a single-ended transition state search starting from 
+            coords. Returns the information about transition states
+            and their connected minima that is needed for testing similarity
+            and adding to stationary point network """
 
         # Set whether we should remove overall translation and rotation
         # Necessary for atomic and molecular systems
@@ -231,7 +232,7 @@ class HybridEigenvectorFollowing:
     def subspace_minimisation(self, coords: type,
                               eigenvector: NDArray) -> tuple:
         """ Perform minimisation in the subspace orthogonal to eigenvector.
-            The distance is limited to be at most 1% of the range of the
+            The distance is limited to be at most 2% of the range of the
             space to avoid very large initial steps in scipy.lbfgs """
         subspace_bounds = self.get_local_bounds(coords)
         position, energy, results_dict = \
@@ -260,7 +261,7 @@ class HybridEigenvectorFollowing:
     def analytic_step_size(self, grad: NDArray, eigenvector: NDArray,
                            eigenvalue: float) -> float:
         """Analytical expression to compute an optimal step length
-           from coords along eigenvector, given its eigenvalue
+           from coords along eigenvector, given its eigenvalue.
            Return the appropriate step length in the uphill direction """
         overlap = np.dot(grad, eigenvector)
         denominator = (1.0 + np.sqrt(1.0+(4.0*(overlap/eigenvalue)**2)))
@@ -282,7 +283,7 @@ class HybridEigenvectorFollowing:
                          eigenvalue: float) -> NDArray:
         """ Take uphill step of appropriate length given an eigenvector
             that defines the step direction, and an eigenvalue that
-            determines if the step is uphill or not
+            determines if the step is uphill or not.
             Return coords after step is taken """
         if eigenvalue >= 0.0:
             coords.position += self.positive_eigenvalue_step*eigenvector
@@ -458,8 +459,8 @@ class HybridEigenvectorFollowing:
 
     def test_convergence(self, position: NDArray, lower_bounds: NDArray,
                          upper_bounds: NDArray) -> bool:
-        """ Test for convergence accounting for active bounds
-            Only consider the gradient components in dimensions not at bounds
+        """ Test for convergence accounting for active bounds.
+            Only consider the gradient components in dimensions not at bounds.
             Return True if points passes convergence test """
         grad = self.potential.gradient(position)
         # Find the directions at bounds

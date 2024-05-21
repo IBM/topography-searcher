@@ -1,5 +1,5 @@
-""" Routines that act on a kinetic transition network to select pairs of minima
-   for sampling by different criteria """
+""" Routines that act on a KineticTransitionNetwork object to select pairs 
+    of minima for sampling by different criteria """
 
 import numpy as np
 import networkx as nx
@@ -11,7 +11,7 @@ def connect_unconnected(ktn: type, similarity: type,
                         coords: type, neighbours: int) -> list:
     """
     Find all minima not connected to global minimum set and their nearest
-    cycles minima. Run connection attempts for each minima pair
+    neighbours. Return the list of minima pairs
     """
     # Check for emptiness
     if ktn.n_minima == 0:
@@ -60,8 +60,8 @@ def closest_enumeration(ktn: type, similarity: type,
                         coords: type, neighbours: int) -> list:
     """
     Selector that attempts to connect all minima in the fewest number of
-    attempts by connecting each minimum to its N nearest neighbours
-    Generates a list of pairs and runs connection attempts for all
+    attempts by connecting each minimum to its N nearest neighbours.
+    Returns a list of pairs
     """
     pairs = []
     dist_matrix = get_distance_matrix(ktn, similarity, coords)
@@ -73,7 +73,7 @@ def closest_enumeration(ktn: type, similarity: type,
 
 
 def read_pairs(text_path: str = ''):
-    """ Pair selection by reading the information from file pairs.txt """
+    """ Read the set of pairs from the file pairs.txt """
     pairs = np.genfromtxt(f'{text_path}pairs.txt', dtype=int)
     return unique_pairs(pairs.tolist())
 

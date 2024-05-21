@@ -1,4 +1,4 @@
-""" Module to contain local minimisers. Global optimisation, single and
+""" Local minimisation routines. Global optimisation, single and
     double-ended transition state searches all rely on local minimisation """
 
 import scipy

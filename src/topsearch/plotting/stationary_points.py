@@ -1,5 +1,6 @@
-""" Functions to plot a two-dimensional surface and the kinetic transition
-    network overlaid onto it """
+""" Functions to produce a contour plot for a two-dimensional surface
+    with the kinetic transition network containing minima and
+    transition states overlaid onto it """
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -71,37 +72,6 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
     plt.close()
 
 
-def plot_nudged_elastic_band(potential: type, neb: NDArray, bounds: list,
-                             label: str = '', contour_levels: int = 50,
-                             fineness: int = 50,
-                             colour_scheme: str = 'cool') -> None:
-    """ Plot all minima and transition states of the function. Each transition
-        state is given in red and each minimum in green with a labelling
-        matching min.data. Connected minima of each transition state are
-        joined by solid black lines """
-
-    plt.figure()
-    cmap = plt.cm.get_cmap(colour_scheme, contour_levels+1)
-    # Get the function contours
-    contour_set = plot_contours(potential, bounds, fineness,
-                                contour_levels, cmap)
-    # Add the minima and transition states
-    plt.plot(neb[:, 0], neb[:, 1], c='k', zorder=3)
-    plt.scatter(neb[0, 0], neb[0, 1], c='k', marker='x')
-    plt.scatter(neb[-1, 0], neb[-1, 1], c='k', marker='x')
-    # Add labels and write to disc
-    plt.xlabel(r'$x$')
-    plt.ylabel(r'$y$')
-    plt.xlim(bounds[0])
-    plt.ylim(bounds[1])
-    plt.colorbar(contour_set)
-    plt.tight_layout()
-    plt.savefig(f"NudgedElasticBand{label}.png", dpi=300)
-    plt.cla()
-    plt.clf()
-    plt.close()
-
-
 def self_connected(ktn: type) -> int:
     """ Count the number of edges that connect minima to themselves """
     selfconnected = 0
@@ -112,7 +82,8 @@ def self_connected(ktn: type) -> int:
 
 
 def make_xy_grid(bounds: list, fineness: int) -> tuple[NDArray, NDArray]:
-    """ Produce the xy grid that the function will be evaluated on """
+    """ Produce the xy grid that the function will be evaluated on
+        for the contour plot """
     x_grid, y_grid = np.meshgrid(
         np.linspace(bounds[0][0], bounds[0][1], fineness),
         np.linspace(bounds[1][0], bounds[1][1], fineness))
@@ -121,7 +92,7 @@ def make_xy_grid(bounds: list, fineness: int) -> tuple[NDArray, NDArray]:
 
 def plot_contours(potential: type, bounds: list, fineness: int,
                   contour_levels: int, cmap: type) -> NDArray:
-    """ Make contour plot of the potential in the range bounds """
+    """ Make a contour plot of the potential within the range bounds """
     x_grid, y_grid = make_xy_grid(bounds, fineness)
     z_grid = compute_function_grid(potential, x_grid, y_grid, fineness)
     contour_set = plt.contour(x_grid, y_grid, z_grid,
@@ -131,7 +102,8 @@ def plot_contours(potential: type, bounds: list, fineness: int,
 
 def compute_function_grid(potential: type, x_array: NDArray,
                           y_array: NDArray, fineness: int) -> NDArray:
-    """ Returns the function value with meshgrid input for plotting """
+    """ Returns the function value evaluated for the grid of
+        meshgrid input for plotting """
     z_array = []
     for i in map(lambda x: function_call(potential, x),
                  zip(x_array.flatten(), y_array.flatten())):

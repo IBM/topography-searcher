@@ -1,4 +1,5 @@
-""" Module that contains the Gaussian process potential class """
+""" Module that contains classes to implement Gaussian process regression
+    and evaluate the resulting model """
 
 import warnings
 import sys
@@ -15,10 +16,9 @@ class GaussianProcess(Potential):
     """
     Description
     -------------
-
-    The log-marginal likelihood for Gaussian process regression.
-    Need to specify the kernel used to calculate covariance, and provide
-    training data
+    Fit and evaluate a Gaussian process regression model to a given dataset.
+    The function we evaluate is the value of the regression model at any
+    point in feature space
 
     Attributes
     -----------
@@ -28,12 +28,13 @@ class GaussianProcess(Potential):
         The choice of kernel, can be 'RBF' or 'Matern'
     kernel_bounds : list
         Limits on the kernel lengthscales and noise (final element)
+        hyperparameters
     standardise_training : bool
         Choose whether to standardise the training data before GP fit
     standardise_response : bool
         Choose whether to standardise the response data before GP fit
     limit_highest_data : logical
-        Specifies if we should limit the largest response value
+        Specifies if we should limit the largest response value.
         Useful in molecular applications where the steep repuslive wall
         gives huge values
     matern_nu : float
@@ -102,7 +103,7 @@ class GaussianProcess(Potential):
 
     def add_data(self, new_training: NDArray,
                  new_response: NDArray) -> None:
-        """ Add data to the model data accounting for standardisation """
+        """ Add data to the model data, accounting for standardisation """
         if self.standardise_training:
             self.model_data.unstandardise_training()
         if self.standardise_response:
@@ -140,7 +141,7 @@ class GaussianProcess(Potential):
         return self.gpr.predict(position.reshape(1, -1))[0]
 
     def function_and_std(self, position: NDArray) -> float:
-        """ Return the variance of the GP fit at position """
+        """ Return the mean and variance of the GP fit at position """
         return self.gpr.predict(position.reshape(1, -1), return_std=True)
 
     def refit_model(self, n_restarts: int = 50) -> None:

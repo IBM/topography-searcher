@@ -1,5 +1,7 @@
-""" Module that contains the functions to plot disconnectivity graphs from
-    a network of minima and transition states. """
+""" Methods for plotting disconnectivity graphs from a KineticTransitionNetwork
+    object that contains the network of minima and transition states.
+    Disconnectivity graphs provide a two-dimensional visualisation of the
+    structure of high-dimensional surfaces """
 
 import networkx as nx
 import numpy as np

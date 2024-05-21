@@ -16,11 +16,13 @@ class NudgedElasticBand:
     ------------
 
     Takes in the coordinates of two endpoint minima and perform a double-ended
-    transition state search using the nudged elastic band
-    Produces an initial linear interpolation with linear_interpolation
+    transition state search using the nudged elastic band algorithm
+    (https://doi.org/10.1142/9789812839664_0016).
+    Produces an initial linear interpolation with linear_interpolation or
+    dihedral_interpolation.
     Optimise this initial guess using minimise_interpolation
     And pick out transition state candidates using find_ts_candidates
-    The whole process is performed by run
+    The whole process is performed by run()
 
     Attributes
     ----------

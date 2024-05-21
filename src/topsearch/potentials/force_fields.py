@@ -1,5 +1,5 @@
-""" Module that contains the class for evaluating classical molecular
-    force fields """
+""" Module that contains the classes for evaluating classical molecular
+    force fields to compute the energy of atomistic systems """
 
 import numpy as np
 from nptyping import NDArray
@@ -11,8 +11,27 @@ from .potential import Potential
 
 
 class MMFF94(Potential):
-    """ Evaluate the energy of a molecular system using the MMFF94 empirical
-        force field using RDKit """
+    """ 
+    Description
+    ---------------
+    Evaluate the energy and force of a molecular system using the
+    MMFF94 empirical force field through RDKit.
+
+    Attributes
+    ----------------
+    xyz_file : string
+        The filename for the xyz file that contains the molecular or atomic
+        system
+    molecule : class instance
+        rdkit object that stores the information about the molecule
+    conf : class instance
+        stores the particular atomic positions for the molecule
+    n_atoms : int
+        Store the number of atoms in the molecule or cluster
+    force_field : class instance
+        the force field object that contains parameters to allow evaluation
+        of the potential energy from the molecule object
+        """
 
     def __init__(self, xyz_file: str):
         self.atomistic = True

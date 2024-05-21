@@ -44,7 +44,7 @@ def select_batch(ktn: type, batch_size: int, batch_selection_method: str,
     """
     Method to select the batch of points from a given network
     Returns the indices of the minima and their coordinates
-    Type of batch selection depends on batch_selection_method
+    Type of batch selection depends on batch_selection_method:
     Lowest - Select the batch_size lowest minima in value
     Monotonic - Select monotonic sequence basins of the network
     Barrier - Select minima that are separated by sufficiently large
@@ -95,7 +95,7 @@ def generate_batch(ktn: type, batch_selection_method: str,
 
 
 def lowest_batch_selector(ktn: type, excluded_minima: list) -> list:
-    """ Simply select the lowest minima of the acquisition function
+    """ Simply select the lowest minima of the acquisition function.
         Returns list of indices the selected minima correspond to """
     # Starting from the lowest indices progressively add if not banned
     ordered_indices = get_ordered_minima(ktn).tolist()
@@ -117,9 +117,9 @@ def fill_batch(ktn: type, batch_indices: list,
 def topographical_batch_selector(ktn: type,
                                  excluded_minima: list,
                                  absolute_barrier_cutoff: float) -> NDArray:
-    """ Select a batch of minima based on the surface topography
+    """ Select a batch of minima based on the surface topography.
         First finds monotonic sequence basins, and if not batch_size
-        of them then use barrier_batch_selector to generate remaining
+        of them then use barrier_batch_selector to generate remaining.
         Returns the indices of the selected nodes, and their
         corresponding coordinates """
 
@@ -184,7 +184,7 @@ def barrier_batch_selector(ktn: type,
 def sufficient_barrier(ktn: type, node_i: int, node_j: int,
                        max_ts_energy: float, e_range: float,
                        absolute_barrier_cutoff: float) -> bool:
-    """ Check if minima pass criteria to be added to the batch
+    """ Check if minima pass criteria to be added to the batch.
         Returns logical specified if pass or fail """
     height = disconnected_height(ktn, node_i, node_j, max_ts_energy, e_range)
     if height > 1e9:
@@ -241,7 +241,7 @@ def get_batch_positions(ktn: type, batch_indices: list) -> NDArray:
 
 def evaluate_batch(true_potential: type, batch_indices: list,
                    batch_points: NDArray) -> NDArray:
-    """ Evaluate the true potential at each point in the given batch
+    """ Evaluate the true potential at each point in the given batch.
         Return the training and corresponding response values """
     new_response = np.apply_along_axis(
         true_potential.function, 1, batch_points)

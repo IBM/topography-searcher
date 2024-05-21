@@ -1,4 +1,4 @@
-""" basin_hopping module contains the BasinHopping class which performs
+""" The basin_hopping module contains the BasinHopping class which performs
     global optimisation of a given function """
 
 from timeit import default_timer as timer
@@ -15,7 +15,7 @@ class BasinHopping:
     ------------
 
     Class to perform basin-hopping global optimisation algorithm
-    Basin-hopping algorithm described in doi:10.1021/jp970984n
+    as described in https://doi.org/10.1021/jp970984n
     One iteration is described by:
     1) Perturb current position
     2) Minimisation to get corresponding local minimum
@@ -25,12 +25,12 @@ class BasinHopping:
     ----------
 
     ktn : class instance
-        An instance of the kinetic transition network class that is used
+        An instance of the KineticTransitionNetwork class that is used
         to store the unique minima we locate
     potential : class instance
-        Class containing the function that we are aiming to optimise
+        Object containing the function that we are aiming to optimise
     similarity: class instance
-        Class that determines if two minima are the same or unique
+        Object that determines if two minima are the same or unique
     step_taking : class instance
         Instance that perturbs the current position using a given set
         of moves specified in the class
@@ -119,7 +119,7 @@ class BasinHopping:
     def metropolis(self, energy1: float, energy2: float,
                    temperature: float) -> bool:
         """
-        Compute the acceptance probability using the Metropolis criterion
+        Compute the acceptance probability using the Metropolis criterion.
         energy2 - proposed minimum, energy1 - current state in Markov chain
         """
 
@@ -131,7 +131,7 @@ class BasinHopping:
 
     def write_initial_information(self, n_steps: int,
                                   temperature: float) -> None:
-        """ Print out the initial basin-hopping """
+        """ Print out the initial basin-hopping information """
 
         with open('logfile', 'a', encoding="utf-8") as outfile:
             outfile.write('-------BASIN-HOPPING-------\n')

@@ -1,5 +1,5 @@
-""" Functions to compute the roughness of a given network.
-    https://doi.org/10.26434/chemrxiv-2023-0zx26 """
+""" Functions to compute the roughness of a given network, as described in
+    https://doi.org/10.1039/D3ME00189J """
 
 import numpy as np
 from .graph_properties import get_connections

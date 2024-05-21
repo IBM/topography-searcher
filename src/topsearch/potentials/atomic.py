@@ -1,5 +1,6 @@
 """ Module to store interatomic potentials that can be used
-    for atomistic systems """
+    for atomistic systems. Contains the classes to compute the
+    energy of atomic clusters within the Lennard-Jones and Gupta potentials """
 
 import numpy as np
 from nptyping import NDArray
@@ -7,11 +8,13 @@ from .potential import Potential
 
 
 class LennardJones(Potential):
+
     """
     Description
     ------------
-    The Lennard-Jones pair potential for a set of atoms
-    Simple but fast representation of interatomic potentials
+    The Lennard-Jones pair potential to evaluate the energy 
+    for a set of atoms. Simple but fast representation of
+    interatomic potentials
 
     Attributes
     -----------
@@ -90,7 +93,7 @@ class BinaryGupta(Potential):
     """
     Description
     ------------
-    Evaluate energy of binary metal clusters with the Gupta potential
+    Evaluate energy of binary metal clusters with the Gupta potential.
     Here only contains the parameters for Au and Ag.
 
     Attributes

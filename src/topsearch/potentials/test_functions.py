@@ -1,5 +1,5 @@
-""" Module that includes two simple test functions that can be used
-    for validation and testing of the methodology """
+""" Module that includes three simple test function classes that
+    can be used for validation and testing of the methodology """
 
 import numpy as np
 from nptyping import NDArray
@@ -11,7 +11,7 @@ class Camelback(Potential):
     """
     Description
     ------------
-    Six-hump camel function, sfu.ca/~ssurjano/camel6.html
+    Six-hump camel function: sfu.ca/~ssurjano/camel6.html
 
     Attributes
     -----------
@@ -56,7 +56,7 @@ class Schwefel(Potential):
     """
     Description
     ------------
-    Schwefel function, https://www.sfu.ca/~ssurjano/schwef.html
+    Schwefel function: https://www.sfu.ca/~ssurjano/schwef.html
 
     Attributes
     ------------
@@ -80,7 +80,7 @@ class Quadratic(Potential):
     """
     Description
     -------------
-    Simple quadratic centered at (0, 0, 0, ... ). Used only for testing
+    Simple quadratic centered at (0, 0, 0, ... )
 
     Attributes
     --------------

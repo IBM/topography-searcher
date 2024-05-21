@@ -1,5 +1,6 @@
 """ Module that contains the classes for performing interpolation or
-    regression of a provided dataset and then exploring the fitted function """
+    regression of a specified dataset and then evaluating its function
+    value at any given position """
 
 import numpy as np
 from nptyping import NDArray
@@ -11,14 +12,14 @@ from .potential import Potential
 
 class DatasetInterpolation(Potential):
     """
-    Class to compute and evaluate a regression or interpolation model fitted
-    to a given dataset.
+    Class to compute and evaluate a radial basis function interpolation
+    fitted to a given dataset.
 
     Attributes
     -------------
 
     model_data: class
-        The dataset which we interpolate or regress
+        The dataset which we interpolate
     smoothness: float
         Smoothness parameter for the kernel in RBF interpolation
     model: class
@@ -39,7 +40,7 @@ class DatasetInterpolation(Potential):
                                      smoothing=self.smoothness)
 
     def function(self, position: NDArray) -> float:
-        """ Evaluate the value of the regression/interpolation model """
+        """ Evaluate the value of the interpolation model """
         return float(self.model(position.reshape(1, -1)))
 
     def refit_model(self) -> None:
@@ -51,14 +52,14 @@ class DatasetInterpolation(Potential):
 
 class DatasetRegression(Potential):
     """
-    Class to compute and evaluate a regression or interpolation model fitted
-    to a given dataset.
+    Class to fit a regression model to a given dataset using the sklearn
+    multilayer perceptron, and then query its value at any point in space
 
     Attributes
     -------------
 
     model_data: class
-        The dataset which we interpolate or regress
+        The dataset which we regress
     model_rand: int
         Random seed passed to MLP fitting
     model: class
@@ -89,7 +90,7 @@ class DatasetRegression(Potential):
                                          return_estimator=True)
 
     def function(self, position: NDArray) -> float:
-        """ Evaluate the value of the regression/interpolation model """
+        """ Evaluate the value of the regression model """
         return float(self.model.predict(position.reshape(1, -1)))
 
     def refit_model(self) -> None:

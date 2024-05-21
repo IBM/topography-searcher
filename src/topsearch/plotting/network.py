@@ -1,4 +1,4 @@
-""" Functions for plotting the kinetic transition network as a weighted
+""" Functions for plotting the KineticTransitionNetwork object as a weighted
     graph. Nodes are minima (coloured by their function value), edges
     are present when transition states connect minima. The separation
     is inversely proportional to barrier height """

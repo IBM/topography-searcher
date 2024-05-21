@@ -1,4 +1,4 @@
-""" exploration module contains the algorithms for deciding on sampling
+""" This module contains the algorithms for deciding on sampling
     of the function space to map the topography, and running different
     exploration algorithms """
 
@@ -33,7 +33,7 @@ class NetworkSampling:
         with their properties and operations on the network. Decide where to
         sample next from network properties and add new stationary points
     coords : class instance
-        The type of coordinates that are being using exploring space
+        The type of coordinates that are being used when exploring space
     global_optimiser : class instance
         Global optimisation algorithm that locates low-valued minima of the
         given potential
@@ -87,9 +87,9 @@ class NetworkSampling:
     def get_transition_states(self, method: str, cycles: int,
                               remove_bounds_minima: bool = False,
                               all_bounds: bool = False) -> None:
-        """ Default algorithm for generating a landscape
-            Combines different sampling methods in sequence to produce
-            a fully connected network.
+        """ Default algorithm for generating a landscape from a set of minima.
+            Combines different sampling methods in sequence to find transition
+            states between minima and produce a fully connected network.
             Updates the ktn.G network with any new transition states """
 
         # Remove any edge cases that are high in energy and not connected
@@ -114,7 +114,7 @@ class NetworkSampling:
 
     def run_connection_attempts(self, total_pairs: list) -> None:
         """
-        Given the pairs of minima that have been selected for connection
+        Given the pairs of minima that have been selected for connection,
         run the connection attempts in parallel or serial and add any
         new transition states to the network
         """
@@ -154,8 +154,9 @@ class NetworkSampling:
                 self.ktn.pairlist, np.array([np.sort(i)]), axis=0)
 
     def connection_attempt(self, pair: list) -> list:
-        """ Connection attempt between a pair of selected minima that are
-            specified nodes of the network graph. Returns a list of all
+        """ Perform a connection attempt between a pair of selected minima 
+            that are specified nodes of the network graph with the aim of
+            finding transition states between them. Returns a list of all
             transition states and their connected minima
             with each transition state as a sublist """
 
@@ -240,10 +241,10 @@ class NetworkSampling:
         return min1, min2, repeats, permutation
 
     def check_pair(self, node1: int, node2: int) -> (bool, int):
-        """ Determines if this pair should be tried again
+        """ Determines if a connection between this pair should be tried again.
             Could have already been attempted too many times or
             already have a transition state. Return logical
-            that determines if pair should be attemped """
+            that determines if pair should be attempted """
 
         # Calculate the number of times this pair has been tried
         repeats = 0
@@ -291,14 +292,14 @@ class NetworkSampling:
     def select_minima(self, coords: type, option: str,
                       neighbours: int) -> list:
         """
-        Make decisions about which pairs of nodes we should be connecting
-        Pick one of four schemes designed to connect with certain properties
-        'ClosestEnumeration' - for each minimum generate the neighbours pairs
-                               that are closest in Euclidean distance
+        Make decisions about which pairs of minima we should be connecting.
+        Pick one of three schemes designed to connect minima:
+        'ClosestEnumeration' - for each minimum generate pairs with the minima
+                               that are closest in Euclidean distance.
         'ConnectUnconnected' - select pairs of minima that are closest in
                                Euclidean distance with the constraint that
                                one minimum must be connected to the
-                               global minimum, and one must not
+                               global minimum, and one must not.
         'ReadPairs' - take the list of connections from the file 'pairs.txt'
         """
 
@@ -326,8 +327,8 @@ class NetworkSampling:
         return pairs
 
     def reconverge_minima(self, potential: type, reconv_crit: float) -> None:
-        """ Reconverge the minima we have found in ktn, allows high
-            accuracy without expending large cost at every BH step """
+        """ Reconverge the minima we have found in ktn, allows for higher
+            accuracy after running basin-hopping """
 
         start_time = timer()
         # Get the coordinates of all minima to reconverge

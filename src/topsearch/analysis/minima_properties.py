@@ -47,7 +47,7 @@ def get_all_bounds_minima(ktn: type, coords: type) -> list:
 def get_similar_minima(ktn: type,
                        proximity_measure: float,
                        comparison_points: NDArray) -> list:
-    """ Locate any minima with proximity_measure of the comparison_points """
+    """ Locate any minima within proximity_measure of the comparison_points """
     similar_minima = []
     for i in range(ktn.n_minima):
         coords = ktn.get_minimum_coords(i)

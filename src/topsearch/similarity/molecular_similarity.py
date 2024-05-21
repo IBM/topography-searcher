@@ -1,5 +1,8 @@
-""" Module that contains the classes for evaluating similarity of
-    atomic or molecular conformations """
+""" Module that contains the class for evaluating similarity of
+    atomic or molecular conformations. Alignment of atomistic systems
+    requires consideration of translational, rotatational and permutational
+    invariance, which makes it much more challenging than the Euclidean
+    distance between configurations """
 
 import numpy as np
 from nptyping import NDArray
@@ -14,21 +17,25 @@ class MolecularSimilarity(StandardSimilarity):
     """
     Description
     ------------
-    Separate class to deal with the extra complexity of atomic systems.
-    They require translation, rotation, centering and permutation
+    Class to perform alignment of molecular and atomic coordinate
+    objects, and highlight repeated minima and transition states.
+    Alignment minimises the Euclidean distance between a pair of
+    conformations accounting for translational, rotational and 
+    permutational invariance.
 
     Attributes
     -----------
     distance_criterion : float
-        The distance under which two minima are considered the same, for
-        proportional_distance set to True this is not an absolute value,
-        but the proportion of the total function range
+        The distance under which two minima are considered the same
     energy_criterion : float
         The value that the difference in function values must be below
         to be considered the same
     weighted : bool
         Flag that specifies whether we include the relative atomic weights
         in alignment
+    allow_inversion : bool
+        Flag that specifies if we consider conformations related by the
+        inversion operation as the same
     """
 
     def __init__(self, distance_criterion: float, energy_criterion: float,

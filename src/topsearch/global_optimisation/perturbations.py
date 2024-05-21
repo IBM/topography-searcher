@@ -1,5 +1,7 @@
-""" Perturbations module contains methods to take steps around
-    a given space. These moves each have a class, and are
+""" Perturbations module contains classes that take steps around
+    a given space. The perturbations have a separate class for each
+    coordinates class, as molecular and atomistic systems require
+    different changes that respect the bonding framework. These instances are 
     passed to the global optimisation instance to drive its step-taking """
 
 import random
@@ -13,8 +15,9 @@ class StandardPerturbation:
     Description
     ------------
 
-    Class to perturb a position for use in global optimisation.
-    For non-atomic systems this is implemented as random displacements
+    Class to perturb a position in Euclidean space for use in global 
+    optimisation. For non-atomic systems this is implemented as
+    random displacements
 
     Attributes
     -----------
@@ -55,7 +58,8 @@ class AtomicPerturbation():
     """
     Description
     ------------
-    Simple displacement routine applicable to atomic systems
+    Simple displacement routine applicable to atomic systems. Applies
+    a 3D displacement vector to selected atoms.
     Perturbs up to max_atoms atoms with a displacement up to max_displacement
 
     Attributes
@@ -89,9 +93,10 @@ class MolecularPerturbation():
     """
     Description
     ------------
-    Displacement routine applicable to molecular systems
-    Performs rotations of flexible bond dihedrals through a random angle
-    up to a specified limit
+    Displacement routine applicable to molecular systems. Needs to retain the
+    bonding framework, which it achieves through rotation of bond dihedrals.
+    Selects a random subset of flexible bond dihedrals and rotates through a
+    random angle up to a specified limit
 
     Attributes
     -----------

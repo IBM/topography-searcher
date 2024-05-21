@@ -1,5 +1,5 @@
-""" Module that contains the class for evaluating machine-learned
-    potentials through ase """
+""" Module that contains the class for evaluating the energy of molecules
+    via machine-learned potentials through the ase package """
 
 import numpy as np
 from nptyping import NDArray
@@ -12,7 +12,7 @@ class MachineLearningPotential(Potential):
     Description
     ---------------
     Evaluate the energy of a molecular system using machine learning potentials
-    called through ase
+    called through the ase package. Options are ANI2x and MACE.
 
     Attributes
     ---------------

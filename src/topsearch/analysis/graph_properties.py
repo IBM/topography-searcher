@@ -7,7 +7,7 @@ from .minima_properties import get_minima_energies
 
 
 def unconnected_component(ktn: type) -> set:
-    """ Check which minima are not connected to the global minimum
+    """ Check which minima are not connected to the global minimum.
         Return the set of minima that are unconnected """
 
     # Get global minimum node

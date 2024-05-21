@@ -1,5 +1,8 @@
-""" Module containing the StandardCoordinates class
-    used to store and change positions """
+""" Module containing the different coordinates classes that are
+    used to store and modify positions in space. These can be separated
+    into StandardCoordinates, which is used for ML models, AtomicCoordinates
+    which is used for clusters of atoms, and MolecularCoordinates that stores
+    molecular configurations. """
 
 import numpy as np
 import networkx as nx
@@ -16,8 +19,8 @@ class StandardCoordinates:
     Description
     ---------------
 
-    Class to store the coordinate position and all of the operations
-    applied to the positions
+    Class to store a position in space, and the methods to
+    analyse if at bounds
 
     Attributes
     ---------------
@@ -42,7 +45,7 @@ class StandardCoordinates:
                                  high=self.upper_bounds)
 
     def check_bounds(self) -> NDArray:
-        """ Check if provided coords are at the bounds and return boolean
+        """ Check if position is at the bounds. Returns boolean
             array denoting which dimensions are at the bounds """
         return np.invert((self.position > self.lower_bounds) &
                          (self.position < self.upper_bounds))
@@ -55,7 +58,7 @@ class StandardCoordinates:
         """ Check if the position is at the bounds in all dimensions """
         return np.all(self.check_bounds())
 
-    def active_bounds(self) -> (NDArray, NDArray):
+    def active_bounds(self) -> NDArray:
         """ Checks whether the position is at the upper or lower bounds """
         below_bounds = self.position <= self.lower_bounds
         above_bounds = self.position >= self.upper_bounds
@@ -74,16 +77,18 @@ class AtomicCoordinates(StandardCoordinates):
     ---------------
 
     Class to store the coordinates of an atomic system in Euclidean space.
-    Methods to modify atomic positions and write out configurations
+    Methods to check configurations, modify atomic positions and
+    write configurations to file
 
     Attributes
     ---------------
     bounds : list of tuples [(b1_min, b1_max), (b2_min, b2_max)...]
         The allowed ranges of the coordinates in each dimension
     ndim : int
-        The dimensionality of the coordinates
+        The dimensionality of the coordinates, 3*n_atoms
     position : numpy array
         Array of size ndim containing the current position
+        (x1, y1, z1), ..., (x_n, y_n, z_n)
     atom_labels : list
         The species in the system, matching the order of position
     """
@@ -146,13 +151,12 @@ class AtomicCoordinates(StandardCoordinates):
         return nx.is_connected(adj_graph)
 
     def get_connected_atoms(self) -> list:
-        """ Get the connected atom labels of each atom in molecule """
+        """ Get the connected atom labels of each atom in cluster """
         return [['H']]*self.n_atoms
 
     def remove_atom_clashes(self):
         """ Routine to remove clashes between atoms that result in
-            very large gradient and explosion of the cluster.
-            Unused default parameter is for matching with other classes """
+            very large gradient values """
         centre_of_mass = np.array([np.average(self.position[0::3]),
                                    np.average(self.position[1::3]),
                                    np.average(self.position[2::3])])
@@ -183,10 +187,10 @@ class MolecularCoordinates(AtomicCoordinates):
     Description
     ---------------
 
-    Class to store the coordinates of an molecular system.
-    Methods to modify atomic positions and write out configurations.
+    Class to store the coordinates of a molecular system, and
+    methods to modify molecular conformations and write out configurations.
     Inherits from AtomicCoordinates, but contains additional functionality
-    to test rotatable dihedrals and bonding structure.
+    to generate internal coordinate representation and check bonding structure.
 
 
     Attributes
@@ -194,7 +198,7 @@ class MolecularCoordinates(AtomicCoordinates):
     bounds : list of tuples [(b1_min, b1_max), (b2_min, b2_max)...]
         The allowed ranges of the coordinates in each dimension
     ndim : int
-        The dimensionality of the coordinates
+        The dimensionality of the coordinates, 3*n_atoms
     position : numpy array
         Array of size ndim containing the current position
     atom_labels : list
@@ -325,7 +329,7 @@ class MolecularCoordinates(AtomicCoordinates):
 
     def get_repeat_dihedrals(self, dihedrals: list) -> list:
         """ Only retain one dihedral when multiple share the same
-            central bond. Gives a list of repeats to remove """
+            central bond. Returns a list of repeats to remove """
         removals = []
         for i in range(1, len(dihedrals)):
             same_central_bond = False

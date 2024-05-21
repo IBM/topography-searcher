@@ -14,10 +14,9 @@ class ExpectedImprovement(Potential):
     Description
     -------------
 
-    Acquisition functions used to evaluate the utility in picking
-    a given point as the next experiment in Bayesian optimisation.
-    They are constructed from a given Gaussian process that provides
-    both mean and variance.
+    Evaluate the expected improvement function to determine the utility
+    in picking a particular point for a next experiment in BayesOpt.
+    The function is constructed from a given Gaussian process that provides.
     Defined assuming maximisation of a dataset
 
     Attributes
@@ -35,7 +34,7 @@ class ExpectedImprovement(Potential):
         self.zeta = zeta
 
     def function(self, position: NDArray) -> float:
-        """ Return the expected improvement at position coords """
+        """ Return the expected improvement at position """
         current_max = np.max(self.gaussian_process.model_data.response)
         mean, std = self.gaussian_process.function_and_std(position)
         prefactor = mean - current_max - self.zeta
@@ -49,11 +48,10 @@ class UpperConfidenceBound(Potential):
     Description
     -------------
 
-    Acquisition functions used to evaluate the utility in picking
+    Evaluate the upper confidence bound, which gives the utility in picking
     a given point as the next experiment in Bayesian optimisation.
-    They are constructed from a given Gaussian process that provides
-    both mean and variance.
-    Defined assuming minimisation of a dataset
+    The function is constructed from a given Gaussian process that provides
+    both mean and variance. Defined assuming minimisation of a dataset
 
     Attributes
     -------------

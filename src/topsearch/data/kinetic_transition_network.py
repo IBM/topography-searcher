@@ -1,4 +1,4 @@
-""" Module which stores all the KineticTransitionNetwork class with
+""" Module which contains the KineticTransitionNetwork class. This class has
     methods for storing and extracting stationary point information
     encoded as a network graph """
 
@@ -12,10 +12,10 @@ class KineticTransitionNetwork:
     """
     Description
     -------------
-    A class to keep track of the network of minima and transition states
-    Stationary points are stored in a networkx graph. All addition, removal
-    and accessing of properties is performed through this class. Furthermore,
-    provides functionality for computing different network properties
+    A class to store and operate on the network of minima and transition
+    states. Stationary points are stored in a networkx graph. All
+    addition, removal and accessing of properties is performed through
+    this class.
 
     Attributes
     -----------
@@ -113,8 +113,8 @@ class KineticTransitionNetwork:
     def dump_network(self, text_string: str = '') -> None:
         """
         Write network to text files:
-        *.data store the index and energy
-        ts.data also includes the connectivity
+        min.data stores the index and energy.
+        ts.data stores the connected minima and energy.
         min/ts.coords store the coordinates of each stationary point
         """
         # Get dimensionality of minima

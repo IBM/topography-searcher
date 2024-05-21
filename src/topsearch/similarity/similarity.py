@@ -1,6 +1,7 @@
-""" Similarity module evaluates the similarity of two different points
-    in a space. These could be atomic configurations or simply points
-    in a Euclidean space """
+""" Similarity module contains classes that evaluate the similarity
+    of two different points in a space. The class StandardSimilarity
+    is the base class from which atomic and molecular equivalents
+    build """
 
 from copy import deepcopy
 import numpy as np
@@ -13,9 +14,10 @@ class StandardSimilarity:
     Description
     ------------
 
-    Base class for assessing the similarity between two configurations
+    Base class for assessing the similarity between two configurations.
     The base class deals with non-atomic systems, which are considerably
-    simpler than atomic systems due to the absence of permutation and rotation
+    simpler than atomic systems due to the absence of permutation and rotation.
+    The distance can simply be the L2 norm between vectors.
 
     Attributes
     -----------
@@ -49,8 +51,8 @@ class StandardSimilarity:
         return coords1.position
 
     def closest_distance(self, coords1: type, coords2: NDArray) -> float:
-        """ Returns the closest distance between coords1 and coords2
-            Just the distance for non-atomic systems """
+        """ Returns the closest distance between coords1 and coords2.
+            Just the Euclidean distance for non-atomic systems """
         return self.distance(coords1.position, coords2)
 
     def optimal_alignment(self, coords1: type,
@@ -100,7 +102,7 @@ class StandardSimilarity:
     def is_new_ts(self, ktn: type, ts_coords: type,
                   ts_energy: float) -> tuple[bool, NDArray]:
         """ Compare transition state to all other currently in the network G
-            and return whether it is the same as any of them """
+            and return False if same as any of them """
 
         # Loop over all transition states
         for node1, node2 in ktn.G.edges():
@@ -118,7 +120,7 @@ class StandardSimilarity:
     def test_new_minimum(self, ktn: type, min_coords: type,
                          min_energy: float) -> None:
         """ Evaluate if a minimum is different to all current minima,
-            check the minimum passes the requires test, and if both are
+            check the minimum passes the required tests, and if both are
             True then add to network """
 
         if not self.is_new_minimum(ktn, min_coords, min_energy)[0]:
@@ -130,7 +132,7 @@ class StandardSimilarity:
                     min_plus_coords: NDArray, e_plus: float,
                     min_minus_coords: NDArray, e_minus: float) -> None:
         """ Evaluate if the transition state is not a repeat, and that
-            all stationary points are valid, if they are then add
+            all stationary points are valid. If they are then add
             transition state to network with indices of connected minima """
 
         # Check if the transition state is new or repeated
