@@ -28,6 +28,11 @@ Landscape exploration involves selecting pairs of minima and attempting to find 
 
 For more details of the methodology please refer to [`common_citations.md`](./common_citations.md).
 
+## Documentation
+
+A complete documentation for the package can be found at the GitHub pages: [
+](https://ibm.github.io/topography-searcher/)
+
 ## Installation
 
 Instructions are for installation into a conda environment. First create the conda environment
