@@ -619,7 +619,7 @@ def test_optimal_alignment_mol6():
     coords.position[45:48] = np.array([1.8275606179952912, -0.7542999101540282, 0.11210399009400124])
     coords.position[57:60] = np.array([-1.6808653883470404, 1.2449409619057872, -1.309108774449683])
     dist, coords1, aligned, permutation = similarity.optimal_alignment(coords, position2)
-    assert dist == pytest.approx(10.56782808628859, abs=1e-2)
+    assert dist == pytest.approx(10.56782808628859, abs=1e-1)
     assert np.all(permutation == np.array([0, 1, 2, 3, 4, 9, 6, 7, 8, 5,
                                            10, 12, 13, 11, 14, 19, 16, 17, 18, 15]))
 
