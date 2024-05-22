@@ -61,6 +61,8 @@ python -m pip install -e .
 
 We can test the environment build by running
 ```
+pip install pytest
+pip install pytest-cov
 pytest
 ```
 For a successful build we should have all tests pass. If this is the case then enjoy using TopSearch!
