@@ -42,8 +42,8 @@ def test_run_schwefel():
     basin_hopping = BasinHopping(ktn=ktn, potential=schwefel,
                                  similarity=similarity,
                                  step_taking=step_taking)
-    basin_hopping.run(coords=coords, n_steps=1500,
-                      temperature=100.0, conv_crit=1e-6)
+    basin_hopping.run(coords=coords, n_steps=2500,
+                      temperature=100.0, conv_crit=1e-5)
     energies = get_minima_energies(ktn)
     min_energy = min(energies)
     assert min_energy < 1e-3
