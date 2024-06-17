@@ -63,10 +63,13 @@ class BasinHopping:
             # Test for and remove atom clashes if density functional theory
             if isinstance(self.potential, DensityFunctionalTheory):
                 coords.remove_atom_clashes(self.potential.force_field)
-            elif isinstance(coords, MolecularCoordinates):
-                coords.remove_atom_clashes(self.potential.force_field)
+            # elif isinstance(coords, MolecularCoordinates):
+            #     coords.remove_atom_clashes(self.potential.force_field)
             elif isinstance(coords, AtomicCoordinates):
-                coords.remove_atom_clashes()
+                try:
+                    coords.remove_atom_clashes()
+                except:
+                    pass
             # Perform local minimisation
             min_position, energy, results_dict = \
                 lbfgs.minimise(func_grad=self.potential.function_gradient,
