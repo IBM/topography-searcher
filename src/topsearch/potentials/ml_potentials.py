@@ -23,7 +23,9 @@ class MachineLearningPotential(Potential):
     """
 
     def __init__(self, atom_labels: list,
-                 calculator_type: str = 'torchani') -> None:
+                 calculator_type: str = 'torchani',
+                 model: str = 'MACE_model_swa.model',
+                 device: str = 'cpu') -> None:
         self.atomistic = True
         self.calculator_type = calculator_type
         self.atom_labels = atom_labels
@@ -42,8 +44,8 @@ class MachineLearningPotential(Potential):
         elif self.calculator_type == 'mace':
             from mace.calculators import MACECalculator
             self.atoms.calc = \
-                MACECalculator(model_paths='MACE_model_swa.model',
-                               device='cpu')
+                MACECalculator(model_paths=model,
+                               device=device)
 
     def function(self, position: NDArray) -> float:
         """ Compute the electronic potential energy """
