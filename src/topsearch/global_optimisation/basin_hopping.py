@@ -3,7 +3,7 @@
 
 from timeit import default_timer as timer
 import numpy as np
-from topsearch.minimisation import lbfgs
+from topsearch.minimisation import lbfgs, psi4_internal
 from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates
 from topsearch.potentials.dft import DensityFunctionalTheory
 
@@ -40,7 +40,8 @@ class BasinHopping:
                  ktn: type,
                  potential: type,
                  similarity: type,
-                 step_taking: type) -> None:
+                 step_taking: type,
+                 opt_method: str = 'scipy',) -> None:
         self.ktn = ktn
         self.potential = potential
         self.similarity = similarity
@@ -71,11 +72,22 @@ class BasinHopping:
                 except:
                     pass
             # Perform local minimisation
-            min_position, energy, results_dict = \
-                lbfgs.minimise(func_grad=self.potential.function_gradient,
-                               initial_position=coords.position,
-                               bounds=coords.bounds,
-                               conv_crit=conv_crit)
+            if opt_method == 'scipy':
+                min_position, energy, results_dict = \
+                    lbfgs.minimise(func_grad=self.potential.function_gradient,
+                                initial_position=coords.position,
+                                bounds=coords.bounds,
+                                conv_crit=conv_crit)
+            elif opt_method == 'psi4':
+                if not isinstance(self.potential, DensityFunctionalTheory):
+                    raise ValueError("Psi4 optimisation method requires DFT potential")
+                psi4_internal
+                min_position, energy, results_dict = \
+                    psi4_minimise(self.potential,
+                                initial_position=coords.position,
+                                conv_crit=conv_crit)
+            else:
+                raise ValueError("Invalid optimisation method, options are 'scipy' or 'psi4'")
             # Failed minimisation so don't accept
             if results_dict['warnflag'] != 0 or \
                     results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH':
