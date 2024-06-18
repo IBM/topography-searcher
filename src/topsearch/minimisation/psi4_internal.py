@@ -26,5 +26,10 @@ def minimise(potential,
                         "MAX_DISP_G_CONVERGENCE": 1e2,
                         "RMS_DISP_G_CONVERGENCE": 1e2})
     
-    return e, hist
+    min_coords = hist['coordinates'][-1]
+    # dummy to mimic scipy results_dict
+    results_dict = {'task': None,
+                    'warnflag': 0,
+                    }
+    return min_coords, e, results_dict
     

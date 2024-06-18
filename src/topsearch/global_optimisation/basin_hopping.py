@@ -46,6 +46,7 @@ class BasinHopping:
         self.potential = potential
         self.similarity = similarity
         self.step_taking = step_taking
+        self.opt_method = opt_method
 
     def run(self, coords: type, n_steps: int, conv_crit: float,
             temperature: float) -> None:
@@ -72,13 +73,13 @@ class BasinHopping:
                 except:
                     pass
             # Perform local minimisation
-            if opt_method == 'scipy':
+            if self.opt_method == 'scipy':
                 min_position, energy, results_dict = \
                     lbfgs.minimise(func_grad=self.potential.function_gradient,
                                 initial_position=coords.position,
                                 bounds=coords.bounds,
                                 conv_crit=conv_crit)
-            elif opt_method == 'psi4':
+            elif self.opt_method == 'psi4':
                 if not isinstance(self.potential, DensityFunctionalTheory):
                     raise ValueError("Psi4 optimisation method requires DFT potential")
                 psi4_internal
