@@ -15,7 +15,6 @@ def minimise(potential,
     basis = calc.parameters['basis']
     calc.set_psi4()
     
-    
     # using only force convergence for now
     e, hist = psi4.optimize(f'{method}/{basis}',
                     molecule=calc.molecule,
