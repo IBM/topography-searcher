@@ -42,6 +42,8 @@ class BasinHopping:
                  similarity: type,
                  step_taking: type,
                  opt_method: str = 'scipy',) -> None:
+        
+        print('Initialising BasinHopping')
         self.ktn = ktn
         self.potential = potential
         self.similarity = similarity
@@ -74,17 +76,18 @@ class BasinHopping:
                     pass
             # Perform local minimisation
             if self.opt_method == 'scipy':
+                print('Using scipy for geometry')
                 min_position, energy, results_dict = \
                     lbfgs.minimise(func_grad=self.potential.function_gradient,
                                 initial_position=coords.position,
                                 bounds=coords.bounds,
                                 conv_crit=conv_crit)
             elif self.opt_method == 'psi4':
+                print('Using psi4 for geometry')
                 if not isinstance(self.potential, DensityFunctionalTheory):
                     raise ValueError("Psi4 optimisation method requires DFT potential")
-                psi4_internal
                 min_position, energy, results_dict = \
-                    psi4_minimise(self.potential,
+                psi4_internal.psi4_minimise(self.potential,
                                 initial_position=coords.position,
                                 conv_crit=conv_crit)
             else:
@@ -123,11 +126,23 @@ class BasinHopping:
     def prepare_initial_coordinates(self, coords: type,
                                     conv_crit: float) -> float:
         """ Generate the initial minimum and set its energy and position """
-        min_position, energy, results_dict = \
-            lbfgs.minimise(func_grad=self.potential.function_gradient,
-                           initial_position=coords.position,
-                           bounds=coords.bounds,
-                           conv_crit=conv_crit)
+        if self.opt_method == 'scipy':
+            print('Using scipy for geometry')
+            min_position, energy, results_dict = \
+                lbfgs.minimise(func_grad=self.potential.function_gradient,
+                            initial_position=coords.position,
+                            bounds=coords.bounds,
+                            conv_crit=conv_crit)
+        elif self.opt_method == 'psi4':
+            print('Using psi4 for geometry')
+            if not isinstance(self.potential, DensityFunctionalTheory):
+                raise ValueError("Psi4 optimisation method requires DFT potential")
+            min_position, energy, results_dict = \
+            psi4_internal.minimise(self.potential,
+                            initial_position=coords.position,
+                            conv_crit=conv_crit)
+        else:
+            raise ValueError("Invalid optimisation method, options are 'scipy' or 'psi4'")
         coords.position = min_position
         # After minimisation add to the existing stationary point network
         if results_dict['warnflag'] == 0:
