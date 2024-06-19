@@ -4,6 +4,7 @@
 import numpy as np
 from nptyping import NDArray
 from ase import Atoms
+import warnings
 from .potential import Potential
 
 
@@ -24,7 +25,7 @@ class MachineLearningPotential(Potential):
 
     def __init__(self, atom_labels: list,
                  calculator_type: str = 'torchani',
-                 model: str = 'MACE_model_swa.model',
+                 model: str = 'default',
                  device: str = 'cpu') -> None:
         self.atomistic = True
         self.calculator_type = calculator_type
@@ -42,15 +43,25 @@ class MachineLearningPotential(Potential):
             import torchani
             self.model = torchani.models.ANI2x(periodic_table_index=True)
         elif self.calculator_type == 'mace':
+            if model == 'default':
+                model = ['MACE_model_swa.model']
             from mace.calculators import MACECalculator
             self.atoms.calc = \
                 MACECalculator(model_paths=model,
                                device=device)
+        elif self.calculator_type == 'aimnet2':
+            from aimnet2calc import AIMNet2ASE
+            if model == 'default':
+                model = 'aimnet2'
+            if device != 'cpu' and device != 'cuda':
+                warnings.warn("Aimnet2 ignores 'device' argument")
+            self.atoms.calc = \
+                AIMNet2ASE(model)
 
     def function(self, position: NDArray) -> float:
         """ Compute the electronic potential energy """
         self.atoms.set_positions(position.reshape(-1, 3))
-        if self.calculator_type == 'mace':
+        if self.calculator_type in ['mace', 'aimnet2']:
             energy = self.atoms.get_potential_energy()
         elif self.calculator_type == 'torchani':
             import torch
@@ -66,7 +77,7 @@ class MachineLearningPotential(Potential):
         """ Compute the electronic potential energy and its forces """
         self.atoms.set_positions(position.reshape(-1, 3))
 
-        if self.calculator_type == 'mace':
+        if self.calculator_type in ['mace', 'aimnet2']:
             # Calculate energy and forces using Psi4
             energy = self.atoms.get_potential_energy()
             forces = self.atoms.get_forces().flatten()
@@ -88,7 +99,7 @@ class MachineLearningPotential(Potential):
     def gradient(self, position: NDArray) -> NDArray:
         """ Compute the analytical gradient from the ASE calculator """
         self.atoms.set_positions(position.reshape(-1, 3))
-        if self.calculator_type == 'mace':
+        if self.calculator_type in ['mace', 'aimnet2']:
             forces = self.atoms.get_forces().flatten()
             gradient = -1.0 * np.array(forces.tolist())
         elif self.calculator_type == 'torchani':
