@@ -2,15 +2,14 @@
 
 from nptyping import NDArray
 import numpy as np
-from psi4.driver import OptimizationConvergenceError
-from psi4.driver.p4util.exceptions import SCFConvergenceError
 from ase.units import Bohr
 
 def minimise(potential,
              initial_position: NDArray,
              conv_crit: float = 1e-6,
              n_steps: int = 50,):
-
+    from psi4.driver import OptimizationConvergenceError
+    from psi4.driver.p4util.exceptions import SCFConvergenceError
     atoms = potential.atoms
     atoms.set_positions(initial_position.reshape(-1, 3))
     calc = potential.atoms.calc
