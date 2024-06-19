@@ -8,6 +8,7 @@ from ase import Atoms
 from ase.units import Hartree, Bohr
 import warnings
 import traceback
+import contextlib
 from .potential import Potential
 
 
@@ -118,8 +119,9 @@ class DensityFunctionalTheory(Potential):
         method = calc.parameters['method']
         basis = calc.parameters['basis']
         try:
-            hess = calc.psi4.driver.hessian(f'{method}/{basis}',
-                                            molecule=calc.molecule,).to_array()
+            with contextlib.redirect_stdout(None): # silence chatty Psi4
+                hess = calc.psi4.driver.hessian(f'{method}/{basis}',
+                                                molecule=calc.molecule,).to_array()
             hess *= Bohr**2/Hartree
         except Exception:
             traceback.print_exc()
