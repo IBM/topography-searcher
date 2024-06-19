@@ -3,6 +3,7 @@
 from nptyping import NDArray
 import numpy as np
 from ase.units import Bohr
+import contextlib
 
 def minimise(potential,
              initial_position: NDArray,
@@ -22,15 +23,16 @@ def minimise(potential,
     
     # using only force convergence for now
     try:
-        e, hist = psi4.opt(f'{method}/{basis}',
-                        molecule=calc.molecule,
-                        return_history=True,
-                        optimizer_keywords={"MAX_FORCE_G_CONVERGENCE": conv_crit,
-                            "GEOM_MAXITER": n_steps,
-                            "MAX_ENERGY_G_CONVERGENCE": 1e2,
-                            "RMS_FORCE_G_CONVERGENCE": 1e2,
-                            "MAX_DISP_G_CONVERGENCE": 1e2,
-                            "RMS_DISP_G_CONVERGENCE": 1e2})
+        with contextlib.redirect_stdout(None): # silence chatty Psi4
+            e, hist = psi4.opt(f'{method}/{basis}',
+                            molecule=calc.molecule,
+                            return_history=True,
+                            optimizer_keywords={"MAX_FORCE_G_CONVERGENCE": conv_crit,
+                                "GEOM_MAXITER": n_steps,
+                                "MAX_ENERGY_G_CONVERGENCE": 1e2,
+                                "RMS_FORCE_G_CONVERGENCE": 1e2,
+                                "MAX_DISP_G_CONVERGENCE": 1e2,
+                                "RMS_DISP_G_CONVERGENCE": 1e2})
     
         min_coords = hist['coordinates'][-1].flatten()*Bohr
         results_dict = {'task': None,
