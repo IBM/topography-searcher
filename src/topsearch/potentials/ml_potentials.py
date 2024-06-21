@@ -77,10 +77,15 @@ class MachineLearningPotential(Potential):
         """ Compute the electronic potential energy and its forces """
         self.atoms.set_positions(position.reshape(-1, 3))
 
-        if self.calculator_type in ['mace', 'aimnet2']:
+        if self.calculator_type == 'mace':
             # Calculate energy and forces using Psi4
-            energy = self.atoms.get_potential_energy()
             forces = self.atoms.get_forces().flatten()
+            energy = self.atoms.get_potential_energy()
+            gradient = -1.0 * np.array(forces.tolist())
+        elif self.calculator_type == 'aimnet2':
+            self.atoms.calc.calculate(self.atoms, properties=['energy', 'forces'])
+            forces = self.atoms.get_forces().flatten()
+            energy = self.atoms.get_potential_energy()
             gradient = -1.0 * np.array(forces.tolist())
         elif self.calculator_type == 'torchani':
             import torch
