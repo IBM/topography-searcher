@@ -32,7 +32,8 @@ def minimise(potential,
                                 "MAX_ENERGY_G_CONVERGENCE": 1e2,
                                 "RMS_FORCE_G_CONVERGENCE": 1e2,
                                 "MAX_DISP_G_CONVERGENCE": 1e2,
-                                "RMS_DISP_G_CONVERGENCE": 1e2})
+                                "RMS_DISP_G_CONVERGENCE": 1e2,
+                                "intrafrag_step_limit_max": 0.25}) # last one to improve convergence behaviour
     
         min_coords = hist['coordinates'][-1].flatten()*Bohr
         results_dict = {'task': None,
