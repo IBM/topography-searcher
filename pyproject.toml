@@ -23,7 +23,7 @@ rdkit = "^2023.9.4"
 pylint = "^3.0.2"
 pytest = "^7.4.3"
 flake8 = "^6.1.0"
-pytest-coverage = "^0.0"
+pytest-cov = "^4.1.0"
 
 [tool.poetry.group.ani_potential.dependencies]
 torch = "^2.1.2"
