@@ -5,6 +5,10 @@ import numpy as np
 from nptyping import NDArray
 from ase.calculators.psi4 import Psi4
 from ase import Atoms
+from ase.units import Hartree, Bohr
+import warnings
+import traceback
+import contextlib
 from .potential import Potential
 
 
@@ -99,3 +103,28 @@ class DensityFunctionalTheory(Potential):
         except Exception:
             return np.full((position.size), np.inf, dtype=float)
         return -1.0 * np.array(forces.tolist())
+    
+    def hessian(self, position: NDArray,
+                displacement: float = 1e-4) -> NDArray:
+        """ Override numerical hessian calculation with internal analytic version for DFT."""
+        
+        if displacement != 1e-4:
+            warnings.warn("Displacement is not used in DFT hessian calculation, ignoring input.",
+                          UserWarning)
+        self.atoms.set_positions(position.reshape(-1, 3))
+        calc = self.atoms.calc
+        calc.set_psi4()
+        calc.psi4.core.set_output_file(calc.label + '.dat',
+                                       False)
+        method = calc.parameters['method']
+        basis = calc.parameters['basis']
+        try:
+            with contextlib.redirect_stdout(None): # silence chatty Psi4
+                hess = calc.psi4.driver.hessian(f'{method}/{basis}',
+                                                molecule=calc.molecule,).to_array()
+            hess *= Bohr**2/Hartree
+        except Exception:
+            traceback.print_exc()
+            hess = np.full((position.size, position.size), np.inf, dtype=float)
+        
+        return hess

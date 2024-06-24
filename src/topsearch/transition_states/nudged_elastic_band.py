@@ -53,7 +53,9 @@ class NudgedElasticBand:
                  force_constant: float,
                  image_density: float,
                  max_images: int,
-                 neb_conv_crit: float) -> None:
+                 neb_conv_crit: float,
+                 output_level: int = 0,
+                 ) -> None:
         self.potential = potential
         self.force_constant = force_constant
         self.image_density = image_density
@@ -64,6 +66,7 @@ class NudgedElasticBand:
         self.n_images = None
         self.band_bounds = None
         self.neb_count = 0
+        self.output_level = output_level
 
     def run(self, coords1: type, coords2: NDArray, attempts: int = 0,
             permutation: NDArray = None) -> tuple[NDArray, NDArray]:
@@ -79,6 +82,10 @@ class NudgedElasticBand:
         candidates, positions = self.find_ts_candidates(band)
         # Return the transition state candidates and their positions
         self.neb_count += 1
+        if self.output_level > 0:
+            print(f'NEB {self.neb_count} found {len(candidates)} candidates')
+            np.savetxt(f'neb_ts_{self.neb_count}.txt', positions)
+            
         return candidates, positions
 
     def minimise_interpolation(self, band: NDArray) -> NDArray:
@@ -93,7 +100,10 @@ class NudgedElasticBand:
                            bounds=self.band_bounds,
                            conv_crit=self.neb_conv_crit)
         # Reshape into 2d array, one image per row
-        return np.reshape(optimised_band, (self.n_images, -1))
+        opt_band_reshape = np.reshape(optimised_band, (self.n_images, -1))
+        if self.output_level > 0:
+            np.savetxt(f'neb_min_{self.neb_count}.txt', opt_band_reshape)
+        return opt_band_reshape
 
     def update_image_density(self, attempts: int) -> None:
         """ Update the image density parameter """

@@ -3,7 +3,7 @@
 
 from timeit import default_timer as timer
 import numpy as np
-from topsearch.minimisation import lbfgs
+from topsearch.minimisation import lbfgs, psi4_internal
 from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates
 from topsearch.potentials.dft import DensityFunctionalTheory
 
@@ -40,11 +40,14 @@ class BasinHopping:
                  ktn: type,
                  potential: type,
                  similarity: type,
-                 step_taking: type) -> None:
+                 step_taking: type,
+                 opt_method: str = 'scipy',) -> None:
+        
         self.ktn = ktn
         self.potential = potential
         self.similarity = similarity
         self.step_taking = step_taking
+        self.opt_method = opt_method
 
     def run(self, coords: type, n_steps: int, conv_crit: float,
             temperature: float) -> None:
@@ -64,13 +67,26 @@ class BasinHopping:
             if isinstance(self.potential, DensityFunctionalTheory):
                 coords.remove_atom_clashes(self.potential.force_field)
             elif isinstance(coords, AtomicCoordinates):
-                coords.remove_atom_clashes()
+                try:
+                    coords.remove_atom_clashes()
+                except:
+                    pass # TODO: this was giving me an error with the MACE
             # Perform local minimisation
-            min_position, energy, results_dict = \
-                lbfgs.minimise(func_grad=self.potential.function_gradient,
-                               initial_position=coords.position,
-                               bounds=coords.bounds,
-                               conv_crit=conv_crit)
+            if self.opt_method == 'scipy':
+                min_position, energy, results_dict = \
+                    lbfgs.minimise(func_grad=self.potential.function_gradient,
+                                initial_position=coords.position,
+                                bounds=coords.bounds,
+                                conv_crit=conv_crit)
+            elif self.opt_method == 'psi4':
+                if not isinstance(self.potential, DensityFunctionalTheory):
+                    raise ValueError("Psi4 optimisation method requires DFT potential")
+                min_position, energy, results_dict = \
+                psi4_internal.minimise(self.potential,
+                                initial_position=coords.position,
+                                conv_crit=conv_crit)
+            else:
+                raise ValueError("Invalid optimisation method, options are 'scipy' or 'psi4'")
             # Failed minimisation so don't accept
             if results_dict['warnflag'] != 0 or \
                     results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH':
@@ -105,11 +121,21 @@ class BasinHopping:
     def prepare_initial_coordinates(self, coords: type,
                                     conv_crit: float) -> float:
         """ Generate the initial minimum and set its energy and position """
-        min_position, energy, results_dict = \
-            lbfgs.minimise(func_grad=self.potential.function_gradient,
-                           initial_position=coords.position,
-                           bounds=coords.bounds,
-                           conv_crit=conv_crit)
+        if self.opt_method == 'scipy':
+            min_position, energy, results_dict = \
+                lbfgs.minimise(func_grad=self.potential.function_gradient,
+                            initial_position=coords.position,
+                            bounds=coords.bounds,
+                            conv_crit=conv_crit)
+        elif self.opt_method == 'psi4':
+            if not isinstance(self.potential, DensityFunctionalTheory):
+                raise ValueError("Psi4 optimisation method requires DFT potential")
+            min_position, energy, results_dict = \
+            psi4_internal.minimise(self.potential,
+                            initial_position=coords.position,
+                            conv_crit=conv_crit)
+        else:
+            raise ValueError("Invalid optimisation method, options are 'scipy' or 'psi4'")
         coords.position = min_position
         # After minimisation add to the existing stationary point network
         if results_dict['warnflag'] == 0:
