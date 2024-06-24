@@ -25,12 +25,15 @@ jobs:
           sphinx-build docs/source _build
       - uses: actions/upload-pages-artifact@v1
         with:
+            name: 'github-pages'
             path: _build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docs
+    permissions:
+        pages: write
+        id-token: write
+    steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-#        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-#        with:
-#          publish_branch: gh-pages
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          publish_dir: _build/
-#          force_orphan: true
