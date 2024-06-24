@@ -5,6 +5,8 @@ from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.potentials.test_functions import Camelback
 from topsearch.plotting.stationary_points import plot_stationary_points, \
         self_connected
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)
 
 current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
@@ -13,6 +15,7 @@ def test_plot_stationary_points():
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sp')
+    mpl.rcParams.update(mpl.rcParamsDefault)
     plot_stationary_points(camelback, ktn, bounds=[(-3.0, 3.0), (-2.0, 2.0)],
                            label='1')
     assert os.path.exists('StationaryPoints1.png') == True

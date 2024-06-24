@@ -39,6 +39,7 @@ def test_plot_disconnectivity_graph2():
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.disco')
+    mpl.rcParams.update(mpl.rcParamsDefault)
     plot_disconnectivity_graph(ktn, 100, '2')
     assert os.path.exists('DisconnectivityGraph2.png') == True
     os.remove('DisconnectivityGraph2.png')
