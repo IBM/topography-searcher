@@ -4,6 +4,8 @@ import os.path
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.plotting.disconnectivity import plot_disconnectivity_graph, \
         cut_line_collection, get_line_collection, get_connectivity_graph
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)
 
 current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
