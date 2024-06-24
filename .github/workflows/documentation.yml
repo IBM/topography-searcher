@@ -23,7 +23,7 @@ jobs:
       - name: Sphinx build
         run: |
           sphinx-build docs/source _build
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v3
         with:
             name: 'github-pages'
             path: _build
@@ -35,5 +35,7 @@ jobs:
         pages: write
         id-token: write
     steps:
+      - name: Configure papers
+        uses: actions/configure-pages@v4
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
