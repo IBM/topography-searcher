@@ -1,4 +1,4 @@
-name: topsearch
+name: automated-testing
 
 on: [push]
 
