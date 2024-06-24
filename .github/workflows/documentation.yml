@@ -21,6 +21,9 @@ jobs:
       - name: Sphinx build
         run: |
           sphinx-build docs/source _build
+      - uses: actions/upload-pages-artifact@v1
+        with:
+            path: $GITHUB_WORKSPACE/_build
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
 #        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
