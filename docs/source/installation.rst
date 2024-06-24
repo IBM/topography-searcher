@@ -33,6 +33,9 @@ And to allow modifications to change the enivornment immediately use editable mo
 
 We can check that the installation has been successful by running the test framework.
 The tests can be run by calling::
+
+    pip install pytest
+    pip install pytest-cov
     pytest
 
 For a successful installation we should see all tests pass.
