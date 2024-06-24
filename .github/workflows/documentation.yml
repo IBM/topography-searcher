@@ -8,6 +8,10 @@ permissions:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    python-version: ["3.11"]
+    permissions:
+        pages: write
+        id-token: write   
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
