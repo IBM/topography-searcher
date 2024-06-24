@@ -29,6 +29,9 @@ And to allow modifications to change the enivornment immediately use editable mo
 
     python -m pip install -e .
 
+Dependency management can additionally be performed using poetry, and we provide a
+poetry.lock file that contains the tested versions of the dependencies.
+
 **Test installation**
 
 We can check that the installation has been successful by running the test framework.

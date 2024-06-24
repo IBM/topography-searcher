@@ -58,6 +58,8 @@ or in editable mode using
 cd topography-searcher
 python -m pip install -e .
 ```
+Dependency management can additionally be performed using poetry, and we provide a 
+poetry.lock file that contains the tested versions of the dependencies.
 
 We can test the environment build by running
 ```
