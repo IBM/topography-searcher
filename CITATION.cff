@@ -6,5 +6,4 @@ authors:
   orcid: https://orcid.org/0000-0002-5278-4412
 title: TopSearch: a Python package for exploring high-dimensional surfaces
 version: 0.0.3
-date-released: 2024-07-01
 url: https://github.com/IBM/topography-searcher
