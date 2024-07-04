@@ -1,10 +1,38 @@
-cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+cff-version: "1.2.0"
 authors:
-- family-names: "Dicks"
-  given-names: "Luke"
+- family-names: Dicks
+  given-names: Luke
   orcid: "https://orcid.org/0000-0002-5278-4412"
-title: "TopSearch"
-version: 0.0.3
-date-released: 2024-07-01
-url: "https://github.com/IBM/topography-searcher"
+- family-names: Pyzer-Knapp
+  given-names: Edward O.
+  orcid: "https://orcid.org/0000-0002-8232-8282"
+contact:
+- family-names: Pyzer-Knapp
+  given-names: Edward O.
+  orcid: "https://orcid.org/0000-0002-8232-8282"
+doi: 10.5281/zenodo.12613017
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Dicks
+    given-names: Luke
+    orcid: "https://orcid.org/0000-0002-5278-4412"
+  - family-names: Pyzer-Knapp
+    given-names: Edward O.
+    orcid: "https://orcid.org/0000-0002-8232-8282"
+  date-published: 2024-07-02
+  doi: 10.21105/joss.06711
+  issn: 2475-9066
+  issue: 99
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 6711
+  title: "TopSearch: a Python package for topographical analysis of
+    machine learning models and physical systems"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.06711"
+  volume: 9
+title: "TopSearch: a Python package for topographical analysis of
+  machine learning models and physical systems"
