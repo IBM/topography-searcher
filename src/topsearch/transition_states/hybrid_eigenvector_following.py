@@ -62,7 +62,9 @@ class HybridEigenvectorFollowing:
                  min_uphill_step_size: float = 1e-7,
                  max_uphill_step_size: float = 1.0,
                  positive_eigenvalue_step: float = 0.1,
-                 eigenvalue_conv_crit: float = 1e-5) -> None:
+                 eigenvalue_conv_crit: float = 1e-5,
+                 output_level: int = 0,
+                 tag: str = '') -> None:
         self.potential = potential
         self.ts_conv_crit = ts_conv_crit
         self.ts_steps = ts_steps
@@ -75,8 +77,9 @@ class HybridEigenvectorFollowing:
         self.eigenvector_bounds = None
         self.failure = None
         self.remove_trans_rot = None
+        self.output_level = output_level
 
-    def run(self, coords: type) -> tuple:
+    def run(self, coords: type, tag: str = '') -> tuple:
         """ Perform a single-ended transition state search starting from 
             coords. Returns the information about transition states
             and their connected minima that is needed for testing similarity
@@ -120,6 +123,9 @@ class HybridEigenvectorFollowing:
             # Reset appropriate eigenvector bounds
             lower_bounds, upper_bounds = coords.active_bounds()
             self.update_eigenvector_bounds(lower_bounds, upper_bounds)
+            
+            if self.output_level > 0:
+                coords.write_xyz(f'coords_{tag}_{n_steps}.xyz')
             # Test for convergence to a transition state
             if self.test_convergence(coords.position, lower_bounds,
                                      upper_bounds):

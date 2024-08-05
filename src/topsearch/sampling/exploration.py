@@ -60,7 +60,8 @@ class NetworkSampling:
                  double_ended_search: type,
                  similarity: type,
                  multiprocessing_on: bool = False,
-                 n_processes: int = None) -> None:
+                 n_processes: int = None,
+                 output_level: int = 0) -> None:
         self.ktn = ktn
         self.coords = coords
         self.global_optimiser = global_optimiser
@@ -69,6 +70,7 @@ class NetworkSampling:
         self.similarity = similarity
         self.multiprocessing_on = multiprocessing_on
         self.n_processes = n_processes
+        self.output_level = output_level
 
     # OVERALL LANDSCAPE EXPLORATION
 
@@ -187,7 +189,7 @@ class NetworkSampling:
         for ts_search_number, ts_candidate in enumerate(positions, start=1):
             local_coords.position = ts_candidate
             ts_coords, e_ts, min_plus, e_plus, min_minus, e_minus, neg_eig = \
-                self.single_ended_search.run(local_coords)
+                self.single_ended_search.run(local_coords, tag=ts_search_number)
             # Check search was successful
             if ts_coords is not None:
                 with open('logfile', 'a', encoding="utf-8") as outfile:
