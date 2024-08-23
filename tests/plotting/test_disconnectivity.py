@@ -4,6 +4,8 @@ import os.path
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.plotting.disconnectivity import plot_disconnectivity_graph, \
         cut_line_collection, get_line_collection, get_connectivity_graph
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)
 
 current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
@@ -11,6 +13,7 @@ def test_plot_disconnectivity_graph():
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.sp') 
+    mpl.rcParams.update(mpl.rcParamsDefault)
     plot_disconnectivity_graph(ktn, 50)
     assert os.path.exists('DisconnectivityGraph.png') == True
     os.remove('DisconnectivityGraph.png')
@@ -36,6 +39,7 @@ def test_plot_disconnectivity_graph2():
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.disco')
+    mpl.rcParams.update(mpl.rcParamsDefault)
     plot_disconnectivity_graph(ktn, 100, '2')
     assert os.path.exists('DisconnectivityGraph2.png') == True
     os.remove('DisconnectivityGraph2.png')

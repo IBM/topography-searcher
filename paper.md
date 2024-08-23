@@ -44,7 +44,9 @@ Current leading tools for applying the energy landscape framework are the suite 
 The Github repository ([https://github.com/IBM/topography-searcher](https://github.com/IBM/topography-searcher)) contains examples for varied applications, which are listed in turn below.
 
 - `example_function` - This folder contains examples for mapping the surface topography of an arbitrary function. The examples provide an introduction to the methodology, and illustrate the major code functionality. Application to two-dimensional functions allows direct visualisation of the surfaces, which makes clear the topographical analysis.
-- `dataset_roughness` - Illustration of the novel code application to quantify dataset roughness [@Dicks2024]. This analysis can uniquely explain and predict ML regression performance both globally and locally, even in the absence of training data.
+- `dataset_roughness` - Illustration of the novel code application to quantify dataset roughness [@Dicks2024], an example landscape from which is shown in \autoref{fig:example}. This analysis can uniquely explain and predict ML regression performance both globally and locally, even in the absence of training data.
+
+![Landscape of a two-dimensional surface taken from a chemical dataset. The topography, encoded as a weighted graph, is visualised directly on the corresponding response surface.\label{fig:example}](./images/RoughnessExample.png){ width=70% }
 
 Atomic and molecular systems require significant additional functionality. However, the examples illustrate that the scripts remain remarkably similar.
 
