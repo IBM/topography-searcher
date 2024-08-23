@@ -5,6 +5,7 @@
 import networkx as nx
 import numpy as np
 from nptyping import NDArray
+import traceback
 
 
 class KineticTransitionNetwork:
@@ -123,19 +124,30 @@ class KineticTransitionNetwork:
         minima_data = np.empty((0, 2), dtype=object)
         minima_coords = np.empty((0, ndim), dtype=object)
         for i in range(self.n_minima):
+            e = self.G.nodes[i]['energy']
+            if not hasattr(e, '__iter__'):
+                    e = [e]
             minima_data = np.append(
-                minima_data, [[i, self.G.nodes[i]['energy']]], axis=0)
+                minima_data, [[i, e[0]]], axis=0)
             minima_coords = np.append(
                 minima_coords, [self.G.nodes[i]['coords']], axis=0)
         # Get transition state data out of the network
         ts_data = np.empty((0, 3), dtype=object)
         ts_coords = np.empty((0, ndim), dtype=object)
         for node1, node2 in self.G.edges():
-            ts_data = np.append(
-                ts_data,
-                [[node1, node2, self.G[node1][node2]['energy']]], axis=0)
-            ts_coords = np.append(
-                ts_coords, [self.G[node1][node2]['coords']], axis=0)
+            try:
+                print(self.G[node1][node2])
+                e =  self.G[node1][node2]['energy']
+                if not hasattr(e, '__iter__'):
+                    e = [e]
+                ts_data = np.append(
+                    ts_data,
+                    [[node1, node2, e[0]]], axis=0)
+                ts_coords = np.append(
+                    ts_coords, [self.G[node1][node2]['coords']], axis=0)
+            except:
+                print(f"Transition state failed on ", node1, node2)
+                traceback.print_exc()
         # Write stationary point data and pairlist
         np.savetxt(f"ts.data{text_string}",
                    ts_data, fmt='%i %i %8.5f')
@@ -149,10 +161,10 @@ class KineticTransitionNetwork:
         """ Returns G network from files that resulted from dump_network """
 
         # Get the data back from files
-        minima_data = np.loadtxt(f"{text_path}min.data{text_string}")
-        minima_coords = np.loadtxt(f"{text_path}min.coords{text_string}")
-        ts_data = np.loadtxt(f"{text_path}ts.data{text_string}")
-        ts_coords = np.loadtxt(f"{text_path}ts.coords{text_string}")
+        minima_data = np.loadtxt(f"{text_path}min.data{text_string}", ndmin=2)
+        minima_coords = np.loadtxt(f"{text_path}min.coords{text_string}", ndmin=2)
+        ts_data = np.loadtxt(f"{text_path}ts.data{text_string}", ndmin=2)
+        ts_coords = np.loadtxt(f"{text_path}ts.coords{text_string}", ndmin=2)
         self.pairlist = np.loadtxt(f"{text_path}pairlist{text_string}",
                                    ndmin=2, dtype=int)
 
