@@ -3,6 +3,8 @@
 
 import scipy
 from nptyping import NDArray
+from ase.optimize import LBFGS
+from ase.atoms import Atoms
 
 
 def minimise(func_grad, initial_position: NDArray, bounds: list,
