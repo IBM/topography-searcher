@@ -1,0 +1,43 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc412.pok.ibm.com>
+Subject: Job 4926588: <python -u ../../run_mace_ase_azo.py azobenzene> in cluster <cccCluster> Exited
+
+Job <python -u ../../run_mace_ase_azo.py azobenzene> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Thu Sep  5 05:11:04 2024
+Job was executed on host(s) <cccxc412.pok.ibm.com>, in queue <x86_6h>, as user <jdm> in cluster <cccCluster> at Thu Sep  5 05:12:07 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/mace_retrain/azobenzene> was used as the working directory.
+Started at Thu Sep  5 05:12:07 2024
+Terminated at Thu Sep  5 05:12:11 2024
+Results reported at Thu Sep  5 05:12:11 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_mace_ase_azo.py azobenzene
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   1.67 sec.
+    Max Memory :                                 69 MB
+    Average Memory :                             46.67 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               90043.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   2 sec.
+    Turnaround time :                            67 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4926588> for stderr output of this job.
+

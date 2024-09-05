@@ -1,0 +1,44 @@
+setting default to float64
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc451.pok.ibm.com>
+Subject: Job 4826772: <python -u ../../run_nequip_asp64.py aspirin> in cluster <cccCluster> Exited
+
+Job <python -u ../../run_nequip_asp64.py aspirin> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 03:59:43 2024
+Job was executed on host(s) <cccxc451.pok.ibm.com>, in queue <x86_24h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 03:59:44 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/nequip_64/aspirin> was used as the working directory.
+Started at Mon Sep  2 03:59:44 2024
+Terminated at Mon Sep  2 03:59:50 2024
+Results reported at Mon Sep  2 03:59:50 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_nequip_asp64.py aspirin
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   3.48 sec.
+    Max Memory :                                 65 MB
+    Average Memory :                             44.00 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               90047.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                12
+    Run time :                                   3 sec.
+    Turnaround time :                            7 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4826772> for stderr output of this job.
+

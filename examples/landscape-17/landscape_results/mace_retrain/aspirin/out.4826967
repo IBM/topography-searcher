@@ -1,0 +1,95 @@
+No dtype selected, switching to float64 to match model dtype.
+doing step 0
+doing step 1
+doing step 2
+doing step 3
+doing step 4
+doing step 5
+doing step 6
+doing step 7
+doing step 8
+doing step 9
+doing step 10
+doing step 11
+doing step 12
+doing step 13
+doing step 14
+doing step 15
+doing step 16
+doing step 17
+doing step 18
+doing step 19
+doing step 20
+doing step 21
+doing step 22
+doing step 23
+doing step 24
+doing step 25
+doing step 26
+doing step 27
+doing step 28
+doing step 29
+doing step 30
+doing step 31
+doing step 32
+doing step 33
+doing step 34
+doing step 35
+doing step 36
+doing step 37
+doing step 38
+doing step 39
+doing step 40
+doing step 41
+doing step 42
+doing step 43
+doing step 44
+doing step 45
+doing step 46
+doing step 47
+doing step 48
+doing step 49
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc444.pok.ibm.com>
+Subject: Job 4826967: <python -u ../../run_mace_ase_asp.py aspirin> in cluster <cccCluster> Exited
+
+Job <python -u ../../run_mace_ase_asp.py aspirin> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 04:21:14 2024
+Job was executed on host(s) <cccxc444.pok.ibm.com>, in queue <x86_24h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 04:21:16 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/mace_retrain/aspirin> was used as the working directory.
+Started at Mon Sep  2 04:21:16 2024
+Terminated at Mon Sep  2 08:39:31 2024
+Results reported at Mon Sep  2 08:39:31 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_mace_ase_asp.py aspirin
+------------------------------------------------------------
+
+TERM_OWNER: job killed by owner.
+Exited with exit code 130.
+
+Resource usage summary:
+
+    CPU time :                                   15395.33 sec.
+    Max Memory :                                 1350 MB
+    Average Memory :                             1123.68 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               88762.00 MB
+    Max Swap :                                   2 MB
+    Max Processes :                              3
+    Max Threads :                                6
+    Run time :                                   15493 sec.
+    Turnaround time :                            15497 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4826967> for stderr output of this job.
+

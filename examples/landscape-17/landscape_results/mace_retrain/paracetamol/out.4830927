@@ -1,0 +1,146 @@
+No dtype selected, switching to float64 to match model dtype.
+doing step 0
+doing step 1
+doing step 2
+doing step 3
+doing step 4
+doing step 5
+doing step 6
+doing step 7
+doing step 8
+doing step 9
+doing step 10
+doing step 11
+doing step 12
+doing step 13
+doing step 14
+doing step 15
+doing step 16
+doing step 17
+doing step 18
+doing step 19
+doing step 20
+doing step 21
+doing step 22
+doing step 23
+doing step 24
+doing step 25
+doing step 26
+doing step 27
+doing step 28
+doing step 29
+doing step 30
+doing step 31
+doing step 32
+doing step 33
+doing step 34
+doing step 35
+doing step 36
+doing step 37
+doing step 38
+doing step 39
+doing step 40
+doing step 41
+doing step 42
+doing step 43
+doing step 44
+doing step 45
+doing step 46
+doing step 47
+doing step 48
+doing step 49
+NEB 1 found 6 candidates
+final eigenvalue  -157.00291388083363
+final eigenvalue  -23.387546236138185
+final eigenvalue  -1.1648762851466985
+final eigenvalue  -220.67060393967284
+final eigenvalue  -12360985.666234808
+Failed on finding TS for  [2, 4]
+NEB 2 found 4 candidates
+final eigenvalue  -824.0254341235685
+final eigenvalue  -11.085586507707887
+final eigenvalue  -5324.8953982878675
+final eigenvalue  -13.955023255096421
+NEB 3 found 2 candidates
+final eigenvalue  0.24972225488665742
+final eigenvalue  0.13175515684040048
+NEB 4 found 1 candidates
+final eigenvalue  0.11140066336654743
+NEB 5 found 2 candidates
+final eigenvalue  -210.06287471249132
+final eigenvalue  -49.16278458081921
+NEB 6 found 0 candidates
+NEB 7 found 1 candidates
+final eigenvalue  0.15496834763750053
+NEB 8 found 1 candidates
+final eigenvalue  0.34324732512280626
+NEB 9 found 1 candidates
+final eigenvalue  0.09912905329553262
+NEB 10 found 2 candidates
+{'coords': array([-2.07903335, -0.73687663, -1.14162365, -1.6066573 , -2.05859108,
+       -0.57775038, -2.19251501, -3.11285206, -0.75686638, -0.46203637,
+       -1.92750024,  0.19527653,  0.22847294, -0.70370217,  0.2876164 ,
+        1.00198668, -0.36466044,  1.39287974,  1.61634121,  0.88350085,
+        1.46405813,  1.43933828,  1.81187669,  0.44294567,  2.0008365 ,
+        3.05385406,  0.46323594,  0.66033403,  1.47610694, -0.66547433,
+        0.07336779,  0.22400221, -0.74849602, -2.78672899, -0.91457407,
+       -1.9598583 , -1.17369063, -0.12113633, -1.39097926, -2.60740668,
+       -0.16620632, -0.36881867, -0.10470433, -2.73085184,  0.69572896,
+        1.11685112, -1.06811885,  2.21452364,  2.21756856,  1.13788242,
+        2.33495556,  2.51289128,  3.15434227,  1.27542467,  0.544428  ,
+        2.20107855, -1.46490777, -0.39964372, -0.03757398, -1.6918705 ]), 'energy': -14021.910098814584}
+{'coords': array([-2.22450326, -0.6582933 , -1.07459036, -1.96465702, -1.90415272,
+       -0.25710543, -2.72108723, -2.86011932, -0.23091966, -0.75587556,
+       -1.85095661,  0.4217358 ,  0.02886855, -0.68173233,  0.43747004,
+        1.40861899, -0.71096809,  0.6115206 ,  2.14853105,  0.46807186,
+        0.55772557,  1.51728607,  1.68144197,  0.30244176,  2.18860928,
+        2.86507599,  0.22167277,  0.13341489,  1.7134125 ,  0.12331205,
+       -0.60494113,  0.54406655,  0.20531181, -1.64206757, -0.68947693,
+       -2.00297796, -1.81977063,  0.22126273, -0.50571726, -3.2838325 ,
+       -0.61187601, -1.3530534 , -0.4361612 , -2.66298824,  0.93349303,
+        1.9176927 , -1.65827843,  0.77449243,  3.22787082,  0.43206902,
+        0.69330901,  3.12902643,  2.70405183,  0.36871443, -0.35086641,
+        2.66804691, -0.05630125, -1.68769223,  0.64275906,  0.20255675]), 'energy': -14021.910096506299}
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc423.pok.ibm.com>
+Subject: Job 4830927: <python -u ../../run_mace_ase_par.py paracetamol> in cluster <cccCluster> Done
+
+Job <python -u ../../run_mace_ase_par.py paracetamol> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 08:45:37 2024
+Job was executed on host(s) <cccxc423.pok.ibm.com>, in queue <x86_24h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 08:45:39 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/mace_retrain/paracetamol> was used as the working directory.
+Started at Mon Sep  2 08:45:39 2024
+Terminated at Mon Sep  2 09:26:28 2024
+Results reported at Mon Sep  2 09:26:28 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_mace_ase_par.py paracetamol
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   2415.37 sec.
+    Max Memory :                                 882 MB
+    Average Memory :                             861.73 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               89230.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   2450 sec.
+    Turnaround time :                            2451 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4830927> for stderr output of this job.
+

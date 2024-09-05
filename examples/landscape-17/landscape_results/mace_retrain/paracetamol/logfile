@@ -1,0 +1,87 @@
+ -------BASIN-HOPPING-------
+Steps = 50,Temperature = 100.0
+Step 4: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 13: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 22: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 31: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 33: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 34: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 36: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 45: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 48: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Located 9 distinct minima
+Basin-hopping completed in 539.2841134481132
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 9 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 2 4
+
+6 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+4: TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 516.830226585269 s:NEB (11.462861869484186), HEF (503.26405100896955)
+-------------------------
+Connection attempt between minima pair: 1 2
+
+4 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 278.81513407826424 s:NEB (3.681356657296419), HEF (273.0201695077121)
+-------------------------
+Connection attempt between minima pair: 3 4
+
+2 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 166.57974366098642 s:NEB (23.1988374479115), HEF (141.26166731864214)
+-------------------------
+Connection attempt between minima pair: 5 8
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 71.56247932836413 s:NEB (23.00368295237422), HEF (46.42089655995369)
+-------------------------
+Connection attempt between minima pair: 4 6
+
+2 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 186.03500371053815 s:NEB (4.234679337590933), HEF (179.70285123214126)
+-------------------------
+Connection attempt between minima pair: 1 7
+
+0 candidates from NEB after Force constant: 50.0
+Completed connection in 25.647109910845757 s:NEB (23.54890499264002), HEF (7.1302056312561035e-06)
+-------------------------
+Connection attempt between minima pair: 0 5
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 111.21208504959941 s:NEB (58.708711948245764), HEF (50.38160213828087)
+-------------------------
+Connection attempt between minima pair: 3 6
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 94.36664500460029 s:NEB (27.51176603883505), HEF (64.74180952832103)
+-------------------------
+Connection attempt between minima pair: 0 8
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 61.7155743278563 s:NEB (16.640192802995443), HEF (42.96092240512371)
+-------------------------
+Connection attempt between minima pair: 4 7
+
+2 candidates from NEB after Force constant: 50.0
+1: 2: Completed connection in 211.8531363159418 s:NEB (23.18872730061412), HEF (186.54948047176003)
+-------------------------
+New transition state connecting minima 9 and 6
+New transition state connecting minima 10 and 1

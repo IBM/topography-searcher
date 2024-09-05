@@ -1,0 +1,89 @@
+ -------BASIN-HOPPING-------
+Steps = 50,Temperature = 100.0
+Step 2: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 3: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 8: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 10: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 16: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 21: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 23: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 24: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 44: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Located 8 distinct minima
+Basin-hopping completed in 681.8332355357707
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 8 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+3 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 211.10524350777268 s:NEB (26.28492307662964), HEF (182.20722527429461)
+-------------------------
+Connection attempt between minima pair: 1 2
+
+4 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 288.8283231817186 s:NEB (2.8386733420193195), HEF (283.3068205602467)
+-------------------------
+Connection attempt between minima pair: 0 3
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 155.76441586390138 s:NEB (15.770865857601166), HEF (137.3044624403119)
+-------------------------
+New transition state connecting minima 0 and 3
+Connection attempt between minima pair: 1 4
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 108.31614534556866 s:NEB (36.98284811154008), HEF (68.67451879009604)
+-------------------------
+Connection attempt between minima pair: 5 7
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 94.88237906247377 s:NEB (25.853492323309183), HEF (66.35842441022396)
+-------------------------
+New transition state connecting minima 5 and 7
+Connection attempt between minima pair: 2 3
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 148.5389822460711 s:NEB (25.09782386571169), HEF (120.78196633979678)
+-------------------------
+Connection attempt between minima pair: 6 7
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 82.90775791183114 s:NEB (20.923562828451395), HEF (59.33752970024943)
+-------------------------
+New transition state connecting minima 8 and 9
+Connection attempt between minima pair: 0 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 71.32017846405506 s:NEB (43.59375336393714), HEF (25.185947827994823)
+-------------------------
+New transition state connecting minima 0 and 2
+Connection attempt between minima pair: 4 5
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 159.82453021407127 s:NEB (34.44664916396141), HEF (122.77576733753085)
+-------------------------
+New transition state connecting minima 4 and 5
+Connection attempt between minima pair: 5 6
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 116.44818212091923 s:NEB (40.28048427775502), HEF (73.59824508801103)
+-------------------------
+Connection attempt between minima pair: 4 7
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 135.36937903240323 s:NEB (47.53846228867769), HEF (85.2214458361268)
+-------------------------

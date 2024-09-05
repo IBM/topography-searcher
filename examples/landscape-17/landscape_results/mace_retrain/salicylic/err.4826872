@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/dccstor/aimft1/landscape_paper/mace_retrain/salicylic/../../run_mace_ase_sal.py", line 27, in <module>
+    atoms = ase.io.read(atfile)
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/ase/io/formats.py", line 793, in read
+    format = format or filetype(filename, read=isinstance(filename, str))
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/ase/io/formats.py", line 965, in filetype
+    fd = open_with_compression(filename, 'rb')
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/ase/io/formats.py", line 597, in open_with_compression
+    return open(filename, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '../../../molecules_relax/salicylic_relax.xyz'

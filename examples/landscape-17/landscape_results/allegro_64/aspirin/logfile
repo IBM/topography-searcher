@@ -1,0 +1,95 @@
+ -------BASIN-HOPPING-------
+Steps = 50,Temperature = 100.0
+Step 8: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 10: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 26: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 35: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Located 11 distinct minima
+Basin-hopping completed in 596.9446792975068
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 11 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 9 10
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 140.60941583290696 s:NEB (43.05237599462271), HEF (95.2238126322627)
+-------------------------
+New transition state connecting minima 10 and 9
+Connection attempt between minima pair: 4 10
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 217.02644242718816 s:NEB (34.452061261981726), HEF (180.40512079000473)
+-------------------------
+New transition state connecting minima 4 and 0
+Connection attempt between minima pair: 0 4
+
+Nodes already connected by transition state
+Connection attempt between minima pair: 3 4
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 51.12067459523678 s:NEB (19.68163413926959), HEF (29.207218293100595)
+-------------------------
+Connection attempt between minima pair: 2 7
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 64.59395438432693 s:NEB (27.53445740416646), HEF (34.77618620917201)
+-------------------------
+New transition state connecting minima 7 and 2
+Connection attempt between minima pair: 1 5
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 72.0350864380598 s:NEB (33.257383327931166), HEF (36.45961959660053)
+-------------------------
+New transition state connecting minima 5 and 1
+Connection attempt between minima pair: 6 8
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 59.51820432767272 s:NEB (27.64711180701852), HEF (29.610595393925905)
+-------------------------
+New transition state connecting minima 8 and 6
+Connection attempt between minima pair: 1 8
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 204.59962855651975 s:NEB (28.99269114434719), HEF (173.31115401163697)
+-------------------------
+New transition state connecting minima 8 and 1
+Connection attempt between minima pair: 0 3
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 99.32654013857245 s:NEB (25.434553742408752), HEF (71.61661098524928)
+-------------------------
+New transition state connecting minima 3 and 0
+Connection attempt between minima pair: 0 9
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 141.99321034923196 s:NEB (27.21654089167714), HEF (112.5011781975627)
+-------------------------
+Connection attempt between minima pair: 0 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 259.4657128825784 s:NEB (25.20007222518325), HEF (232.1292795985937)
+-------------------------
+New transition state connecting minima 0 and 2
+Connection attempt between minima pair: 4 5
+
+2 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 337.219520162791 s:NEB (2.3938861154019833), HEF (332.6937617622316)
+-------------------------
+Connection attempt between minima pair: 1 6
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 192.85644897818565 s:NEB (30.879503071308136), HEF (159.8009791933)
+-------------------------
+Repeated transition state connecting 6 and 8
+Repeated transition state
+Connection attempt between minima pair: 4 7
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 146.68851079046726 s:NEB (43.19438490271568), HEF (101.4102430343628)
+-------------------------
+New transition state connecting minima 4 and 7

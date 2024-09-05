@@ -1,0 +1,42 @@
+ -------BASIN-HOPPING-------
+Steps = 15,Temperature = 100.0
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+Located 3 distinct minima
+Basin-hopping completed in 33.96138380654156
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 3 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 11.896574499085546 s:NEB (6.171682205051184), HEF (4.431905059143901)
+-------------------------
+New transition state connecting minima 1 and 0
+Connection attempt between minima pair: 0 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 11.581567961722612 s:NEB (4.8149937633425), HEF (5.460441514849663)
+-------------------------
+New transition state connecting minima 2 and 0
+Connection attempt between minima pair: 1 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 13.878421120345592 s:NEB (7.869838936254382), HEF (4.851784136146307)
+-------------------------
+New transition state connecting minima 1 and 2

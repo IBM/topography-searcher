@@ -1,0 +1,43 @@
+/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/e3nn/o3/_wigner.py:10: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/mace/calculators/mace.py:128: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  torch.load(f=model_path, map_location=device)
+/u/jdm/programs/topography-searcher/src/topsearch/transition_states/nudged_elastic_band.py:269: RuntimeWarning: invalid value encountered in cast
+  energy_change_sign = np.sign(energy_differences).astype(int)
+Traceback (most recent call last):
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/networkx/classes/graph.py", line 2012, in bunch_iter
+    for n in nlist:
+TypeError: 'int' object is not iterable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/u/jdm/programs/topography-searcher/src/topsearch/sampling/exploration.py", line 149, in run_connection_attempts
+    self.similarity.test_new_ts(self.ktn,
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/similarity.py", line 151, in test_new_ts
+    index_plus = self.is_new_minimum(ktn, min_plus, e_plus)[1]
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/similarity.py", line 95, in is_new_minimum
+    if self.test_same(min_coords,
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 334, in test_same
+    self.closest_distance(coords1, coords2) < self.distance_criterion
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 340, in closest_distance
+    return self.optimal_alignment(coords1, coords2)[0]
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 278, in optimal_alignment
+    self.test_exact_same(coords1, coords2)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 216, in test_exact_same
+    self.align(coords1, coords2_rotated.flatten())
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 178, in align
+    self.permutational_alignment(coords1, coords2)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 58, in permutational_alignment
+    perm_group1, perm_group2 = self.get_permutable_groups(coords1, coords2)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 101, in get_permutable_groups
+    bond_labels1 = coords1.get_connected_atoms()
+  File "/u/jdm/programs/topography-searcher/src/topsearch/data/coordinates.py", line 260, in get_connected_atoms
+    for j in current_bonds.edges(i):
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/networkx/classes/reportviews.py", line 1091, in __call__
+    return self.dataview(self, nbunch, data, default=default)
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/networkx/classes/reportviews.py", line 767, in __init__
+    nbunch = dict.fromkeys(viewer._graph.nbunch_iter(nbunch))
+  File "/dccstor/aimft1/miniforge3/envs/mace/lib/python3.9/site-packages/networkx/classes/graph.py", line 2027, in bunch_iter
+    raise exc
+networkx.exception.NetworkXError: nbunch is not a node or a sequence of nodes.

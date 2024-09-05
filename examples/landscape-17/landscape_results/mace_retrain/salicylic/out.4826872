@@ -1,0 +1,43 @@
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc443.pok.ibm.com>
+Subject: Job 4826872: <python -u ../../run_mace_ase_sal.py salicylic> in cluster <cccCluster> Exited
+
+Job <python -u ../../run_mace_ase_sal.py salicylic> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 04:14:04 2024
+Job was executed on host(s) <cccxc443.pok.ibm.com>, in queue <x86_24h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 04:14:05 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/mace_retrain/salicylic> was used as the working directory.
+Started at Mon Sep  2 04:14:05 2024
+Terminated at Mon Sep  2 04:14:08 2024
+Results reported at Mon Sep  2 04:14:08 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_mace_ase_sal.py salicylic
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   1.56 sec.
+    Max Memory :                                 69 MB
+    Average Memory :                             46.67 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               90043.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                4
+    Run time :                                   1 sec.
+    Turnaround time :                            4 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4826872> for stderr output of this job.
+

@@ -1,0 +1,44 @@
+No dtype selected, switching to float64 to match model dtype.
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc419.pok.ibm.com>
+Subject: Job 4830919: <python -u ../../run_mace_ase_asp.py aspirin> in cluster <cccCluster> Exited
+
+Job <python -u ../../run_mace_ase_asp.py aspirin> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 08:42:27 2024
+Job was executed on host(s) <cccxc419.pok.ibm.com>, in queue <x86_24h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 08:42:28 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/mace_retrain/aspirin> was used as the working directory.
+Started at Mon Sep  2 08:42:28 2024
+Terminated at Mon Sep  2 08:42:45 2024
+Results reported at Mon Sep  2 08:42:45 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_mace_ase_asp.py aspirin
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   5.09 sec.
+    Max Memory :                                 382 MB
+    Average Memory :                             281.80 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               89730.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                6
+    Run time :                                   17 sec.
+    Turnaround time :                            18 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4830919> for stderr output of this job.
+
