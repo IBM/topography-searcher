@@ -44,6 +44,8 @@ class MachineLearningPotential(Potential):
         # Set up the calculator based on the specified type
         if self.calculator_type == 'torchani':
             import torchani, torch
+            import torch
+            torch.set_default_dtype(torch.float64)
             self.model = torchani.models.ANI2x(periodic_table_index=True)
             self.atoms.calc = \
                 torchani.ase.Calculator(list('HCNOFSCl'), self.model)
@@ -54,15 +56,23 @@ class MachineLearningPotential(Potential):
             if model == 'default':
                 model = ['MACE_model_swa.model']
             from mace.calculators import MACECalculator
+            import torch
+            torch.set_default_dtype(torch.float64)
             self.atoms.calc = \
                 MACECalculator(model_paths=model,
                                device=device)
         elif self.calculator_type == 'nequip':
+            import torch
+            torch.set_default_dtype(torch.float64)
+            print("setting default to float64")
             from nequip.ase import NequIPCalculator
             self.atoms.calc = \
                 NequIPCalculator.from_deployed_model(model,
-                               device=device)
+                               device=device,
+                               set_global_options=False)
         elif self.calculator_type == 'aimnet2':
+            import torch
+            torch.set_default_dtype(torch.float64)
             from aimnet2calc import AIMNet2ASE
             if model == 'default':
                 model = 'aimnet2'
