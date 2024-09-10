@@ -20,6 +20,9 @@ species = atoms.get_chemical_symbols()
 position = atoms.get_positions().flatten()
 coords = MolecularCoordinates(species, position)
 
+if len(argv) < 3:
+    argv.append('aimnet2')
+
 mlp = MachineLearningPotential(species, 'aimnet2', argv[2], "cuda")
 with open("run_info.txt", "w") as f:
     f.write(f"Used AIMNET model {argv[2]}\n")
