@@ -6,6 +6,7 @@ from timeit import default_timer as timer
 import multiprocessing
 from copy import deepcopy
 import numpy as np
+import traceback
 from nptyping import NDArray
 from ..analysis.pair_selection import connect_unconnected, \
     closest_enumeration, read_pairs
@@ -397,13 +398,24 @@ class NetworkSampling:
             self.coords.position = minima_information[i][0]
             energy = minima_information[i][1]
             self.similarity.test_new_minimum(self.ktn, self.coords, energy)
-        for i in ts_information:
-            self.coords.position = i[0]
-            self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
-                                        i[3], i[4], i[5])
+        print("Dumping minima")
+        self.ktn.dump_network('tmp_')
+        fail_count = 0
+        for ct, i in enumerate(ts_information):
+            try:
+                self.coords.position = i[0]
+                self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
+                                            i[3], i[4], i[5])
+            except:
+                print(f"Failed reconverging TS number {ct}")
+                with open('logfile', 'a', encoding="utf-8") as outfile:
+                    outfile.write(f"Failed reconverging TS number {ct}\n")
+                fail_count += 1
+                traceback.print_exc()
         end_time = timer()
         with open('logfile', 'a', encoding="utf-8") as outfile:
             outfile.write(f"{self.ktn.n_minima} distinct minima and "
                           f"{self.ktn.n_ts} transition states after "
                           f"reconvergence\nReconvergence completed in "
-                          f"{end_time - start_time}\n\n")
+                          f"{end_time - start_time}\n"
+                          f"failed on {fail_count} transition states\n\n")
