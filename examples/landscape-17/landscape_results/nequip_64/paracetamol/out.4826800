@@ -1,0 +1,153 @@
+setting default to float64
+doing step 0
+doing step 1
+doing step 2
+doing step 3
+doing step 4
+doing step 5
+doing step 6
+doing step 7
+doing step 8
+doing step 9
+doing step 10
+doing step 11
+doing step 12
+doing step 13
+doing step 14
+doing step 15
+doing step 16
+doing step 17
+doing step 18
+doing step 19
+doing step 20
+doing step 21
+doing step 22
+doing step 23
+doing step 24
+doing step 25
+doing step 26
+doing step 27
+doing step 28
+doing step 29
+doing step 30
+doing step 31
+doing step 32
+doing step 33
+doing step 34
+doing step 35
+doing step 36
+doing step 37
+doing step 38
+doing step 39
+doing step 40
+doing step 41
+doing step 42
+doing step 43
+doing step 44
+doing step 45
+doing step 46
+doing step 47
+doing step 48
+doing step 49
+NEB 1 found 3 candidates
+final eigenvalue  -19.29127598168391
+Failed on finding TS for  [2, 4]
+NEB 2 found 1 candidates
+final eigenvalue  0.1685287868781567
+NEB 3 found 4 candidates
+final eigenvalue  -11.14310260916363
+final eigenvalue  -8.810017098617223
+Failed on finding TS for  [1, 5]
+NEB 4 found 1 candidates
+final eigenvalue  0.19982919727158197
+NEB 5 found 2 candidates
+NEB 6 found 2 candidates
+final eigenvalue  0.16714214822605203
+final eigenvalue  0.03230075721467404
+NEB 7 found 1 candidates
+final eigenvalue  0.061797665920284996
+{'coords': array([-2.28101437, -1.83427034,  0.47162994, -1.01042568, -2.53379724,
+        0.06626085, -0.97582897, -3.75610762, -0.04283272,  0.11917627,
+       -1.78052489, -0.18250533,  0.35936365, -0.38900313, -0.13200369,
+        1.65969666,  0.01517383, -0.45557179,  2.03107334,  1.35100526,
+       -0.44493394,  1.09745063,  2.32700506, -0.10588939,  1.39308505,
+        3.65722849, -0.07453659, -0.19741802,  1.93691294,  0.21678951,
+       -0.56880712,  0.59603224,  0.20592133, -3.05386077, -2.59009972,
+        0.61980284, -2.61748113, -1.13941946, -0.30485718, -2.14957299,
+       -1.2823883 ,  1.40819187,  0.93561446, -2.32095413, -0.45098815,
+        2.40152201, -0.73559967, -0.72296324,  3.05179205,  1.62942796,
+       -0.70196412,  2.31916813,  3.77888409, -0.3176713 , -0.9213528 ,
+        2.70280813,  0.48012666, -1.59218039,  0.36768648,  0.46799444]), 'energy': -14022.835793722626}
+{'coords': array([-1.82883780e+00, -1.73239236e+00,  6.37373093e-01, -6.04380874e-01,
+       -2.58409552e+00,  3.72937805e-01, -6.15812526e-01, -3.80403272e+00,
+        4.77200644e-01,  5.22741659e-01, -1.88462084e+00, -2.12381479e-03,
+        5.61102046e-01, -4.62959789e-01, -9.34153683e-02,  3.10082811e-01,
+        1.69135609e-01, -1.30627400e+00,  3.78173183e-01,  1.55370512e+00,
+       -1.40842394e+00,  6.91062802e-01,  2.31644755e+00, -2.84121881e-01,
+        7.76324151e-01,  3.67347724e+00, -3.19245815e-01,  9.37799067e-01,
+        1.68999402e+00,  9.38100315e-01,  8.68675101e-01,  3.08458655e-01,
+        1.02673310e+00, -2.10294320e+00, -1.16791158e+00, -2.61292173e-01,
+       -1.63227294e+00, -1.00794357e+00,  1.43593428e+00, -2.66334466e+00,
+       -2.37348205e+00,  9.29976992e-01,  1.38045767e+00, -2.39690048e+00,
+       -1.76618418e-01,  6.06279837e-02, -4.32331674e-01, -2.17541993e+00,
+        1.80648671e-01,  2.04137557e+00, -2.36153880e+00,  5.52657498e-01,
+        3.98086984e+00, -1.20680297e+00,  1.17292320e+00,  2.30252670e+00,
+        1.80308262e+00,  1.05431615e+00, -1.89319728e-01,  1.97393826e+00]), 'energy': -14022.870589106804}
+{'coords': array([-1.81391225e+00, -1.76877251e+00,  5.97040617e-01, -6.81698070e-01,
+       -2.52321871e+00,  1.03372338e-01, -7.86951898e-01, -3.71942230e+00,
+       -1.72605541e-01,  5.36750592e-01, -1.86954277e+00,  3.06237264e-03,
+        7.63167232e-01, -4.81626476e-01, -8.58621412e-03,  2.07675658e+00,
+       -1.52080812e-02,  6.03734683e-02,  2.35160941e+00,  1.34616866e+00,
+        8.77145106e-03,  1.30870004e+00,  2.26558025e+00, -1.01932324e-01,
+        1.50879501e+00,  3.61261632e+00, -1.54033177e-01, -3.18195435e-03,
+        1.80155142e+00, -1.66074099e-01, -2.52877340e-01,  4.45614453e-01,
+       -1.22527195e-01, -2.71902588e+00, -2.33371056e+00,  7.91561185e-01,
+       -2.33107024e+00, -8.61234310e-01, -7.41237398e-01, -1.67206412e+00,
+       -9.00206201e-01,  1.22696802e+00,  1.33226439e+00, -2.44633127e+00,
+       -2.44307349e-01,  2.89347840e+00, -7.26568105e-01,  1.58597091e-01,
+        3.38299826e+00,  1.69114148e+00,  6.03340719e-02,  2.45479357e+00,
+        3.79243621e+00, -8.93257722e-02, -8.12284909e-01,  2.51811656e+00,
+       -2.54756672e-01, -2.54073217e+00, -7.74146509e-02, -1.06827981e+00]), 'energy': -14020.436937357092}
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc407.pok.ibm.com>
+Subject: Job 4826800: <python -u ../../run_nequip_par64.py paracetamol> in cluster <cccCluster> Done
+
+Job <python -u ../../run_nequip_par64.py paracetamol> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 04:03:28 2024
+Job was executed on host(s) <cccxc407.pok.ibm.com>, in queue <x86_6h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 04:03:29 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/nequip_64/paracetamol> was used as the working directory.
+Started at Mon Sep  2 04:03:29 2024
+Terminated at Mon Sep  2 06:36:41 2024
+Results reported at Mon Sep  2 06:36:41 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_nequip_par64.py paracetamol
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   9116.13 sec.
+    Max Memory :                                 1013 MB
+    Average Memory :                             1010.03 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               89099.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   9190 sec.
+    Turnaround time :                            9193 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4826800> for stderr output of this job.
+

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/dccstor/aimft1/landscape_paper/nequip_64/paracetamol/../../run_nequip_par64.py", line 36, in <module>
+    mlp = MachineLearningPotential(species, 'nequip', mace_file, 'cuda')
+  File "/u/jdm/programs/topography-searcher/src/topsearch/potentials/ml_potentials.py", line 68, in __init__
+    from nequip.ase import NequIPCalculator
+ModuleNotFoundError: No module named 'nequip.ase'

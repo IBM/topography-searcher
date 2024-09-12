@@ -41,13 +41,15 @@ class BasinHopping:
                  potential: type,
                  similarity: type,
                  step_taking: type,
-                 opt_method: str = 'scipy',) -> None:
+                 opt_method: str = 'scipy',
+                 ignore_relreduc: bool = False) -> None:
         
         self.ktn = ktn
         self.potential = potential
         self.similarity = similarity
         self.step_taking = step_taking
         self.opt_method = opt_method
+        self.ignore_relreduc = ignore_relreduc
 
     def run(self, coords: type, n_steps: int, conv_crit: float,
             temperature: float) -> None:
@@ -61,6 +63,7 @@ class BasinHopping:
         markov_energy = energy
         # Main loop for repeated perturbation, minimisation, and acceptance
         for i in range(n_steps):
+            print(f"doing step {i}")
             #  Perturb coordinates
             self.step_taking.perturb(coords)
             # Test for and remove atom clashes if density functional theory
@@ -78,6 +81,12 @@ class BasinHopping:
                                 initial_position=coords.position,
                                 bounds=coords.bounds,
                                 conv_crit=conv_crit)
+            elif self.opt_method == 'ase':
+                min_position, energy, results_dict = \
+                    lbfgs.minimise_ase(self.potential,
+                                       initial_position=coords.position,
+                                       numbers=coords.atoms.numbers,
+                                       conv_crit=conv_crit)
             elif self.opt_method == 'psi4':
                 if not isinstance(self.potential, DensityFunctionalTheory):
                     raise ValueError("Psi4 optimisation method requires DFT potential")
@@ -89,13 +98,15 @@ class BasinHopping:
                 raise ValueError("Invalid optimisation method, options are 'scipy' or 'psi4'")
             # Failed minimisation so don't accept
             if results_dict['warnflag'] != 0 or \
-                    results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH':
+                    (results_dict['task'] == 'CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH' \
+                        and not self.ignore_relreduc):
                 with open('logfile', 'a', encoding="utf-8") as outfile:
-                    outfile.write(f"Step {i+1}: Could not converge \n")
+                    outfile.write(f"Step {i+1}: Could not converge with {results_dict} \n")
                 # Revert to previous coordinates
                 coords.position = markov_coords
                 continue
             coords.position = min_position
+            # coords.write_xyz(f"_bh_{i}_")
             # Check that the bonds have not changed if molecular
             if isinstance(coords, (AtomicCoordinates, MolecularCoordinates)):
                 # Bonds have been changed so reject step
@@ -127,6 +138,12 @@ class BasinHopping:
                             initial_position=coords.position,
                             bounds=coords.bounds,
                             conv_crit=conv_crit)
+        elif self.opt_method == 'ase':
+                min_position, energy, results_dict = \
+                    lbfgs.minimise_ase(self.potential,
+                                       initial_position=coords.position,
+                                       numbers=coords.atoms.numbers,
+                                       conv_crit=conv_crit)
         elif self.opt_method == 'psi4':
             if not isinstance(self.potential, DensityFunctionalTheory):
                 raise ValueError("Psi4 optimisation method requires DFT potential")

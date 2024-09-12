@@ -1,0 +1,6 @@
+/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.4.0+cu121 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/scripts/deploy.py:156: UserWarning: Models deployed before v0.6.0 don't contain information about their default_dtype or model_dtype; assuming the old default of float32 for both, but this might not be right if you had explicitly set default_dtype=float64.
+  warnings.warn(
+/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/ase/nequip_calculator.py:73: UserWarning: Trying to use chemical symbols as NequIP type names; this may not be correct for your model! To avoid this warning, please provide `species_to_type_name` explicitly.
+  warnings.warn(

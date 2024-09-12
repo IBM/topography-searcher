@@ -1,0 +1,104 @@
+ -------BASIN-HOPPING-------
+Steps = 50,Temperature = 100.0
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+Step 7: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+using ASE optimisation
+Step 8: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+Step 18: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+Step 41: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+Step 45: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+using ASE optimisation
+Located 7 distinct minima
+Basin-hopping completed in 361.1578321624547
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 7 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 2 4
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 62.52485788054764 s:NEB (34.29548538662493), HEF (25.63919633254409)
+-------------------------
+Connection attempt between minima pair: 1 2
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 56.382197292521596 s:NEB (36.33434340916574), HEF (17.517227988690138)
+-------------------------
+Connection attempt between minima pair: 0 3
+
+0 candidates from NEB after Force constant: 50.0
+Completed connection in 27.57788359746337 s:NEB (25.04462743923068), HEF (8.23289155960083e-06)
+-------------------------
+Connection attempt between minima pair: 4 5
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 81.21544676832855 s:NEB (58.86762851662934), HEF (19.740458123385906)
+-------------------------
+New transition state connecting minima 0 and 2
+Connection attempt between minima pair: 0 5
+
+0 candidates from NEB after Force constant: 50.0
+Completed connection in 24.78216351941228 s:NEB (22.027826581150293), HEF (7.931143045425415e-06)
+-------------------------
+Connection attempt between minima pair: 3 6
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 43.29818586818874 s:NEB (30.509733559563756), HEF (10.020884087309241)
+-------------------------
+New transition state connecting minima 6 and 7
+Connection attempt between minima pair: 1 6
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 62.55706675723195 s:NEB (36.91055070795119), HEF (22.84250989370048)
+-------------------------

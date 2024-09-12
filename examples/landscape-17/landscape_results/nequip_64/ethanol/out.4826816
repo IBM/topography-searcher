@@ -1,0 +1,119 @@
+setting default to float64
+doing step 0
+doing step 1
+doing step 2
+doing step 3
+doing step 4
+doing step 5
+doing step 6
+doing step 7
+doing step 8
+doing step 9
+doing step 10
+doing step 11
+doing step 12
+doing step 13
+doing step 14
+doing step 15
+doing step 16
+doing step 17
+doing step 18
+doing step 19
+doing step 20
+doing step 21
+doing step 22
+doing step 23
+doing step 24
+doing step 25
+doing step 26
+doing step 27
+doing step 28
+doing step 29
+doing step 30
+doing step 31
+doing step 32
+doing step 33
+doing step 34
+doing step 35
+doing step 36
+doing step 37
+doing step 38
+doing step 39
+doing step 40
+doing step 41
+doing step 42
+doing step 43
+doing step 44
+doing step 45
+doing step 46
+doing step 47
+doing step 48
+doing step 49
+NEB 1 found 1 candidates
+NEB 2 found 1 candidates
+NEB 3 found 1 candidates
+final eigenvalue  1.5028321289332138
+NEB 4 found 0 candidates
+NEB 5 found 1 candidates
+{'coords': array([-1.59838012e-03, -4.97204056e-01, -4.33234163e-01, -6.01830341e-02,
+        9.19504289e-01,  1.11857177e-01, -3.10009277e-01, -1.42744801e+00,
+        5.96277758e-01, -7.31065931e-01, -6.17081466e-01, -1.24615335e+00,
+        9.90816582e-01, -6.96043584e-01, -8.61260550e-01, -1.04383156e+00,
+        1.10974486e+00,  5.52255337e-01,  6.94448531e-01,  1.06400752e+00,
+        8.91671081e-01,  1.11692637e-01,  1.65319540e+00, -6.83798340e-01,
+        4.30079104e-01, -2.03358948e+00,  6.93987064e-01]), 'energy': -4217.44277345478}
+{'coords': array([-0.23128376, -0.54477999, -0.4141923 , -0.03661981,  0.86393739,
+        0.12275625,  0.47707999, -1.52239148,  0.330759  , -1.29888731,
+       -0.80329085, -0.40193397,  0.10239614, -0.59376374, -1.45967588,
+       -0.59512608,  1.59257967, -0.47349217, -0.38851996,  0.93655284,
+        1.1588052 ,  1.02240062,  1.14716097,  0.09466437,  0.94856018,
+       -1.07600481,  1.04230951]), 'energy': -4217.434084714271}
+{'coords': array([ 0.07422149, -0.43280549, -0.39201435, -0.0155685 ,  0.97808821,
+        0.16400442,  0.36910547, -1.35051824,  0.65260248, -0.86373874,
+       -0.6989629 , -0.89894496,  0.87245803, -0.48957028, -1.14483916,
+        0.91311782,  1.2345975 ,  0.68309694, -0.17720271,  1.70649077,
+       -0.63869656, -0.83855093,  1.05810773,  0.88149959, -0.33384192,
+       -2.00542729,  0.69329159]), 'energy': -4217.442782856229}
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc406.pok.ibm.com>
+Subject: Job 4826816: <python -u ../../run_nequip_eth64.py ethanol> in cluster <cccCluster> Done
+
+Job <python -u ../../run_nequip_eth64.py ethanol> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 04:06:28 2024
+Job was executed on host(s) <cccxc406.pok.ibm.com>, in queue <x86_6h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 04:06:29 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/nequip_64/ethanol> was used as the working directory.
+Started at Mon Sep  2 04:06:29 2024
+Terminated at Mon Sep  2 04:37:24 2024
+Results reported at Mon Sep  2 04:37:24 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_nequip_eth64.py ethanol
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   1828.27 sec.
+    Max Memory :                                 1007 MB
+    Average Memory :                             996.42 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               89105.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   1853 sec.
+    Turnaround time :                            1856 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4826816> for stderr output of this job.
+

@@ -1,0 +1,29 @@
+ -------BASIN-HOPPING-------
+Steps = 50,Temperature = 100.0
+Step 1: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Step 15: Could not converge with {'warnflag': 1, 'task': 'failed to converge in 200 steps'} 
+Located 3 distinct minima
+Basin-hopping completed in 352.0234726704657
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 3 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 170.30961076542735 s:NEB (45.13160852715373), HEF (122.36520558595657)
+-------------------------
+New transition state connecting minima 0 and 1
+Connection attempt between minima pair: 0 2
+
+1 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+Completed connection in 212.81889139860868 s:NEB (25.58366546407342), HEF (184.4199733659625)
+-------------------------
+Connection attempt between minima pair: 1 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 103.87267412990332 s:NEB (29.438918698579073), HEF (71.65520226582885)
+-------------------------
+New transition state connecting minima 2 and 1
