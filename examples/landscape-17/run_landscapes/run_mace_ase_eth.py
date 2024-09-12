@@ -22,8 +22,8 @@ species = atoms.get_chemical_symbols()
 position = atoms.get_positions().flatten()
 coords = MolecularCoordinates(species, position)
 
-mace_file = '/dccstor/chemistry_ai/mlp_landscapes/models/mace/ethanol/MACE_model_swa.model'
-mlp = MachineLearningPotential(species, 'mace', mace_file)
+mace_file = '/dccstor/chemistry_ai/mlp_landscapes/models/mace/ethanol/MACE_model.model'
+mlp = MachineLearningPotential(species, 'mace', mace_file, 'cuda')
 ff = MMFF94(atfile)
 comparer = MolecularSimilarity(distance_criterion=1.0,
                                energy_criterion=5e-3,
