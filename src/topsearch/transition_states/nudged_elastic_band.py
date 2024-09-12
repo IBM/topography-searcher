@@ -163,7 +163,17 @@ class NudgedElasticBand:
         """ Interpolate linearly in the space of dihedrals, angles and
             bond lengths, which will be much more appropriate for molecules """
         # Set the number of images based on given image density
-        dist = np.linalg.norm(coords1.position-coords2)
+        try:
+            dist = np.linalg.norm(coords1.position-coords2)
+        except:
+            print(coords1.position, coords2)
+            print(coords1)
+            traceback.print_exc()
+            try:
+                print(coords1.position.position)
+            except:
+                pass
+            raise RuntimeError
         self.n_images = int(self.image_density*dist)
         # Can't have too few images
         if self.n_images < 10:

@@ -1,0 +1,80 @@
+ -------BASIN-HOPPING-------
+Steps = 50,Temperature = 100.0
+Located 11 distinct minima
+Basin-hopping completed in 4249.603648267686
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 11 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+2 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 13577.029416568577 s:NEB (71.95689095929265), HEF (13503.406722489744)
+-------------------------
+Connection attempt between minima pair: 0 7
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 857.1168050728738 s:NEB (481.38804575800896), HEF (374.0437200628221)
+-------------------------
+New transition state connecting minima 10 and 0
+Connection attempt between minima pair: 2 4
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 1652.4237542450428 s:NEB (1167.0842205248773), HEF (483.651337698102)
+-------------------------
+New transition state connecting minima 4 and 2
+Connection attempt between minima pair: 0 10
+
+Nodes already connected by transition state
+Connection attempt between minima pair: 3 4
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 1790.2728663757443 s:NEB (547.4287384226918), HEF (1241.165608137846)
+-------------------------
+New transition state connecting minima 4 and 3
+Connection attempt between minima pair: 5 8
+
+Connection attempt between minima pair: 7 10
+
+Connection attempt between minima pair: 1 8
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 1329.168899629265 s:NEB (657.8835131749511), HEF (669.5993276834488)
+-------------------------
+New transition state connecting minima 1 and 5
+Connection attempt between minima pair: 5 10
+
+2 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 17347.950408358127 s:NEB (72.30643830820918), HEF (17273.956543304026)
+-------------------------
+Connection attempt between minima pair: 8 9
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 705.4584289751947 s:NEB (355.00571804866195), HEF (348.75732618942857)
+-------------------------
+New transition state connecting minima 9 and 8
+Connection attempt between minima pair: 2 6
+
+3 candidates from NEB after Force constant: 50.0
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+TS search did not converge. Too many steps
+Completed connection in 11101.216612100601 s:NEB (65.08252034708858), HEF (11034.454363618046)
+-------------------------
+Connection attempt between minima pair: 3 6
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 2016.991722214967 s:NEB (582.6453828029335), HEF (1432.6418339274824)
+-------------------------
+New transition state connecting minima 3 and 6
+Connection attempt between minima pair: 1 9
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 1088.991191022098 s:NEB (548.3881076425314), HEF (538.9031590372324)
+-------------------------
+New transition state connecting minima 1 and 9

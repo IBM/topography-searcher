@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/dccstor/aimft1/landscape_paper/mace_retrain/azobenzene/../../run_mace_ase_azo.py", line 36, in <module>
-    mlp = MachineLearningPotential(species, 'mace', mace_file)
-NameError: name 'mace_file' is not defined
