@@ -25,8 +25,8 @@ coords = MolecularCoordinates(species, position)
 mace_file = '/dccstor/chemistry_ai/mlp_landscapes/models/mace/ethanol/MACE_model.model'
 mlp = MachineLearningPotential(species, 'mace', mace_file, 'cuda')
 ff = MMFF94(atfile)
-comparer = MolecularSimilarity(distance_criterion=1.0,
-                               energy_criterion=5e-3,
+comparer = MolecularSimilarity(distance_criterion=0.5,
+                               energy_criterion=1e-3,
                                weighted=False)
 ktn = KineticTransitionNetwork()
 step_taking = MolecularPerturbation(max_displacement=180.0,
