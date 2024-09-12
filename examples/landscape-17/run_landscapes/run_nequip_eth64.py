@@ -43,7 +43,7 @@ ff = MMFF94(atfile)
 # Similarity object, decides if two conformations are the same or different
 # Same if distance between points is less than distance_criterion
 # and the difference in energy is less than energy_criterion
-comparer = MolecularSimilarity(distance_criterion=0.3,
+comparer = MolecularSimilarity(distance_criterion=0.5,
                                energy_criterion=1e-3,
                                weighted=False)
 # comparer = MolecularSimilarity(distance_criterion=0.3,
