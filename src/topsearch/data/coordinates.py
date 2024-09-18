@@ -58,7 +58,7 @@ class StandardCoordinates:
         """ Check if the position is at the bounds in all dimensions """
         return np.all(self.check_bounds())
 
-    def active_bounds(self) -> NDArray:
+    def active_bounds(self) -> tuple[NDArray, NDArray]:
         """ Checks whether the position is at the upper or lower bounds """
         below_bounds = self.position <= self.lower_bounds
         above_bounds = self.position >= self.upper_bounds

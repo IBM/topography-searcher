@@ -8,6 +8,8 @@ import random
 import numpy as np
 from nptyping import NDArray
 
+from topsearch.data.coordinates import AtomicCoordinates, MolecularCoordinates, StandardCoordinates
+
 
 class StandardPerturbation:
 
@@ -34,7 +36,7 @@ class StandardPerturbation:
         self.max_displacement = max_displacement
         self.proportional_distance = proportional_distance
 
-    def set_step_sizes(self, coords: type) -> NDArray:
+    def set_step_sizes(self, coords: StandardCoordinates) -> NDArray:
         """ Generate an appropriate step size for the given coordinates """
         # Generate a uniform step size
         step_sizes = np.full(coords.ndim, self.max_displacement)
@@ -43,7 +45,7 @@ class StandardPerturbation:
             step_sizes = (coords.upper_bounds - coords.lower_bounds)*step_sizes
         return step_sizes
 
-    def perturb(self, coords: type) -> None:
+    def perturb(self, coords: StandardCoordinates) -> None:
         """ Displace the given position by randomly up to specified size """
         step_sizes = self.set_step_sizes(coords)
         # Find perturbations relative to the total size of the space
@@ -74,7 +76,7 @@ class AtomicPerturbation():
         self.max_displacement = max_displacement
         self.max_atoms = max_atoms
 
-    def perturb(self, coords: type) -> None:
+    def perturb(self, coords: AtomicCoordinates) -> None:
         """ Returns coords perturbed by a displacement to up to max_atoms """
         # Select the max_atoms which are to be displaced
         perturbed_atoms = random.sample(
@@ -110,7 +112,7 @@ class MolecularPerturbation():
         self.max_displacement = max_displacement
         self.max_bonds = max_bonds
 
-    def perturb(self, coords: type) -> None:
+    def perturb(self, coords: MolecularCoordinates) -> None:
         """ Rotate about randomly selected bonds within a molecular system """
 
         chosen_bonds = random.sample(coords.rotatable_dihedrals,

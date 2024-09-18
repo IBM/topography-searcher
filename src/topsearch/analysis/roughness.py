@@ -2,10 +2,12 @@
     https://doi.org/10.1039/D3ME00189J """
 
 import numpy as np
+
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from .graph_properties import get_connections
 
 
-def roughness_metric(ktn: type, lengthscale: float = 0.8) -> float:
+def roughness_metric(ktn: KineticTransitionNetwork, lengthscale: float = 0.8) -> float:
     """ Compute the roughness metric for the current kinetic
         transition network """
     lengthscale = lengthscale**2
@@ -31,7 +33,7 @@ def roughness_metric(ktn: type, lengthscale: float = 0.8) -> float:
     return frustration
 
 
-def get_population(ktn: type, min_node: int, ts_node: int,
+def get_population(ktn: KineticTransitionNetwork, min_node: int, ts_node: int,
                    lengthscale: float) -> float:
     """ Compute the population of a given minimum in the network.
         Population is the value of the RBF kernel at the separation

@@ -3,9 +3,16 @@
     is the base class from which atomic and molecular equivalents
     build """
 
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from copy import deepcopy
 import numpy as np
 from nptyping import NDArray
+from topsearch.data.coordinates import StandardCoordinates
+
+if TYPE_CHECKING:
+    from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 
 
 class StandardSimilarity:
@@ -42,21 +49,21 @@ class StandardSimilarity:
         self.energy_criterion = energy_criterion
         self.proportional_distance = proportional_distance
 
-    def distance(self, coords1: type, coords2: NDArray) -> float:
+    def distance(self, coords1: StandardCoordinates, coords2: NDArray) -> float:
         """ Returns Euclidean distance between two configurations """
         return np.linalg.norm(coords1 - coords2)
 
-    def centre(self, coords1: type) -> NDArray:
+    def centre(self, coords1: StandardCoordinates) -> NDArray:
         """ Returns coords again, included for ease with other classes """
         return coords1.position
 
-    def closest_distance(self, coords1: type, coords2: NDArray) -> float:
+    def closest_distance(self, coords1: StandardCoordinates, coords2: NDArray) -> float:
         """ Returns the closest distance between coords1 and coords2.
             Just the Euclidean distance for non-atomic systems """
         return self.distance(coords1.position, coords2)
 
-    def optimal_alignment(self, coords1: type,
-                          coords2: NDArray) -> (float, NDArray, NDArray):
+    def optimal_alignment(self, coords1: StandardCoordinates,
+                          coords2: NDArray) -> tuple[float, NDArray, NDArray]:
         """
         Placeholder method to allow the same routines to be used
         in atomic classes, does nothing in this case
@@ -64,7 +71,7 @@ class StandardSimilarity:
         dist = self.closest_distance(coords1, coords2)
         return dist, coords1.position, coords2, None
 
-    def test_same(self, coords1: type, coords2: NDArray,
+    def test_same(self, coords1: StandardCoordinates, coords2: NDArray,
                   energy1: float, energy2: float) -> bool:
         """ Returns logical that specifies if two points are the same """
         # Compute the energy difference
@@ -85,7 +92,7 @@ class StandardSimilarity:
         return bool((distance < self.distance_criterion) and
                     (energy_difference < self.energy_criterion))
 
-    def is_new_minimum(self, ktn: type, min_coords: type,
+    def is_new_minimum(self, ktn: KineticTransitionNetwork, min_coords: StandardCoordinates,
                        min_energy: float) -> tuple[bool, NDArray]:
         """ Compare to all existing minima and add if different to all
         minima currently in network return True """
@@ -99,7 +106,7 @@ class StandardSimilarity:
                 return False, i
         return True, None
 
-    def is_new_ts(self, ktn: type, ts_coords: type,
+    def is_new_ts(self, ktn: KineticTransitionNetwork, ts_coords: StandardCoordinates,
                   ts_energy: float) -> tuple[bool, NDArray]:
         """ Compare transition state to all other currently in the network G
             and return False if same as any of them """
@@ -117,7 +124,7 @@ class StandardSimilarity:
                 return False, node1, node2
         return True, None, None
 
-    def test_new_minimum(self, ktn: type, min_coords: type,
+    def test_new_minimum(self, ktn: KineticTransitionNetwork, min_coords: StandardCoordinates,
                          min_energy: float) -> None:
         """ Evaluate if a minimum is different to all current minima,
             check the minimum passes the required tests, and if both are
@@ -127,8 +134,8 @@ class StandardSimilarity:
             return
         ktn.add_minimum(min_coords.position, min_energy)
 
-    def test_new_ts(self, ktn: type,
-                    ts_coords: type, ts_energy: float,
+    def test_new_ts(self, ktn: KineticTransitionNetwork,
+                    ts_coords: StandardCoordinates, ts_energy: float,
                     min_plus_coords: NDArray, e_plus: float,
                     min_minus_coords: NDArray, e_minus: float) -> None:
         """ Evaluate if the transition state is not a repeat, and that

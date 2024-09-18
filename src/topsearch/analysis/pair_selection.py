@@ -3,12 +3,16 @@
 
 import numpy as np
 import networkx as nx
+from topsearch.data.coordinates import StandardCoordinates
+
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+from topsearch.similarity.similarity import StandardSimilarity
 from .graph_properties import unconnected_component
 from .minima_properties import get_distance_matrix, get_distance_from_minimum
 
 
-def connect_unconnected(ktn: type, similarity: type,
-                        coords: type, neighbours: int) -> list:
+def connect_unconnected(ktn: KineticTransitionNetwork, similarity: StandardSimilarity,
+                        coords: StandardCoordinates, neighbours: int) -> list:
     """
     Find all minima not connected to global minimum set and their nearest
     neighbours. Return the list of minima pairs
@@ -29,7 +33,7 @@ def connect_unconnected(ktn: type, similarity: type,
     return total_pairs
 
 
-def connect_to_set(ktn: type, similarity: type, coords: type,
+def connect_to_set(ktn: KineticTransitionNetwork, similarity: StandardSimilarity, coords: StandardCoordinates,
                    node1: int, cycles: int) -> list:
     """
     Finds all minima connected to node1 and finds the pairs closest
@@ -56,8 +60,8 @@ def connect_to_set(ktn: type, similarity: type, coords: type,
     return unique_pairs(total_pairs)
 
 
-def closest_enumeration(ktn: type, similarity: type,
-                        coords: type, neighbours: int) -> list:
+def closest_enumeration(ktn: KineticTransitionNetwork, similarity: StandardSimilarity,
+                        coords: StandardCoordinates, neighbours: int) -> list:
     """
     Selector that attempts to connect all minima in the fewest number of
     attempts by connecting each minimum to its N nearest neighbours.
