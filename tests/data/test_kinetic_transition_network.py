@@ -130,11 +130,11 @@ def test_add_ts():
     ktn.add_minimum(np.array([-124.830, 65.55]), 651.45464)
 
     # Directly add transition state between minima
-    ktn.add_ts(ts_coords, ts_energy, 1, 2)
+    ktn.add_ts(ts_coords, ts_energy, 0, 1)
 
     # Retrieve transition state information
-    network_coords = ktn.get_ts_coords(1,2)
-    network_energy = ktn.get_ts_energy(1,2)
+    network_coords = ktn.get_ts_coords(0,1)
+    network_energy = ktn.get_ts_energy(0,1)
 
     # Check that input is same as output from network
     assert np.array_equal(network_coords, ts_coords)
