@@ -21,6 +21,7 @@ def test_read_network():
     assert ktn.n_ts == 8
     assert edges == [(0, 1), (1, 2), (2, 8), (3, 6),
                      (3, 7), (3, 4), (4, 8), (4, 5)]
+    
     # check result for a kinetic transition network where nodes 0, 1 have two transition states
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
@@ -32,6 +33,17 @@ def test_read_network():
     assert ktn.n_ts == 9
     assert edges == [(0, 1, 0), (0, 1, 1), (1, 2, 0), (2, 8, 0), (3, 6, 0),
                      (3, 7, 0), (3, 4, 0), (4, 8, 0), (4, 5, 0)]
+    
+    # check that one can read a kinetic transition network with 1 minimum only
+    ktn = KineticTransitionNetwork()
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
+                     text_string='.ktn_single_min')
+    edges = []
+    for i in ktn.G.edges:
+        edges.append(i)
+    assert ktn.n_minima == 1
+    assert ktn.n_ts == 0
+    assert edges == []
 
 def test_dump_network():
     ktn = KineticTransitionNetwork()

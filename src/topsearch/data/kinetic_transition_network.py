@@ -163,10 +163,10 @@ class KineticTransitionNetwork:
         """ Returns G network from files that resulted from dump_network """
 
         # Get the data back from files
-        minima_data = np.loadtxt(f"{text_path}min.data{text_string}")
-        minima_coords = np.loadtxt(f"{text_path}min.coords{text_string}")
-        ts_data = np.loadtxt(f"{text_path}ts.data{text_string}")
-        ts_coords = np.loadtxt(f"{text_path}ts.coords{text_string}")
+        minima_data = np.loadtxt(f"{text_path}min.data{text_string}", ndmin = 2) # ndmin makes sure cases with single minima or ts are loaded well
+        minima_coords = np.loadtxt(f"{text_path}min.coords{text_string}", ndmin = 2)
+        ts_data = np.loadtxt(f"{text_path}ts.data{text_string}", ndmin = 2)
+        ts_coords = np.loadtxt(f"{text_path}ts.coords{text_string}", ndmin = 2)
         self.pairlist = np.loadtxt(f"{text_path}pairlist{text_string}",
                                    ndmin=2, dtype=int)
 
