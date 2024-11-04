@@ -150,8 +150,8 @@ def barrier_batch_selector(ktn: type,
     batch_indices = []
     # Find maximum ts energy for barrier calc
     ts_energies = []
-    for u, v in ktn.G.edges():
-        ts_energies.append(ktn.get_ts_energy(u, v))
+    for u, v, edge_index in ktn.G.edges:
+        ts_energies.append(ktn.get_ts_energy(u, v, edge_index))
     if not ts_energies:
         max_ts_energy = 1e5
     else:

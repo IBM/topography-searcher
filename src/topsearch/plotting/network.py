@@ -42,10 +42,10 @@ def barrier_reweighting(ktn: type) -> nx.Graph:
         to barrier height. Returns reweighted network """
 
     g_weighted = nx.create_empty_copy(ktn.G, with_data=True)
-    for node1, node2 in ktn.G.edges:
+    for node1, node2, edge_index in ktn.G.edges:
         energy1 = ktn.get_minimum_energy(node1)
         energy2 = ktn.get_minimum_energy(node2)
-        energy_ts = ktn.get_ts_energy(node1, node2)
+        energy_ts = ktn.get_ts_energy(node1, node2, edge_index)
         min_barrier = float(min((energy_ts-energy1), (energy_ts-energy2)))
         if min_barrier < 0.0:
             min_barrier = 1e-5
