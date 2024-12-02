@@ -2,14 +2,17 @@ import numpy as np
 import networkx as nx
 import pytest
 import ase.io
+import os
 from topsearch.data.coordinates import MolecularCoordinates
 from topsearch.similarity.dihedral_similarity import DihedralSimilarity
+
+current_dir = os.path.dirname(os.path.dirname((os.path.realpath(__file__))))
 
 comparer = DihedralSimilarity()
 
 
 def test_get_bonding():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -20,11 +23,11 @@ def test_get_bonding():
                                   (6, 17), (6, 18)])
 
 def test_match_graphs():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/pinacolone_rotated.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_rotated.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords2 = MolecularCoordinates(species, position)
@@ -37,11 +40,11 @@ def test_match_graphs():
     assert mapping[6] == 6
 
 def test_match_graphs2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/pinacolone_permuted.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_permuted.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_p = MolecularCoordinates(species, position)
@@ -52,7 +55,7 @@ def test_match_graphs2():
     assert mappings[0][6] == 5
 
 def test_get_connections():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -64,7 +67,7 @@ def test_get_connections():
     assert connected_sets == [[8, 9, 2, 7], [11, 10, 3, 12], [4, 13, 14, 15]]
 
 def test_get_connections2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -76,7 +79,7 @@ def test_get_connections2():
     assert connected_sets == [[0], [16, 17, 18, 6]]
 
 def test_get_permutable_sets():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -88,7 +91,7 @@ def test_get_permutable_sets():
     assert repeats == [[0, 1, 2]]
 
 def test_get_permutable_sets2():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -98,7 +101,7 @@ def test_get_permutable_sets2():
     assert repeats == [[0, 1]]
 
 def test_get_permutable_sets3():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -108,7 +111,7 @@ def test_get_permutable_sets3():
     assert repeats == [[0]]
 
 def test_get_permutable_sets4():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -118,7 +121,7 @@ def test_get_permutable_sets4():
     assert repeats == [[0], [1, 2]]
 
 def test_get_permutable_idxs():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -127,7 +130,7 @@ def test_get_permutable_idxs():
     assert idxs == [2, 3, 4]
 
 def test_get_permutable_idxs2():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -136,7 +139,7 @@ def test_get_permutable_idxs2():
     assert idxs == [10]
 
 def test_get_permutable_atoms():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -147,7 +150,7 @@ def test_get_permutable_atoms():
     assert neighbours == [16, 17, 18]
 
 def test_get_permutable_atoms2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -158,7 +161,7 @@ def test_get_permutable_atoms2():
     assert neighbours == [2, 3, 4]
 
 def test_get_permutable_atoms3():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -169,7 +172,7 @@ def test_get_permutable_atoms3():
     assert atoms == [[0]]
 
 def test_augment_network_edges():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -205,7 +208,7 @@ def test_augment_network_edges():
     assert edge_directions == directions_list
 
 def test_containing_bonds():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -215,7 +218,7 @@ def test_containing_bonds():
     assert contains == [[], [], [[3, 10]], []]
 
 def test_containing_bonds2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -261,7 +264,7 @@ def test_get_ordered_sets2():
     assert sorted_sets == [[[5, 1], [1, 3], [1, 2], [1, 4], [2, 7], [3, 11], [4, 13]]]
 
 def test_order_bonds():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -271,7 +274,7 @@ def test_order_bonds():
     assert bond_sets == [[[5, 1], [1, 3], [1, 2], [1, 4]], [[5, 6]]]
 
 def test_order_bonds2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -281,7 +284,7 @@ def test_order_bonds2():
     assert bond_sets == [[[4, 13]], [[4, 14]], [[1, 3], [3, 10]]]
 
 def test_order_bonds3():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -302,7 +305,7 @@ def test_get_cyclic_permutations2():
     assert permutations == [[0, 1], [1, 0]]
 
 def test_get_bond_atoms():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -314,7 +317,7 @@ def test_get_bond_atoms():
     assert p_atoms == [2, 3, 4]
 
 def test_get_bond_atoms2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -326,7 +329,7 @@ def test_get_bond_atoms2():
     assert p_atoms == [2, 3, 4]
 
 def test_get_connectivity():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -338,7 +341,7 @@ def test_get_connectivity():
     assert list(c_graph.edges) ==  [(8, 2), (9, 2), (2, 7)]
 
 def test_get_connectivity2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -351,7 +354,7 @@ def test_get_connectivity2():
                               (3, 10), (3, 11), (3, 12), (4, 13), (4, 14), (4, 15)]
 
 def test_get_connected_graphs():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -396,7 +399,7 @@ def test_switch_labels():
                             12: 8, 4: 3, 13: 10, 14: 12, 15: 11}
 
 def test_get_permutation_mappings():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -415,7 +418,7 @@ def test_get_permutation_mappings():
                             14: 8, 15: 7, 23: 29, 24: 30, 22: 28}
 
 def test_permute_set():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -427,7 +430,7 @@ def test_permute_set():
     assert len(mappings) == 81
 
 def test_get_mappings():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -479,7 +482,7 @@ def test_dihedral_difference4():
     assert angle_diff == pytest.approx(-75.0)
 
 def test_get_dihedral():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -487,7 +490,7 @@ def test_get_dihedral():
     assert angle == pytest.approx(179.1, 0.1)
 
 def test_get_dihedral2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -495,7 +498,7 @@ def test_get_dihedral2():
     assert angle == pytest.approx(57.4, 0.1)
 
 def test_get_dihedral3():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -503,7 +506,7 @@ def test_get_dihedral3():
     assert angle == pytest.approx(-65.2, 0.1)
 
 def test_get_dihedral_atoms():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -514,7 +517,7 @@ def test_get_dihedral_atoms():
     assert dihedral_atoms == [2, 1, 5, 0]
 
 def test_get_dihedral_atoms2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -525,12 +528,12 @@ def test_get_dihedral_atoms2():
     assert dihedral_atoms == [0, 5, 1, 2]
 
 def test_get_dihedral_similarity():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     bond_network = comparer.prepare_network(coords)
-    atoms = ase.io.read('test_data/pinacolone_rotated.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_rotated.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords2 = MolecularCoordinates(species, position)
@@ -548,12 +551,12 @@ def test_get_dihedral_similarity():
     assert distance < 1e-10
 
 def test_get_dihedral_similarity2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     bond_network = comparer.get_bonding(coords)
-    atoms = ase.io.read('test_data/pinacolone_rotated.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_rotated.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords2 = MolecularCoordinates(species, position)
@@ -568,12 +571,12 @@ def test_get_dihedral_similarity2():
     assert distance == pytest.approx(118.83079031972898)
 
 def test_get_dihedral_similarity3():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     bond_network = comparer.get_bonding(coords)
-    atoms = ase.io.read('test_data/pinacolone_rotated.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_rotated.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords2 = MolecularCoordinates(species, position)
@@ -588,12 +591,12 @@ def test_get_dihedral_similarity3():
     assert distance == pytest.approx(146.35876126772698, 1e-3)
 
 def test_get_optimal_similarity():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     bond_network = comparer.prepare_network(coords)
-    atoms = ase.io.read('test_data/pinacolone_rotated.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_rotated.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords2 = MolecularCoordinates(species, position)
@@ -620,7 +623,7 @@ def test_undo_mapping():
     assert final_mapping == [2, 0, 3, 1]
 
 def test_get_permutable_information():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -632,7 +635,7 @@ def test_get_permutable_information():
     assert permutable_atoms == [2, 3, 4]
 
 def test_get_reorderable_atoms():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -644,7 +647,7 @@ def test_get_reorderable_atoms():
     assert r_atoms ==  [[2, 3], [3, 4], [2, 4]]
 
 def test_postprocess_bonds():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -657,7 +660,7 @@ def test_postprocess_bonds():
     assert r_atoms == []
 
 def test_clockwise_order_perm():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -668,7 +671,7 @@ def test_clockwise_order_perm():
     assert list(order) == [0, 2, 1]
 
 def test_reorder_permutable_atoms():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -680,7 +683,7 @@ def test_reorder_permutable_atoms():
                        17: 16, 18: 17, 7: 7, 8: 8, 9: 9, 10: 11, 11: 10, 12: 12}
 
 def test_clockwise_reorder():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -691,7 +694,7 @@ def test_clockwise_reorder():
     assert perm_atoms == [[2, 3, 4], [13, 14, 15], [16, 17, 18], [7, 8, 9], [10, 11, 12]]
 
 def test_add_placeholders():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -708,7 +711,7 @@ def test_add_placeholders():
                                         (14, 22), (16, 25), (17, 26), (17, 27)]
 
 def test_remove_placeholders():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -722,7 +725,7 @@ def test_remove_placeholders():
     assert old_network.edges == new_network.edges
 
 def test_prepare_network():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -735,7 +738,7 @@ def test_prepare_network():
                                         (14, 22), (16, 25), (17, 26), (17, 27)]
 
 def test_remove_direct_placeholders():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -750,7 +753,7 @@ def test_remove_direct_placeholders():
 
 
 def test_find_best_alignments():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -763,7 +766,7 @@ def test_find_best_alignments():
     assert best_mapping[0] == [0, 1, 3, 4, 2, 5, 6, 11, 10, 12, 13, 14, 15, 8, 7, 9, 16, 17, 18]
 
 def test_find_best_alignments2():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -779,11 +782,11 @@ def test_find_best_alignments2():
     assert best_mappings[0] == [0, 1, 3, 4, 2, 5, 6, 11, 10, 12, 14, 15, 13, 8, 7, 9, 16, 17, 18]
 
 def test_find_best_alignments3():
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/pinacolone_perm.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_perm.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_rot = MolecularCoordinates(species, position)
@@ -798,11 +801,11 @@ def test_find_best_alignments3():
     assert best_mappings[0] == [0, 1, 3, 4, 2, 5, 6, 11, 10, 12, 14, 15, 13, 8, 7, 9, 16, 18, 17]
 
 def test_find_best_alignments4():    
-    atoms = ase.io.read('test_data/pinacolone.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/pinacolone_perm.xyz') 
+    atoms = ase.io.read(f'{current_dir}/test_data/pinacolone_perm.xyz') 
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_rot = MolecularCoordinates(species, position)
@@ -820,7 +823,7 @@ def test_find_best_alignments4():
     assert best_mappings[0] == [0, 1, 3, 4, 2, 5, 6, 11, 10, 12, 14, 15, 13, 8, 7, 9, 17, 16, 18]
 
 def test_find_best_alignments5():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -831,7 +834,7 @@ def test_find_best_alignments5():
     assert best_mappings[0] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 11, 12, 14, 15, 16, 17]
 
 def test_optimal_alignment5():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -843,7 +846,7 @@ def test_optimal_alignment5():
     assert np.abs(dist - 1.9076837625270002) < 0.1
 
 def test_closest_distance5():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -854,7 +857,7 @@ def test_closest_distance5():
     assert np.abs(dist - 1.9076837625270002) < 0.1
 
 def test_test_same5():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
@@ -865,12 +868,12 @@ def test_test_same5():
     assert is_same == True
 
 def test_find_best_alignments6():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     # Switch 9-10
-    atoms = ase.io.read('test_data/pentanol_perm2.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol_perm2.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_rot = MolecularCoordinates(species, position)
@@ -878,12 +881,12 @@ def test_find_best_alignments6():
     assert best_mappings[0] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 9, 11, 12, 13, 14, 15, 16, 17]
 
 def test_find_best_alignments7():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords = MolecularCoordinates(species, position)
     # Switch 6-7, 9-10
-    atoms = ase.io.read('test_data/pentanol_perm.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol_perm.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_rot = MolecularCoordinates(species, position)
@@ -893,7 +896,7 @@ def test_find_best_alignments7():
     assert best_mappings[0] == [0, 1, 2, 3, 4, 5, 7, 6, 8, 10, 9, 13, 11, 12, 14, 15, 16, 17]
 
 def test_find_best_alignments8():
-    atoms = ase.io.read('test_data/ethylbenzene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/ethylbenzene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_ben = MolecularCoordinates(species, position)
@@ -903,7 +906,7 @@ def test_find_best_alignments8():
     assert best_mappings[0] == [0, 1, 3, 2, 4, 6, 5, 7, 8, 9, 11, 10, 12, 13, 14, 16, 15, 17]
 
 def test_find_best_alignments9():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_ben = MolecularCoordinates(species, position)
@@ -915,7 +918,7 @@ def test_find_best_alignments9():
                             14, 15, 16, 17, 18, 19, 20, 23, 21, 22]
 
 def test_get_connectivity3():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -924,7 +927,7 @@ def test_get_connectivity3():
     assert list(connection.nodes()) == [0, 1, 2, 4, 5, 6, 7, 8, 12, 13, 14]
 
 def test_get_ring_connectivity():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -933,7 +936,7 @@ def test_get_ring_connectivity():
     assert set(list(connection.nodes())) == set([1, 4, 12, 7])
 
 def test_get_ring_connectivity2():
-    atoms = ase.io.read('test_data/napthalene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/napthalene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_nap = MolecularCoordinates(species, position)
@@ -942,7 +945,7 @@ def test_get_ring_connectivity2():
     assert set(list(connection.nodes())) == set([2, 3, 6, 7, 10, 11, 14, 15])
 
 def test_get_ring_connectivity3():
-    atoms = ase.io.read('test_data/oxepane.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/oxepane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_oxe = MolecularCoordinates(species, position)
@@ -951,7 +954,7 @@ def test_get_ring_connectivity3():
     assert set(list(connection.nodes())) == set([1, 3, 5, 7, 8, 11, 12, 15, 16])
 
 def test_retain_unique_mappings():
-    atoms = ase.io.read('test_data/pentane.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_pent = MolecularCoordinates(species, position)
@@ -967,7 +970,7 @@ def test_retain_unique_mappings():
                              10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 15: 15, 16: 16}]
 
 def test_retain_unique_mappings2():
-    atoms = ase.io.read('test_data/pentanol.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentanol.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_pent = MolecularCoordinates(species, position)
@@ -981,7 +984,7 @@ def test_retain_unique_mappings2():
                              10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 15: 15, 16: 16, 17: 17}]
 
 def test_match_graphs():
-    atoms = ase.io.read('test_data/pentane.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_pent = MolecularCoordinates(species, position)
@@ -1011,7 +1014,7 @@ def test_prune_lists():
     assert list2 == [3.0, 4.0]
 
 def test_find_best_alignments10(): 
-    atoms = ase.io.read('test_data/pentane.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/pentane.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_pen = MolecularCoordinates(species, position)
@@ -1053,7 +1056,7 @@ def test_combine_mappings():
                                   18: 18, 19: 19, 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10}]
 
 def test_find_best_alignments11():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -1064,7 +1067,7 @@ def test_find_best_alignments11():
     assert best_mappings[0] == [0, 2, 1, 3, 5, 4, 6, 8, 7, 11, 9, 10, 13, 12, 14]
 
 def test_optimal_alignment11():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -1076,7 +1079,7 @@ def test_optimal_alignment11():
     assert np.abs(dist - 0.46401545271011035) < 0.5
 
 def test_closest_distance11():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -1087,7 +1090,7 @@ def test_closest_distance11():
     assert np.abs(dist - 0.46401545271011035) < 0.5
 
 def test_test_same11():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -1098,7 +1101,7 @@ def test_test_same11():
     assert is_same == True
 
 def test_test_same11_2():
-    atoms = ase.io.read('test_data/toluene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/toluene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_tol = MolecularCoordinates(species, position)
@@ -1109,11 +1112,11 @@ def test_test_same11_2():
     assert is_same == False
 
 def test_find_best_alignments12():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_cy = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/cymene_perm.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene_perm.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_perm = MolecularCoordinates(species, position)
@@ -1122,11 +1125,11 @@ def test_find_best_alignments12():
                                 17, 18, 19, 20, 21, 22, 23]
 
 def test_find_best_alignments13():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_cy = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/cymene_perm2.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene_perm2.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_perm = MolecularCoordinates(species, position)
@@ -1135,11 +1138,11 @@ def test_find_best_alignments13():
                                 17, 18, 19, 20, 21, 22, 23]
 
 def test_find_best_alignments14():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_cy = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/cymene_perm3.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene_perm3.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_perm = MolecularCoordinates(species, position)
@@ -1148,11 +1151,11 @@ def test_find_best_alignments14():
                                 17, 18, 19, 20, 21, 22, 23]
 
 def test_find_best_alignments15():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_cy = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/cymene_perm3.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene_perm3.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_perm = MolecularCoordinates(species, position)
@@ -1163,11 +1166,11 @@ def test_find_best_alignments15():
                                 17, 18, 19, 20, 23, 21, 22]
 
 def test_find_best_alignments16():
-    atoms = ase.io.read('test_data/cymene.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_cy = MolecularCoordinates(species, position)
-    atoms = ase.io.read('test_data/cymene_perm3.xyz')
+    atoms = ase.io.read(f'{current_dir}/test_data/cymene_perm3.xyz')
     species = atoms.get_chemical_symbols()
     position = atoms.get_positions().flatten()
     coords_perm = MolecularCoordinates(species, position)
