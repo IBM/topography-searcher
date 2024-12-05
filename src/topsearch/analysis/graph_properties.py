@@ -7,7 +7,7 @@ from .minima_properties import get_minima_energies
 
 
 def unconnected_component(ktn: type) -> set:
-    """ Check which minima are not connected to the global minimum.
+    """ Check which minima are not connected to the global minimum
         Return the set of minima that are unconnected """
 
     # Get global minimum node
@@ -22,6 +22,27 @@ def unconnected_component(ktn: type) -> set:
 def are_nodes_connected(ktn: type, node_i: int, node_j: int) -> bool:
     """ Check if two minima are connected in a given graph """
     return bool(node_j in nx.node_connected_component(ktn.G, node_i))
+
+
+def remove_unessential_node(ktn: type, initial_set: list, node_i: int,
+                            gmin_index: int) -> bool:
+    """ Test if removal of node_i breaks connectivity within initial_set.
+        If not then remove the minimum """
+    H = ktn.G.copy()
+    original_n_min = ktn.n_minima
+    original_n_ts = ktn.n_ts
+    ktn.remove_minimum(node_i)
+    connections = nx.node_connected_component(ktn.G, gmin_index)
+#    print("connections = ", connections)
+    # If the edge is required to keep connectivity then revert back
+    if not connections.issuperset(set(initial_set)):
+#        print("not allowed to remove")
+        ktn.G = H
+#        print("n_nodes = ", ktn.G.number_of_nodes())
+        ktn.n_minima = original_n_min
+        ktn.n_ts = original_n_ts
+        return False
+    return True
 
 
 def all_minima_connected(ktn: type) -> bool:

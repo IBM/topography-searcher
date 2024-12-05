@@ -47,7 +47,7 @@ def get_all_bounds_minima(ktn: type, coords: type) -> list:
 def get_similar_minima(ktn: type,
                        proximity_measure: float,
                        comparison_points: NDArray) -> list:
-    """ Locate any minima within proximity_measure of the comparison_points """
+    """ Locate any minima with proximity_measure of the comparison_points """
     similar_minima = []
     for i in range(ktn.n_minima):
         coords = ktn.get_minimum_coords(i)
@@ -105,4 +105,14 @@ def get_distance_from_minimum(ktn: type, similarity: type, coords: type,
     for i in range(ktn.n_minima):
         coords2 = ktn.get_minimum_coords(i)
         dist_vector[i] = similarity.closest_distance(coords, coords2)
+    return dist_vector
+
+
+def get_distance_from_point(ktn: type, similarity: type, coords: type,
+                            point: NDArray) -> NDArray:
+    """ Compute the distance of all nodes in a graph to the provided point """
+    dist_vector = np.zeros((ktn.n_minima), dtype=float)
+    for i in range(ktn.n_minima):
+        coords.position = ktn.get_minimum_coords(i)
+        dist_vector[i] = similarity.closest_distance(coords, point)
     return dist_vector

@@ -1,4 +1,4 @@
-""" The single_ended_search module contains methods for locating
+""" The single_ended_search module employs different methods for locating
     transition states starting from a single point """
 
 from math import inf
@@ -15,9 +15,8 @@ class HybridEigenvectorFollowing:
     Description
     ------------
 
-    Class for single-ended transition state searches. Starting
+    Class for single-ended transition state searches, starting
     from a given position the hybrid eigenvector-following algorithm
-    (https://doi.org/10.1103/PhysRevB.59.3969)
     is used to take steps uphill until a Hessian index one point is found.
     i) Finds eigenvector corresponding to the lowest eigenvalue
     ii) Take a step along that eigenvector
@@ -45,7 +44,7 @@ class HybridEigenvectorFollowing:
         connected minima for each transition state
     eig_bounds : list
         Bounds placed on the eigenvector during minimisation, updated
-        throughout the search based on active bounds
+        throughout the search based on the bounds coords is at
     failure : string
         Contains the reason for failure to find a transition state to report
     remove_trans_rot : bool
@@ -62,9 +61,7 @@ class HybridEigenvectorFollowing:
                  min_uphill_step_size: float = 1e-7,
                  max_uphill_step_size: float = 1.0,
                  positive_eigenvalue_step: float = 0.1,
-                 eigenvalue_conv_crit: float = 1e-5,
-                 output_level: int = 0,
-                 tag: str = '') -> None:
+                 eigenvalue_conv_crit: float = 1e-5) -> None:
         self.potential = potential
         self.ts_conv_crit = ts_conv_crit
         self.ts_steps = ts_steps
@@ -77,13 +74,12 @@ class HybridEigenvectorFollowing:
         self.eigenvector_bounds = None
         self.failure = None
         self.remove_trans_rot = None
-        self.output_level = output_level
 
-    def run(self, coords: type, tag: str = '') -> tuple:
-        """ Perform a single-ended transition state search starting from 
-            coords. Returns the information about transition states
-            and their connected minima that is needed for testing similarity
-            and adding to stationary point network """
+    def run(self, coords: type) -> tuple:
+        """ Perform a single-ended transition state search starting from coords
+            Returns the information about transition states and their connected
+            minima that is needed for testing similarity and adding to
+            stationary point network """
 
         # Set whether we should remove overall translation and rotation
         # Necessary for atomic and molecular systems
@@ -104,6 +100,7 @@ class HybridEigenvectorFollowing:
 
         # Take steps to find transition states until convergence or too many
         for n_steps in range(self.ts_steps):
+#            print("Step: ", n_steps)
             # Find the smallest eigenvalue and associated eigenvector
             eigenvector, eigenvalue, eig_steps = \
                 self.get_smallest_eigenvector(eigenvector,
@@ -123,9 +120,8 @@ class HybridEigenvectorFollowing:
             # Reset appropriate eigenvector bounds
             lower_bounds, upper_bounds = coords.active_bounds()
             self.update_eigenvector_bounds(lower_bounds, upper_bounds)
-            
-            if self.output_level > 0:
-                coords.write_xyz(f'coords_{tag}_{n_steps}.xyz')
+#            print("step: ", n_steps, "pos: ", coords.position)
+            coords.write_xyz('step%i' %n_steps)
             # Test for convergence to a transition state
             if self.test_convergence(coords.position, lower_bounds,
                                      upper_bounds):
@@ -165,12 +161,23 @@ class HybridEigenvectorFollowing:
             tests for validity and deals with bounds """
 
         # Minimise to get smallest eigenvalue and its eigenvector
-        eigenvector, eigenvalue, results_dict = \
-            lbfgs.minimise(func_grad=self.rayleigh_ritz_function_gradient,
-                           initial_position=initial_vector,
-                           args=coords.position,
-                           bounds=self.eigenvector_bounds,
-                           conv_crit=self.eigenvalue_conv_crit)
+        if not self.potential.atomistic:
+            eigenvector, eigenvalue, results_dict = \
+                lbfgs.minimise(func_grad=self.rayleigh_ritz_function_gradient,
+                               initial_position=initial_vector,
+                               args=coords.position,
+                               bounds=self.eigenvector_bounds,
+                               conv_crit=self.eigenvalue_conv_crit)
+        else:
+            eigenvector, eigenvalue, results_dict = \
+                lbfgs.minimise_u(func=self.rayleigh_ritz_function,
+                                 grad=self.rayleigh_ritz_gradient,
+                                 initial_position=initial_vector,
+                                 args=coords.position,
+                                 conv_crit=self.eigenvalue_conv_crit)
+#            print("eig grad = ", self.rayleigh_ritz_gradient(eigenvector,
+#                                        *coords.position.tolist()))
+#            print("res ", results_dict)
         bfgs_steps = results_dict['nit']
         # Normalise eigenvector
         if np.linalg.norm(eigenvector) != 0.0:
@@ -219,7 +226,7 @@ class HybridEigenvectorFollowing:
         lower_bounds, upper_bounds = coords.active_bounds()
         all_bounds = np.column_stack((lower_bounds, upper_bounds))
         # Point is at all bounds and cannot be meaningful maximum
-        if np.all(np.any(all_bounds, axis=0)):
+        if np.all(np.any(all_bounds, axis=1)):
             self.failure = 'bounds'
             return False
         return True
@@ -238,15 +245,25 @@ class HybridEigenvectorFollowing:
     def subspace_minimisation(self, coords: type,
                               eigenvector: NDArray) -> tuple:
         """ Perform minimisation in the subspace orthogonal to eigenvector.
-            The distance is limited to be at most 2% of the range of the
+            The distance is limited to be at most 1% of the range of the
             space to avoid very large initial steps in scipy.lbfgs """
         subspace_bounds = self.get_local_bounds(coords)
-        position, energy, results_dict = \
-            lbfgs.minimise(func_grad=self.subspace_function_gradient,
-                           initial_position=coords.position,
-                           args=eigenvector,
-                           bounds=subspace_bounds,
-                           conv_crit=self.steepest_descent_conv_crit)
+        #if not self.potential.atomistic:
+        if self.potential.atomistic:
+            position, energy, results_dict = \
+                lbfgs.minimise(func_grad=self.subspace_function_gradient,
+                               initial_position=coords.position,
+                               args=eigenvector,
+                               bounds=subspace_bounds,
+                               conv_crit=self.steepest_descent_conv_crit)
+        else:
+            position, energy, results_dict = \
+                lbfgs.minimise_u(func=self.subspace_function,
+                                 grad=self.subspace_gradient,
+                                 initial_position=coords.position,
+                                 bounds=subspace_bounds,
+                                 args=eigenvector,
+                                 conv_crit=self.steepest_descent_conv_crit)
         return position, energy, results_dict
 
     def get_local_bounds(self, coords: type) -> list:
@@ -267,7 +284,7 @@ class HybridEigenvectorFollowing:
     def analytic_step_size(self, grad: NDArray, eigenvector: NDArray,
                            eigenvalue: float) -> float:
         """Analytical expression to compute an optimal step length
-           from coords along eigenvector, given its eigenvalue.
+           from coords along eigenvector, given its eigenvalue
            Return the appropriate step length in the uphill direction """
         overlap = np.dot(grad, eigenvector)
         denominator = (1.0 + np.sqrt(1.0+(4.0*(overlap/eigenvalue)**2)))
@@ -289,7 +306,7 @@ class HybridEigenvectorFollowing:
                          eigenvalue: float) -> NDArray:
         """ Take uphill step of appropriate length given an eigenvector
             that defines the step direction, and an eigenvalue that
-            determines if the step is uphill or not.
+            determines if the step is uphill or not
             Return coords after step is taken """
         if eigenvalue >= 0.0:
             coords.position += self.positive_eigenvalue_step*eigenvector
@@ -333,11 +350,18 @@ class HybridEigenvectorFollowing:
             into several short steps """
         # For molecules the default step size is fine
         if isinstance(coords, (AtomicCoordinates, MolecularCoordinates)):
-            coords.position, current_energy, current_dict = \
-                lbfgs.minimise(func_grad=self.potential.function_gradient,
-                               initial_position=coords.position,
-                               bounds=coords.bounds,
-                               conv_crit=self.steepest_descent_conv_crit)
+            if not self.potential.atomistic:
+                coords.position, current_energy, current_dict = \
+                    lbfgs.minimise(func_grad=self.potential.function_gradient,
+                                   initial_position=coords.position,
+                                   bounds=coords.bounds,
+                                   conv_crit=self.steepest_descent_conv_crit)
+            else:
+                coords.position, current_energy, current_dict = \
+                    lbfgs.minimise_u(func=self.potential.function,
+                                     grad=self.potential.gradient,
+                                     initial_position=coords.position,
+                                     conv_crit=self.steepest_descent_conv_crit)
             return coords.position, current_energy, current_dict
         # For ML this can span the whole normalised feature space
         # so to prevent errant paths we do it repeatedly over small range
@@ -345,11 +369,18 @@ class HybridEigenvectorFollowing:
             # Get local bounds centered on current position to limit the LBFGS
             local_bounds = self.get_local_bounds(coords)
             # Perform local minimisation with these bounds
-            coords.position, current_energy, current_dict = \
-                lbfgs.minimise(func_grad=self.potential.function_gradient,
-                               initial_position=coords.position,
-                               bounds=local_bounds,
-                               conv_crit=self.steepest_descent_conv_crit)
+            if not self.potential.atomistic:
+                coords.position, current_energy, current_dict = \
+                    lbfgs.minimise(func_grad=self.potential.function_gradient,
+                                   initial_position=coords.position,
+                                   bounds=local_bounds,
+                                   conv_crit=self.steepest_descent_conv_crit)
+            else:
+                coords.position, current_energy, current_dict = \
+                    lbfgs.minimise_u(func=self.potential.function,
+                                     grad=self.potential.gradient,
+                                     initial_position=coords.position,
+                                     conv_crit=self.steepest_descent_conv_crit)
             # Check if converged at edges of local bounds or inside
             local_bounds = np.asarray(local_bounds)
             l_below_bounds = np.invert(coords.position > local_bounds[:, 0])
@@ -402,19 +433,23 @@ class HybridEigenvectorFollowing:
             transition_state.move_to_bounds()
             current_energy, current_grad = \
                 self.potential.function_gradient(transition_state.position)
+            print("i, energy = ", i, current_energy)
             if (ts_energy > current_energy) and \
                (np.max(current_grad) > 5.0*self.steepest_descent_conv_crit):
+                print("Found pushoff at ", i)
                 positive_x = transition_state.position.copy()
                 found_pushoff = True
                 break
         # May be due to imprecise transition state location, but a
         # small push may still allow SD paths to get both connected minima
         if not found_pushoff:
+            print("Couldn't get pushoff")
             transition_state.position = self.do_pushoff(ts_position,
                                                         plus_eigenvector,
                                                         increment, 20)
             transition_state.move_to_bounds()
             positive_x = transition_state.position.copy()
+#            positive_x = None
             self.failure = 'pushoff'
         # Then the backwards direction
         found_pushoff = False
@@ -425,17 +460,21 @@ class HybridEigenvectorFollowing:
             transition_state.move_to_bounds()
             current_energy, current_grad = \
                 self.potential.function_gradient(transition_state.position)
+            print("i, energy = ", i, current_energy)
             if (ts_energy > current_energy) and \
                (np.max(current_grad) > 5.0*self.steepest_descent_conv_crit):
+                print("Found pushoff at ", i)
                 negative_x = transition_state.position.copy()
                 found_pushoff = True
                 break
         if not found_pushoff:
+            print("Couldn't find pushoff")
             transition_state.position = self.do_pushoff(ts_position,
                                                         neg_eigenvector,
                                                         increment, 20)
             transition_state.move_to_bounds()
             negative_x = transition_state.position.copy()
+#            negative_x = None
             self.failure = 'pushoff'
         # Reset to initial position before return
         transition_state.position = ts_position
@@ -465,10 +504,11 @@ class HybridEigenvectorFollowing:
 
     def test_convergence(self, position: NDArray, lower_bounds: NDArray,
                          upper_bounds: NDArray) -> bool:
-        """ Test for convergence accounting for active bounds.
-            Only consider the gradient components in dimensions not at bounds.
+        """ Test for convergence accounting for active bounds
+            Only consider the gradient components in dimensions not at bounds
             Return True if points passes convergence test """
         grad = self.potential.gradient(position)
+#        print("Grad = ", grad)
         # Find the directions at bounds
         all_bounds = np.column_stack((lower_bounds, upper_bounds))
         # Get the gradient for just the dimensions not at bounds
@@ -518,6 +558,85 @@ class HybridEigenvectorFollowing:
         if self.remove_trans_rot:
             grad = self.remove_zero_eigenvectors(grad, central_point)
         return f_val, grad
+    
+    def rayleigh_ritz_function_gradient(self, vec: NDArray,
+                                        *args: list) -> tuple[float, NDArray]:
+        """ Evaluate the Rayleigh-Ritz ratio to find the value of the
+            eigenvalue for a given eigenvector vec computed at point
+            coords, and the gradient with respect to changes in vec """
+        displacement = 1e-3
+        central_point = np.array(args)
+        if np.any(np.isnan(vec)):
+            return 0.0, np.zeros(np.size(vec), dtype=float)
+        if np.linalg.norm(vec) == 0.0:
+            return 0.0, np.zeros(np.size(vec), dtype=float)
+        if self.remove_trans_rot:
+            vec /= np.linalg.norm(vec)
+            vec = self.remove_zero_eigenvectors(vec, central_point)
+        vec /= np.linalg.norm(vec)
+        # Gradient of the true potential with small displacements along y
+        grad_plus = self.potential.gradient(central_point+(displacement*vec))
+        grad_minus = self.potential.gradient(central_point-(displacement*vec))
+        delta_grad = grad_plus - grad_minus
+        # Rayleigh Ritz function
+        f_val = np.dot(delta_grad, vec)/(2.0*displacement)
+        # Rayleigh ritz gradient
+        grad = (delta_grad/displacement) - (2.0*f_val*vec)
+        # If specified remove overall translation and rotation eigevectors
+        if self.remove_trans_rot:
+            grad = self.remove_zero_eigenvectors(grad, central_point)
+        return f_val, grad
+    
+    def rayleigh_ritz_function(self, vec: NDArray,
+                               *args: list) -> tuple[float, NDArray]:
+        """ Evaluate the Rayleigh-Ritz ratio to find the value of the
+            eigenvalue for a given eigenvector vec computed at point
+            coords, and the gradient with respect to changes in vec """
+        displacement = 1e-3
+        central_point = np.array(args)
+        if np.any(np.isnan(vec)):
+            return 0.0, np.zeros(np.size(vec), dtype=float)
+        if np.linalg.norm(vec) == 0.0:
+            return 0.0, np.zeros(np.size(vec), dtype=float)
+        if self.remove_trans_rot:
+            vec /= np.linalg.norm(vec)
+            vec = self.remove_zero_eigenvectors(vec, central_point)
+        vec /= np.linalg.norm(vec)
+        # Gradient of the true potential with small displacements along y
+        grad_plus = self.potential.gradient(central_point+(displacement*vec))
+        grad_minus = self.potential.gradient(central_point-(displacement*vec))
+        delta_grad = grad_plus - grad_minus
+        # Rayleigh Ritz function
+        f_val = np.dot(delta_grad, vec)/(2.0*displacement)
+        return f_val
+    
+    def rayleigh_ritz_gradient(self, vec: NDArray,
+                               *args: list) -> tuple[float, NDArray]:
+        """ Evaluate the Rayleigh-Ritz ratio to find the value of the
+            eigenvalue for a given eigenvector vec computed at point
+            coords, and the gradient with respect to changes in vec """
+        displacement = 1e-3
+        central_point = np.array(args)
+        if np.any(np.isnan(vec)):
+            return 0.0, np.zeros(np.size(vec), dtype=float)
+        if np.linalg.norm(vec) == 0.0:
+            return 0.0, np.zeros(np.size(vec), dtype=float)
+        if self.remove_trans_rot:
+            vec /= np.linalg.norm(vec)
+            vec = self.remove_zero_eigenvectors(vec, central_point)
+        vec /= np.linalg.norm(vec)
+        # Gradient of the true potential with small displacements along y
+        grad_plus = self.potential.gradient(central_point+(displacement*vec))
+        grad_minus = self.potential.gradient(central_point-(displacement*vec))
+        delta_grad = grad_plus - grad_minus
+        # Rayleigh Ritz function
+        f_val = np.dot(delta_grad, vec)/(2.0*displacement)
+        # Rayleigh ritz gradient
+        grad = (delta_grad/displacement) - (2.0*f_val*vec)
+        # If specified remove overall translation and rotation eigevectors
+        if self.remove_trans_rot:
+            grad = self.remove_zero_eigenvectors(grad, central_point)
+        return grad
 
     def remove_zero_eigenvectors(self, vec: NDArray,
                                  position: NDArray) -> NDArray:
@@ -566,3 +685,19 @@ class HybridEigenvectorFollowing:
         f_val, grad = self.potential.function_gradient(position)
         subspace_grad = self.perpendicular_component(grad, eigenvector)
         return f_val, subspace_grad
+
+    def subspace_function(self, position: NDArray,
+                          *args: list) -> tuple[float, NDArray]:
+        """ Return the function value and the component of the gradient
+            perpendicular to self.eigenvector at point coords """
+        eigenvector = np.array(args)
+        return self.potential.function(position)
+
+    def subspace_gradient(self, position: NDArray,
+                          *args: list) -> tuple[float, NDArray]:
+        """ Return the function value and the component of the gradient
+            perpendicular to self.eigenvector at point coords """
+        eigenvector = np.array(args)
+        f_val, grad = self.potential.function_gradient(position)
+        subspace_grad = self.perpendicular_component(grad, eigenvector)
+        return subspace_grad

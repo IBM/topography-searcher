@@ -1,4 +1,4 @@
-""" This module contains the algorithms for deciding on sampling
+""" exploration module contains the algorithms for deciding on sampling
     of the function space to map the topography, and running different
     exploration algorithms """
 
@@ -33,7 +33,7 @@ class NetworkSampling:
         with their properties and operations on the network. Decide where to
         sample next from network properties and add new stationary points
     coords : class instance
-        The type of coordinates that are being used when exploring space
+        The type of coordinates that are being using exploring space
     global_optimiser : class instance
         Global optimisation algorithm that locates low-valued minima of the
         given potential
@@ -60,8 +60,7 @@ class NetworkSampling:
                  double_ended_search: type,
                  similarity: type,
                  multiprocessing_on: bool = False,
-                 n_processes: int = None,
-                 output_level: int = 0) -> None:
+                 n_processes: int = None) -> None:
         self.ktn = ktn
         self.coords = coords
         self.global_optimiser = global_optimiser
@@ -70,7 +69,6 @@ class NetworkSampling:
         self.similarity = similarity
         self.multiprocessing_on = multiprocessing_on
         self.n_processes = n_processes
-        self.output_level = output_level
 
     # OVERALL LANDSCAPE EXPLORATION
 
@@ -89,9 +87,9 @@ class NetworkSampling:
     def get_transition_states(self, method: str, cycles: int,
                               remove_bounds_minima: bool = False,
                               all_bounds: bool = False) -> None:
-        """ Default algorithm for generating a landscape from a set of minima.
-            Combines different sampling methods in sequence to find transition
-            states between minima and produce a fully connected network.
+        """ Default algorithm for generating a landscape
+            Combines different sampling methods in sequence to produce
+            a fully connected network.
             Updates the ktn.G network with any new transition states """
 
         # Remove any edge cases that are high in energy and not connected
@@ -116,7 +114,7 @@ class NetworkSampling:
 
     def run_connection_attempts(self, total_pairs: list) -> None:
         """
-        Given the pairs of minima that have been selected for connection,
+        Given the pairs of minima that have been selected for connection
         run the connection attempts in parallel or serial and add any
         new transition states to the network
         """
@@ -156,9 +154,8 @@ class NetworkSampling:
                 self.ktn.pairlist, np.array([np.sort(i)]), axis=0)
 
     def connection_attempt(self, pair: list) -> list:
-        """ Perform a connection attempt between a pair of selected minima 
-            that are specified nodes of the network graph with the aim of
-            finding transition states between them. Returns a list of all
+        """ Connection attempt between a pair of selected minima that are
+            specified nodes of the network graph. Returns a list of all
             transition states and their connected minima
             with each transition state as a sublist """
 
@@ -189,9 +186,18 @@ class NetworkSampling:
         for ts_search_number, ts_candidate in enumerate(positions, start=1):
             local_coords.position = ts_candidate
             ts_coords, e_ts, min_plus, e_plus, min_minus, e_minus, neg_eig = \
-                self.single_ended_search.run(local_coords, tag=ts_search_number)
+                self.single_ended_search.run(local_coords)
+            print("ts_coords, e_ts = ", ts_coords, e_ts)
+            print("min+, e+ = ", min_plus, e_plus)
+            print("min-, e- = ", min_minus, e_minus)
             # Check search was successful
             if ts_coords is not None:
+                print("+diff: ", np.linalg.norm(ts_coords-min_plus), e_ts-e_plus)
+                print("-diff: ", np.linalg.norm(ts_coords-min_minus), e_ts-e_minus)
+                if (np.linalg.norm(ts_coords-min_plus) < 0.5 and (e_ts-e_plus) < 1e-3):
+                    print("Repeated plus min")
+                if (np.linalg.norm(ts_coords-min_minus) < 0.5 and (e_ts-e_minus) < 1e-3):
+                    print("Repeated minus min")
                 with open('logfile', 'a', encoding="utf-8") as outfile:
                     outfile.write(f"{ts_search_number}: ")
                 stationary_point_information.append(
@@ -243,10 +249,10 @@ class NetworkSampling:
         return min1, min2, repeats, permutation
 
     def check_pair(self, node1: int, node2: int) -> (bool, int):
-        """ Determines if a connection between this pair should be tried again.
+        """ Determines if this pair should be tried again
             Could have already been attempted too many times or
             already have a transition state. Return logical
-            that determines if pair should be attempted """
+            that determines if pair should be attemped """
 
         # Calculate the number of times this pair has been tried
         repeats = 0
@@ -276,6 +282,7 @@ class NetworkSampling:
         """ Writes reason for transition state location failure to file """
         with open('logfile', 'a', encoding="utf-8") as outfile:
             outfile.write("TS search did not converge. ")
+            print("Failure condition: ", self.single_ended_search.failure)
             if self.single_ended_search.failure == 'SDpaths':
                 outfile.write("Steepest descent paths did not converge\n")
             elif self.single_ended_search.failure == 'eigenvector':
@@ -294,14 +301,14 @@ class NetworkSampling:
     def select_minima(self, coords: type, option: str,
                       neighbours: int) -> list:
         """
-        Make decisions about which pairs of minima we should be connecting.
-        Pick one of three schemes designed to connect minima:
-        'ClosestEnumeration' - for each minimum generate pairs with the minima
-                               that are closest in Euclidean distance.
+        Make decisions about which pairs of nodes we should be connecting
+        Pick one of four schemes designed to connect with certain properties
+        'ClosestEnumeration' - for each minimum generate the neighbours pairs
+                               that are closest in Euclidean distance
         'ConnectUnconnected' - select pairs of minima that are closest in
                                Euclidean distance with the constraint that
                                one minimum must be connected to the
-                               global minimum, and one must not.
+                               global minimum, and one must not
         'ReadPairs' - take the list of connections from the file 'pairs.txt'
         """
 
@@ -329,8 +336,8 @@ class NetworkSampling:
         return pairs
 
     def reconverge_minima(self, potential: type, reconv_crit: float) -> None:
-        """ Reconverge the minima we have found in ktn, allows for higher
-            accuracy after running basin-hopping """
+        """ Reconverge the minima we have found in ktn, allows high
+            accuracy without expending large cost at every BH step """
 
         start_time = timer()
         # Get the coordinates of all minima to reconverge
@@ -340,11 +347,18 @@ class NetworkSampling:
         # Reoptimise all the minima and accumulate in list
         minima_information = []
         for minimum in coordinates:
-            reconv_coords, reconv_energy, results_dict = \
-                lbfgs.minimise(func_grad=potential.function_gradient,
-                               initial_position=minimum,
-                               bounds=self.coords.bounds,
-                               conv_crit=reconv_crit)
+            if not potential.atomistic:
+                reconv_coords, reconv_energy, results_dict = \
+                    lbfgs.minimise(func_grad=potential.function_gradient,
+                                   initial_position=minimum,
+                                   bounds=self.coords.bounds,
+                                   conv_crit=reconv_crit)
+            else:
+                reconv_coords, reconv_energy, results_dict = \
+                    lbfgs.minimise_u(func=potential.function,
+                                     grad=potential.gradient,
+                                     initial_position=minimum,
+                                     conv_crit=reconv_crit)
             minima_information.append([reconv_coords, reconv_energy])
         # Empty the current network
         self.ktn.reset_network()
@@ -375,11 +389,18 @@ class NetworkSampling:
         # Reoptimise all the minima
         minima_information = []
         for minimum in min_coordinates:
-            reconv_coords, reconv_energy, results_dict = \
-                lbfgs.minimise(func_grad=potential.function_gradient,
-                               initial_position=minimum,
-                               bounds=self.coords.bounds,
-                               conv_crit=reconv_crit)
+            if not potential.atomistic:
+                reconv_coords, reconv_energy, results_dict = \
+                    lbfgs.minimise(func_grad=potential.function_gradient,
+                                   initial_position=minimum,
+                                   bounds=self.coords.bounds,
+                                   conv_crit=reconv_crit)
+            else:
+                reconv_coords, reconv_energy, results_dict = \
+                    lbfgs.minimise_u(func=potential.function,
+                                     grad=potential.gradient,
+                                     initial_position=minimum,
+                                     conv_crit=reconv_crit)
             minima_information.append([reconv_coords, reconv_energy])
         # Then the transition states
         ts_information = []
@@ -394,9 +415,10 @@ class NetworkSampling:
             energy = minima_information[i][1]
             self.similarity.test_new_minimum(self.ktn, self.coords, energy)
         for i in ts_information:
-            self.coords.position = i[0]
-            self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
-                                        i[3], i[4], i[5])
+            if i[0] is not None:
+                self.coords.position = i[0]
+                self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
+                                            i[3], i[4], i[5])
         end_time = timer()
         with open('logfile', 'a', encoding="utf-8") as outfile:
             outfile.write(f"{self.ktn.n_minima} distinct minima and "

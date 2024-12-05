@@ -16,13 +16,11 @@ class NudgedElasticBand:
     ------------
 
     Takes in the coordinates of two endpoint minima and perform a double-ended
-    transition state search using the nudged elastic band algorithm
-    (https://doi.org/10.1142/9789812839664_0016).
-    Produces an initial linear interpolation with linear_interpolation or
-    dihedral_interpolation.
+    transition state search using the nudged elastic band
+    Produces an initial linear interpolation with linear_interpolation
     Optimise this initial guess using minimise_interpolation
     And pick out transition state candidates using find_ts_candidates
-    The whole process is performed by run()
+    The whole process is performed by run
 
     Attributes
     ----------
@@ -53,9 +51,7 @@ class NudgedElasticBand:
                  force_constant: float,
                  image_density: float,
                  max_images: int,
-                 neb_conv_crit: float,
-                 output_level: int = 0,
-                 ) -> None:
+                 neb_conv_crit: float) -> None:
         self.potential = potential
         self.force_constant = force_constant
         self.image_density = image_density
@@ -66,7 +62,6 @@ class NudgedElasticBand:
         self.n_images = None
         self.band_bounds = None
         self.neb_count = 0
-        self.output_level = output_level
 
     def run(self, coords1: type, coords2: NDArray, attempts: int = 0,
             permutation: NDArray = None) -> tuple[NDArray, NDArray]:
@@ -78,14 +73,16 @@ class NudgedElasticBand:
                                           permutation)
         # Minimise the initial band to get approximate minimum energy path
         band = self.minimise_interpolation(band)
+        for i in range(self.n_images):
+            print("Energy, grad = ", self.potential.function(band[i, :]), np.linalg.norm(self.potential.gradient(band[i, :])))
         # Find local maxima of the band as transition state candidates
         candidates, positions = self.find_ts_candidates(band)
+        print("Candidates = ", candidates)
+        for i in positions:
+            print("Candidates -------")
+            print("Energy, grad = ", self.potential.function(i), np.linalg.norm(self.potential.gradient(i)))
         # Return the transition state candidates and their positions
         self.neb_count += 1
-        if self.output_level > 0:
-            print(f'NEB {self.neb_count} found {len(candidates)} candidates')
-            np.savetxt(f'neb_ts_{self.neb_count}.txt', positions)
-            
         return candidates, positions
 
     def minimise_interpolation(self, band: NDArray) -> NDArray:
@@ -94,16 +91,20 @@ class NudgedElasticBand:
             optimised band """
         # Require a 1d array for scipy lbfgs
         band = band.flatten()
-        optimised_band, f_val, r_dict = \
-            lbfgs.minimise(func_grad=self.band_function_gradient,
-                           initial_position=band,
-                           bounds=self.band_bounds,
-                           conv_crit=self.neb_conv_crit)
+        if not self.potential.atomistic:
+            optimised_band, f_val, r_dict = \
+                lbfgs.minimise(func_grad=self.band_function_gradient,
+                               initial_position=band,
+                               bounds=self.band_bounds,
+                               conv_crit=self.neb_conv_crit)
+        else:
+            optimised_band, f_val, r_dict = \
+                lbfgs.minimise_u(func=self.band_function,
+                                 grad=self.band_gradient,
+                                 initial_position=band,
+                                 conv_crit=self.neb_conv_crit)
         # Reshape into 2d array, one image per row
-        opt_band_reshape = np.reshape(optimised_band, (self.n_images, -1))
-        if self.output_level > 0:
-            np.savetxt(f'neb_min_{self.neb_count}.txt', opt_band_reshape)
-        return opt_band_reshape
+        return np.reshape(optimised_band, (self.n_images, -1))
 
     def update_image_density(self, attempts: int) -> None:
         """ Update the image density parameter """
@@ -151,14 +152,19 @@ class NudgedElasticBand:
         # Make the linear interpolation
         band = np.zeros((self.n_images, coords1.ndim), dtype=float)
         direction_vec = (coords2-coords1.position)/(self.n_images-1)
+        print("------- INITIAL NEB ------------")
         for i in range(self.n_images):
             band[i, :] = coords1.position+(direction_vec*i)
+        for i in range(self.n_images):
+            coords1.position = band[i, :]
+            coords1.write_xyz('band%i' %i)
         return band
 
     def dihedral_interpolation(self, coords1: type, coords2: NDArray,
                                permutation: NDArray) -> NDArray:
         """ Interpolate linearly in the space of dihedrals, angles and
             bond lengths, which will be much more appropriate for molecules """
+#        print("perm = ", permutation)
         # Set the number of images based on given image density
         dist = np.linalg.norm(coords1.position-coords2)
         self.n_images = int(self.image_density*dist)
@@ -213,6 +219,10 @@ class NudgedElasticBand:
                                            dihedral_differences,
                                            bond_network)
             band[i, :] = coords1.position.flatten()
+            coords1.position = band[i, :]
+#            print("energy ", i, " = ", self.potential.function(band[i, :]))
+            coords1.write_xyz('band%i' %i)
+#        print("written")
         coords1.position = initial_coords1
         return band
 
@@ -226,6 +236,7 @@ class NudgedElasticBand:
         indices of these candidate transition states and their coordinates """
         # Compute the energy of each image in the band
         band_potential_energies = self.band_potential_function(band)[1]
+        print("Band energies = ", band_potential_energies)
         # Initialise arrays to store any transition state candidates we find
         candidates = np.empty((0), dtype=int)
         positions = np.empty((0, 0), dtype=float)
@@ -338,6 +349,96 @@ class NudgedElasticBand:
                 self.perpendicular_component(potential_gradient[i, :],
                                              tau[i-1, :])
         return harmonic_function+potential_function, band_gradient.flatten()
+    
+    def band_function(self, band: NDArray) -> tuple[float, NDArray]:
+        """ Return the total energy and the gradient of the nudged elastic
+            band, this involves the summation of the true function and
+            a series of harmonic terms between adjacent images """
+
+        # Reshape the band into its images
+        band = np.reshape(band, (self.n_images, -1))
+        # Compute the components of the true potential
+        potential_gradient = \
+            np.zeros((self.n_images, band[0, :].size), dtype=float)
+        band_potential_energies = np.zeros((self.n_images, 1), dtype=float)
+        for i in range(self.n_images):
+            f_val, grad = self.potential.function_gradient(band[i, :])
+            potential_gradient[i, :] = grad
+            band_potential_energies[i] = f_val
+        # Calculate the function value as sum over all images
+        potential_function = np.sum(band_potential_energies)
+        # Ensure no true gradient on the endpoint images
+        potential_gradient[0, :].fill(0.0)
+        potential_gradient[-1, :].fill(0.0)
+
+        # Find the tangents to the band
+        tau = self.find_tangent_differences(band, band_potential_energies)
+
+        # Compute the components of the harmonic potential parallel to tangents
+        g_parallel = np.zeros((self.n_images, band[0, :].size), dtype=float)
+        # Get separation vector between adjacent images
+        differences = -1.0*np.diff(band, axis=0)
+        # Compute the distances
+        distances = np.linalg.norm(differences, axis=1)
+        # Calculate the function
+        harmonic_function = 0.5*np.sum((distances**2)*self.force_constants)
+        # And its gradient parallel to the tangent
+        g_parallel[1:-1, :] = tau * \
+            (-1.0*np.diff(distances)*self.force_constants[:-1]).reshape(-1, 1)
+
+        # Combine the perpendicular component of the true potential
+        # and the parallel component of the harmonic potential
+        band_gradient = np.zeros((self.n_images, band[0, :].size), dtype=float)
+        for i in range(1, self.n_images-1):
+            band_gradient[i, :] = g_parallel[i, :] + \
+                self.perpendicular_component(potential_gradient[i, :],
+                                             tau[i-1, :])
+        return harmonic_function+potential_function
+    
+    def band_gradient(self, band: NDArray) -> tuple[float, NDArray]:
+        """ Return the total energy and the gradient of the nudged elastic
+            band, this involves the summation of the true function and
+            a series of harmonic terms between adjacent images """
+
+        # Reshape the band into its images
+        band = np.reshape(band, (self.n_images, -1))
+        # Compute the components of the true potential
+        potential_gradient = \
+            np.zeros((self.n_images, band[0, :].size), dtype=float)
+        band_potential_energies = np.zeros((self.n_images, 1), dtype=float)
+        for i in range(self.n_images):
+            f_val, grad = self.potential.function_gradient(band[i, :])
+            potential_gradient[i, :] = grad
+            band_potential_energies[i] = f_val
+        # Calculate the function value as sum over all images
+        potential_function = np.sum(band_potential_energies)
+        # Ensure no true gradient on the endpoint images
+        potential_gradient[0, :].fill(0.0)
+        potential_gradient[-1, :].fill(0.0)
+
+        # Find the tangents to the band
+        tau = self.find_tangent_differences(band, band_potential_energies)
+
+        # Compute the components of the harmonic potential parallel to tangents
+        g_parallel = np.zeros((self.n_images, band[0, :].size), dtype=float)
+        # Get separation vector between adjacent images
+        differences = -1.0*np.diff(band, axis=0)
+        # Compute the distances
+        distances = np.linalg.norm(differences, axis=1)
+        # Calculate the function
+        harmonic_function = 0.5*np.sum((distances**2)*self.force_constants)
+        # And its gradient parallel to the tangent
+        g_parallel[1:-1, :] = tau * \
+            (-1.0*np.diff(distances)*self.force_constants[:-1]).reshape(-1, 1)
+
+        # Combine the perpendicular component of the true potential
+        # and the parallel component of the harmonic potential
+        band_gradient = np.zeros((self.n_images, band[0, :].size), dtype=float)
+        for i in range(1, self.n_images-1):
+            band_gradient[i, :] = g_parallel[i, :] + \
+                self.perpendicular_component(potential_gradient[i, :],
+                                             tau[i-1, :])
+        return band_gradient.flatten()
 
     def perpendicular_component(self, vec1: NDArray, vec2: NDArray) -> NDArray:
         """ Return perpendicular component of vector vec1 relative to vec2 """

@@ -1,5 +1,5 @@
-""" Module that contains the ModelData class. This class stores and operates on
-    a training dataset for use in machine learning applications """
+""" Module that contains the ModelData class that stores and operates on
+    a dataset for use in Potential classes """
 
 import numpy as np
 from nptyping import NDArray
@@ -25,7 +25,7 @@ class ModelData:
     train_props : dict
         Dictionary containing the statistics of the training array
     hull : NDArray
-        Object storing the convex hull of the training data
+
     """
 
     def __init__(self,
@@ -50,7 +50,7 @@ class ModelData:
 
     def read_data(self, training_file: str, response_file: str) -> None:
         """ Read in the training and repsonse values needed for an ML model.
-            Stored in class attributes """
+            Stored in class attributes to be accessed through potential """
         self.training = np.loadtxt(f"{training_file}", dtype=float, ndmin=2)
         self.response = np.loadtxt(f"{response_file}", dtype=float)
         # Reset number of points and dimensions
@@ -74,6 +74,14 @@ class ModelData:
     def limit_response_maximum(self, upper_limit: float) -> None:
         """ Limits the maximum allowed response value """
         self.response = np.clip(self.response, None, upper_limit)
+
+    def scale_response_maximum(self, upper_limit: float, scale: float) -> None:
+        """ Rescales the higher data values whilst leaving lower unchanged """
+        max_response = np.max(self.response)
+        for i in range(self.n_points):
+            if self.response[i] > upper_limit:
+                self.response[i] = upper_limit + scale*upper_limit*\
+                    ((self.response[i] + upper_limit)/(max_response + upper_limit))
 
     def standardise_response(self) -> None:
         """ Standardises response values, enforcing a mean of 0,

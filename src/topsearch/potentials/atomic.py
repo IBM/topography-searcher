@@ -1,6 +1,5 @@
 """ Module to store interatomic potentials that can be used
-    for atomistic systems. Contains the classes to compute the
-    energy of atomic clusters within the Lennard-Jones and Gupta potentials """
+    for atomistic systems """
 
 import numpy as np
 from nptyping import NDArray
@@ -8,13 +7,11 @@ from .potential import Potential
 
 
 class LennardJones(Potential):
-
     """
     Description
     ------------
-    The Lennard-Jones pair potential to evaluate the energy 
-    for a set of atoms. Simple but fast representation of
-    interatomic potentials
+    The Lennard-Jones pair potential for a set of atoms
+    Simple but fast representation of interatomic potentials
 
     Attributes
     -----------
@@ -93,7 +90,7 @@ class BinaryGupta(Potential):
     """
     Description
     ------------
-    Evaluate energy of binary metal clusters with the Gupta potential.
+    Evaluate energy of binary metal clusters with the Gupta potential
     Here only contains the parameters for Au and Ag.
 
     Attributes
@@ -128,12 +125,12 @@ class BinaryGupta(Potential):
     def function(self, position: NDArray) -> float:
         """ Return the potential energy of the system at position """
 
-        #  Initialise arrays
+        # Initialise arrays
         n_atoms = int(position.size/3)
         rho = np.zeros(n_atoms, dtype=float)
         local_potentials = np.zeros(n_atoms, dtype=float)
 
-        #  Loop over atoms to get energy of each
+        # Loop over atoms to get energy of each
         for i in range(n_atoms-1):
             species1 = self.atom_labels[i]
             for j in range(i+1, n_atoms):
@@ -156,6 +153,78 @@ class BinaryGupta(Potential):
                 rho[i] += attractive
                 rho[j] += attractive
 
-        #  Accumulate the potential energy
+        # Accumulate the potential energy
+        local_potentials -= np.sqrt(rho)
+        return np.sum(local_potentials)
+
+
+class BinaryGupta2(Potential):
+    """
+    Description
+    ------------
+    Evaluate energy of binary metal clusters with the Gupta potential
+    Here only contains the parameters for Au and Ag.
+
+    Attributes
+    -----------
+    atom_labels : array
+        Denotes the species of atoms, can be 'Au' or 'Ag'
+    a_repulsive : array
+        Repulsive coefficient
+    zeta : array
+        Attractive coefficient
+    p_range : array
+        Range of interaction
+    q_range : array
+        Range of interaction
+    r_eq : array
+        Equilibrium bond lengths
+    """
+
+    def __init__(self, species: list):
+        self.atomistic = True
+        self.species = species
+        self.atom_labels = [0 if i == 'Au' else 1 for i in self.species]
+        # Initialise the parameters of the potential
+        self.a_repulsive = \
+            np.array(((0.1028, 0.149), (0.149, 0.2061)), dtype=float)
+        self.zeta = np.array(((1.178, 1.4874), (1.4874, 1.790)), dtype=float)
+        self.p_range = \
+            np.array(((10.928, 10.494), (10.494, 10.229)), dtype=float)
+        self.q_range = np.array(((3.139, 3.607), (3.607, 4.036)), dtype=float)
+        self.r_eq = np.array(((2.8885, 2.8864), (2.8864, 2.8843)), dtype=float)
+
+    def function(self, position: NDArray) -> float:
+        """ Return the potential energy of the system at position """
+
+        # Initialise arrays
+        n_atoms = int(position.size/3)
+        rho = np.zeros(n_atoms, dtype=float)
+        local_potentials = np.zeros(n_atoms, dtype=float)
+
+        # Loop over atoms to get energy of each
+        for i in range(n_atoms-1):
+            species1 = self.atom_labels[i]
+            for j in range(i+1, n_atoms):
+                species2 = self.atom_labels[j]
+                # Get the distance between atoms
+                dist = np.linalg.norm(position[i*3:(i*3)+3] -
+                                      position[j*3:(j*3)+3])
+                # And the relevant potential parameters
+                a_tmp = self.a_repulsive[species1, species2]
+                p_tmp = self.p_range[species1, species2]
+                r_tmp = self.r_eq[species1, species2]
+                zeta_tmp = self.zeta[species1, species2]
+                q_tmp = -2.0*self.q_range[species1, species2]
+                # Repulsive potential between atoms
+                repulsive = a_tmp*np.exp(dist*(-1.0*p_tmp/r_tmp) + p_tmp)
+                local_potentials[i] += repulsive
+                local_potentials[j] += repulsive
+                # Attractive part of interatomic potential
+                attractive = (zeta_tmp**2)*np.exp(dist*(q_tmp/r_tmp) - q_tmp)
+                rho[i] += attractive
+                rho[j] += attractive
+
+        # Accumulate the potential energy
         local_potentials -= np.sqrt(rho)
         return np.sum(local_potentials)

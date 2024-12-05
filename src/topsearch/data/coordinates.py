@@ -1,8 +1,5 @@
-""" Module containing the different coordinates classes that are
-    used to store and modify positions in space. These can be separated
-    into StandardCoordinates, which is used for ML models, AtomicCoordinates
-    which is used for clusters of atoms, and MolecularCoordinates that stores
-    molecular configurations. """
+""" Module containing the StandardCoordinates class
+    used to store and change positions """
 
 import numpy as np
 import networkx as nx
@@ -11,6 +8,7 @@ from ase.geometry.analysis import Analysis
 from ase import neighborlist
 from ase import Atoms
 from scipy.spatial.transform import Rotation as rotations
+from scipy.spatial.distance import cdist
 from rdkit.Chem import AllChem
 
 
@@ -19,8 +17,8 @@ class StandardCoordinates:
     Description
     ---------------
 
-    Class to store a position in space, and the methods to
-    analyse if at bounds
+    Class to store the coordinate position and all of the operations
+    applied to the positions
 
     Attributes
     ---------------
@@ -45,7 +43,7 @@ class StandardCoordinates:
                                  high=self.upper_bounds)
 
     def check_bounds(self) -> NDArray:
-        """ Check if position is at the bounds. Returns boolean
+        """ Check if provided coords are at the bounds and return boolean
             array denoting which dimensions are at the bounds """
         return np.invert((self.position > self.lower_bounds) &
                          (self.position < self.upper_bounds))
@@ -58,7 +56,7 @@ class StandardCoordinates:
         """ Check if the position is at the bounds in all dimensions """
         return np.all(self.check_bounds())
 
-    def active_bounds(self) -> NDArray:
+    def active_bounds(self) -> (NDArray, NDArray):
         """ Checks whether the position is at the upper or lower bounds """
         below_bounds = self.position <= self.lower_bounds
         above_bounds = self.position >= self.upper_bounds
@@ -77,18 +75,16 @@ class AtomicCoordinates(StandardCoordinates):
     ---------------
 
     Class to store the coordinates of an atomic system in Euclidean space.
-    Methods to check configurations, modify atomic positions and
-    write configurations to file
+    Methods to modify atomic positions and write out configurations
 
     Attributes
     ---------------
     bounds : list of tuples [(b1_min, b1_max), (b2_min, b2_max)...]
         The allowed ranges of the coordinates in each dimension
     ndim : int
-        The dimensionality of the coordinates, 3*n_atoms
+        The dimensionality of the coordinates
     position : numpy array
         Array of size ndim containing the current position
-        (x1, y1, z1), ..., (x_n, y_n, z_n)
     atom_labels : list
         The species in the system, matching the order of position
     """
@@ -151,12 +147,13 @@ class AtomicCoordinates(StandardCoordinates):
         return nx.is_connected(adj_graph)
 
     def get_connected_atoms(self) -> list:
-        """ Get the connected atom labels of each atom in cluster """
+        """ Get the connected atom labels of each atom in molecule """
         return [['H']]*self.n_atoms
 
     def remove_atom_clashes(self):
         """ Routine to remove clashes between atoms that result in
-            very large gradient values """
+            very large gradient and explosion of the cluster.
+            Unused default parameter is for matching with other classes """
         centre_of_mass = np.array([np.average(self.position[0::3]),
                                    np.average(self.position[1::3]),
                                    np.average(self.position[2::3])])
@@ -180,6 +177,508 @@ class AtomicCoordinates(StandardCoordinates):
                 if bond_length < allowed_bond_length:
                     return True
         return False
+    
+    def zmatrix_to_cartesian(self, zmatrix: NDArray) -> NDArray:
+        """ Convert a zmatrix to 3D Cartesian coordinates """
+
+        rconnect = np.ones(self.n_atoms-1, dtype=int)
+        aconnect = np.ones(self.n_atoms-2, dtype=int)*2
+        dconnect = np.ones(self.n_atoms-3, dtype=int)*3
+        rlist = zmatrix[:self.n_atoms-1]
+        alist = zmatrix[self.n_atoms-1:2*self.n_atoms-3]
+        dlist = zmatrix[2*self.n_atoms-3:]
+
+        # put the first atom at the origin
+        xyzarr = np.zeros([self.n_atoms, 3])
+        if self.n_atoms > 1:
+            # second atom at [r01, 0, 0]
+            xyzarr[1] = [rlist[0], 0.0, 0.0]
+
+        if self.n_atoms > 2:
+            # third atom in the xy-plane
+            # such that the angle a012 is correct 
+            i = rconnect[1] - 1
+            j = aconnect[0] - 1
+            r = rlist[1]
+            theta = alist[0] * np.pi / 180.0
+            x = r * np.cos(theta)
+            y = r * np.sin(theta)
+            a_i = xyzarr[i]
+            b_ij = xyzarr[j] - xyzarr[i]
+            if b_ij[0] < 0:
+                x = a_i[0] - x
+                y = a_i[1] - y
+            else:
+                x = a_i[0] + x
+                y = a_i[1] + y
+            xyzarr[2] = [x, y, 0.0]
+
+        for n in range(3, self.n_atoms):
+            # back-compute the xyz coordinates
+            # from the positions of the last three atoms
+            r = rlist[n-1]
+            theta = alist[n-2] * np.pi / 180.0
+            phi = dlist[n-3] * np.pi / 180.0
+
+            sinTheta = np.sin(theta)
+            cosTheta = np.cos(theta)
+            sinPhi = np.sin(phi)
+            cosPhi = np.cos(phi)
+
+            x = r * cosTheta
+            y = r * cosPhi * sinTheta
+            z = r * sinPhi * sinTheta
+
+            i = rconnect[n-1] - 1
+            j = aconnect[n-2] - 1
+            k = dconnect[n-3] - 1
+            a = xyzarr[k]
+            b = xyzarr[j]
+            c = xyzarr[i]
+
+            ab = b - a
+            bc = c - b
+            bc = bc / np.linalg.norm(bc)
+            nv = np.cross(ab, bc)
+            nv = nv / np.linalg.norm(nv)
+            ncbc = np.cross(nv, bc)
+
+            new_x = c[0] - bc[0] * x + ncbc[0] * y + nv[0] * z
+            new_y = c[1] - bc[1] * x + ncbc[1] * y + nv[1] * z
+            new_z = c[2] - bc[2] * x + ncbc[2] * y + nv[2] * z
+            xyzarr[n] = [new_x, new_y, new_z]
+
+        return xyzarr.reshape(-1)
+
+    def angle(self, xyzarr: NDArray, i: int, j: int, k: int) -> float:
+        """ Return the bond angle in degrees between three atoms 
+           with indices i, j, k given a set of xyz coordinates.
+           atom j is the central atom """
+
+        rij = xyzarr[i] - xyzarr[j]
+        rkj = xyzarr[k] - xyzarr[j]
+        cos_theta = np.dot(rij, rkj)
+        sin_theta = np.linalg.norm(np.cross(rij, rkj))
+        theta = np.arctan2(sin_theta, cos_theta)
+        theta = 180.0 * theta / np.pi
+        return theta
+
+    def dihedral(self, xyzarr, i, j, k, l):
+        """ Return the dihedral angle in degrees between four atoms 
+            with indices i, j, k, l given a set of xyz coordinates.
+           connectivity is i->j->k->l """
+
+        rji = xyzarr[j] - xyzarr[i]
+        rkj = xyzarr[k] - xyzarr[j]
+        rlk = xyzarr[l] - xyzarr[k]
+        v1 = np.cross(rji, rkj)
+        v1 = v1 / np.linalg.norm(v1)
+        v2 = np.cross(rlk, rkj)
+        v2 = v2 / np.linalg.norm(v2)
+        m1 = np.cross(v1, rkj) / np.linalg.norm(rkj)
+        x = np.dot(v1, v2)
+        y = np.dot(m1, v2)
+        chi = np.arctan2(y, x)
+        chi = -180.0 - 180.0 * chi / np.pi
+        if (chi < -180.0):
+           chi += 360.0
+        return chi
+
+    def cartesian_to_zmatrix(self) -> NDArray:
+        """ Utility to convert Cartesian coordinates to Z matrix """
+
+        cartesian = self.position.reshape(self.n_atoms,3)
+
+        rlist = [] # list of bond lengths
+        alist = [] # list of bond angles (degrees)
+        dlist = [] # list of dihedral angles (degrees)
+        distmat = cdist(cartesian, cartesian)
+
+        if self.n_atoms > 1:
+            # and the second, with distance from first
+            rlist.append(distmat[0][1])
+            if self.n_atoms > 2:
+                rlist.append(distmat[0][2])
+                alist.append(self.angle(cartesian, 2, 0, 1))
+                if self.n_atoms > 3:
+                    for i in range(3, self.n_atoms):
+                        rlist.append(distmat[i-3][i])
+                        alist.append(self.angle(cartesian, i, 0, 1))
+                        dlist.append(self.dihedral(cartesian, i, 0, 1, 2))
+        return np.asarray(rlist+alist+dlist)
+
+    def cartesian_to_hybrid(self) -> NDArray:
+        """ Routine to switch between full Cartesian (needed for energy
+            calculations) and reduced representation """
+        hybrid = np.zeros(len(self.position[9:])+3, dtype=float)
+        hybrid[0] = self.position[5]
+        hybrid[1] = self.position[7]
+        hybrid[2] = self.position[8]
+        hybrid[3:] = self.position[9:]
+        return hybrid
+
+    def hybrid_to_cartesian(self, hybrid: NDArray) -> NDArray:
+        """ Routine to switch between full Cartesian (needed for energy
+            calculations) and reduced representation """
+        position = np.zeros(self.n_atoms*3, dtype=float)
+        position[5] = hybrid[0]
+        position[7] = hybrid[1]
+        position[8] = hybrid[2]
+        position[9:] = hybrid[3:]
+        return position
+
+
+class HybridCoordinates(StandardCoordinates):
+    """ A compact Cartesian representation of an atomic cluster
+        assumes central atom at origin, and (x1, x1, 0), (x2, x2, z2),
+        (x3, y3, z3), ..., (xn, yn, zn) """
+    
+    def __init__(self, atom_labels: list, position: NDArray,
+                 bounds: list) -> None:
+        self.atom_labels = atom_labels
+        self.position = position
+        self.ndim = position.size
+        self.n_atoms = len(atom_labels)
+        self.bounds = bounds
+        self.lower_bounds = np.asarray([i[0] for i in self.bounds])
+        self.upper_bounds = np.asarray([i[1] for i in self.bounds])
+
+    def cartesian_to_hybrid(self, cartesian: NDArray) -> NDArray:
+        """ Routine to switch between full Cartesian (needed for energy
+            calculations) and reduced representation """
+        hybrid = np.zeros(((3*self.n_atoms)-6), dtype=float)
+        hybrid[0] = cartesian[3]
+        hybrid[1] = cartesian[6]
+        hybrid[2] = cartesian[8]
+        hybrid[3:] = cartesian[9:]
+        return hybrid
+
+    def hybrid_to_cartesian(self, hybrid: NDArray) -> NDArray:
+        """ Routine to switch between full Cartesian (needed for energy
+            calculations) and reduced representation """
+        position = np.zeros(self.n_atoms*3, dtype=float)
+        position[3] = hybrid[0]
+        position[4] = hybrid[0]
+        position[5] = hybrid[0]
+        position[6] = hybrid[1]
+        position[7] = hybrid[1]
+        position[8] = hybrid[2]
+        position[9:] = hybrid[3:]
+        return position
+
+
+class HybridCoordinates2(StandardCoordinates):
+    """ A compact Cartesian representation of an atomic cluster
+        assumes central atom at origin, and (0, 0, z2), (0, y3, z3),
+        (x4, y4, z4), ..., (xn, yn, zn) """
+    
+    def __init__(self, atom_labels: list, position: NDArray,
+                 bounds: list) -> None:
+        self.atom_labels = atom_labels
+        self.position = position
+        self.ndim = position.size
+        self.n_atoms = len(atom_labels)
+        self.bounds = bounds
+        self.lower_bounds = np.asarray([i[0] for i in self.bounds])
+        self.upper_bounds = np.asarray([i[1] for i in self.bounds])
+
+    def cartesian_to_hybrid(self, cartesian: NDArray) -> NDArray:
+        """ Routine to switch between full Cartesian (needed for energy
+            calculations) and reduced representation """
+        hybrid = np.zeros(((3*self.n_atoms)-6), dtype=float)
+        hybrid[0] = cartesian[5]
+        hybrid[1] = cartesian[7]
+        hybrid[2] = cartesian[8]
+        hybrid[3:] = cartesian[9:]
+        return hybrid
+
+    def hybrid_to_cartesian(self, hybrid: NDArray) -> NDArray:
+        """ Routine to switch between full Cartesian (needed for energy
+            calculations) and reduced representation """
+        position = np.zeros(self.n_atoms*3, dtype=float)
+        position[5] = hybrid[0]
+        position[7] = hybrid[1]
+        position[8] = hybrid[2]
+        position[9:] = hybrid[3:]
+        return position
+
+
+class ZMatrix(StandardCoordinates):
+    """ A compact representation of an atomic cluster
+        assumes central atom at origin, and all other atoms
+        are parameterised by bond length, angle and dihedral """
+    
+    def __init__(self, atom_labels: list, position: NDArray,
+                 bounds: list) -> None:
+        self.atom_labels = atom_labels
+        self.position = position
+        self.ndim = position.size
+        self.n_atoms = len(atom_labels)
+        self.bounds = bounds
+        self.lower_bounds = np.asarray([i[0] for i in self.bounds])
+        self.upper_bounds = np.asarray([i[1] for i in self.bounds])
+
+    def zmatrix_to_cartesian(self, zmatrix: NDArray) -> NDArray:
+        """ Convert a zmatrix to 3D Cartesian coordinates """
+
+        rconnect = np.ones(self.n_atoms-1, dtype=int)
+        aconnect = np.ones(self.n_atoms-2, dtype=int)*2
+        dconnect = np.ones(self.n_atoms-3, dtype=int)*3
+        rlist = zmatrix[:self.n_atoms-1]
+        alist = zmatrix[self.n_atoms-1:2*self.n_atoms-3]
+        dlist = zmatrix[2*self.n_atoms-3:]
+
+        # put the first atom at the origin
+        xyzarr = np.zeros([self.n_atoms, 3])
+        if self.n_atoms > 1:
+            # second atom at [r01, 0, 0]
+            xyzarr[1] = [rlist[0], 0.0, 0.0]
+
+        if self.n_atoms > 2:
+            # third atom in the xy-plane
+            # such that the angle a012 is correct 
+            i = rconnect[1] - 1
+            j = aconnect[0] - 1
+            r = rlist[1]
+            theta = alist[0] * np.pi / 180.0
+            x = r * np.cos(theta)
+            y = r * np.sin(theta)
+            a_i = xyzarr[i]
+            b_ij = xyzarr[j] - xyzarr[i]
+            if b_ij[0] < 0:
+                x = a_i[0] - x
+                y = a_i[1] - y
+            else:
+                x = a_i[0] + x
+                y = a_i[1] + y
+            xyzarr[2] = [x, y, 0.0]
+
+        for n in range(3, self.n_atoms):
+            # back-compute the xyz coordinates
+            # from the positions of the last three atoms
+            r = rlist[n-1]
+            theta = alist[n-2] * np.pi / 180.0
+            phi = dlist[n-3] * np.pi / 180.0
+
+            sinTheta = np.sin(theta)
+            cosTheta = np.cos(theta)
+            sinPhi = np.sin(phi)
+            cosPhi = np.cos(phi)
+
+            x = r * cosTheta
+            y = r * cosPhi * sinTheta
+            z = r * sinPhi * sinTheta
+
+            i = rconnect[n-1] - 1
+            j = aconnect[n-2] - 1
+            k = dconnect[n-3] - 1
+            a = xyzarr[k]
+            b = xyzarr[j]
+            c = xyzarr[i]
+
+            ab = b - a
+            bc = c - b
+            bc = bc / np.linalg.norm(bc)
+            nv = np.cross(ab, bc)
+            nv = nv / np.linalg.norm(nv)
+            ncbc = np.cross(nv, bc)
+
+            new_x = c[0] - bc[0] * x + ncbc[0] * y + nv[0] * z
+            new_y = c[1] - bc[1] * x + ncbc[1] * y + nv[1] * z
+            new_z = c[2] - bc[2] * x + ncbc[2] * y + nv[2] * z
+            xyzarr[n] = [new_x, new_y, new_z]
+
+        return xyzarr.reshape(-1)
+
+    def angle(self, xyzarr: NDArray, i: int, j: int, k: int) -> float:
+        """ Return the bond angle in degrees between three atoms 
+           with indices i, j, k given a set of xyz coordinates.
+           atom j is the central atom """
+
+        rij = xyzarr[i] - xyzarr[j]
+        rkj = xyzarr[k] - xyzarr[j]
+        cos_theta = np.dot(rij, rkj)
+        sin_theta = np.linalg.norm(np.cross(rij, rkj))
+        theta = np.arctan2(sin_theta, cos_theta)
+        theta = 180.0 * theta / np.pi
+        return theta
+
+    def dihedral(self, xyzarr, i, j, k, l):
+        """ Return the dihedral angle in degrees between four atoms 
+            with indices i, j, k, l given a set of xyz coordinates.
+           connectivity is i->j->k->l """
+
+        rji = xyzarr[j] - xyzarr[i]
+        rkj = xyzarr[k] - xyzarr[j]
+        rlk = xyzarr[l] - xyzarr[k]
+        v1 = np.cross(rji, rkj)
+        if np.linalg.norm(v1) > 0.0:
+            v1 = v1 / np.linalg.norm(v1)
+        v2 = np.cross(rlk, rkj)
+        if np.linalg.norm(v2) > 0.0:
+            v2 = v2 / np.linalg.norm(v2)
+        m1 = np.cross(v1, rkj) / np.linalg.norm(rkj)
+        x = np.dot(v1, v2)
+        y = np.dot(m1, v2)
+        chi = np.arctan2(y, x)
+        chi = -180.0 - 180.0 * chi / np.pi
+        if (chi < -180.0):
+           chi += 360.0
+        return chi
+
+    def cartesian_to_zmatrix(self, cart_pos) -> NDArray:
+        """ Utility to convert Cartesian coordinates to Z matrix """
+
+        cartesian = cart_pos.reshape(self.n_atoms,3)
+
+        rlist = [] # list of bond lengths
+        alist = [] # list of bond angles (degrees)
+        dlist = [] # list of dihedral angles (degrees)
+        distmat = cdist(cartesian, cartesian)
+
+        if self.n_atoms > 1:
+            # and the second, with distance from first
+            rlist.append(distmat[0][1])
+            if self.n_atoms > 2:
+                rlist.append(distmat[0][2])
+                alist.append(self.angle(cartesian, 2, 0, 1))
+                if self.n_atoms > 3:
+                    for i in range(3, self.n_atoms):
+                        rlist.append(distmat[0][i])
+                        alist.append(self.angle(cartesian, i, 0, 1))
+                        dlist.append(self.dihedral(cartesian, i, 0, 1, 2))
+        return np.asarray(rlist+alist+dlist)
+
+
+class TraditionalZMatrix(StandardCoordinates):
+    """ A compact representation of an atomic cluster
+        assumes central atom at origin, and all other atoms
+        are parameterised by bond length, angle and dihedral """
+    
+    def __init__(self, atom_labels: list, position: NDArray,
+                 bounds: list) -> None:
+        self.atom_labels = atom_labels
+        self.position = position
+        self.ndim = position.size
+        self.n_atoms = len(atom_labels)
+        self.bounds = bounds
+        self.lower_bounds = np.asarray([i[0] for i in self.bounds])
+        self.upper_bounds = np.asarray([i[1] for i in self.bounds])
+
+    def zmatrix_to_cartesian(self, zmatrix: NDArray) -> NDArray:
+        """ Convert a zmatrix to 3D Cartesian coordinates """
+
+        rconnect = np.arange(1, self.n_atoms, dtype=int)
+        aconnect = np.arange(2, self.n_atoms, dtype=int)
+        dconnect = np.arange(3, self.n_atoms, dtype=int)
+        rlist = zmatrix[:self.n_atoms-1]
+        alist = zmatrix[self.n_atoms-1:2*self.n_atoms-3]
+        dlist = zmatrix[2*self.n_atoms-3:]
+
+        # put the first atom at the origin
+        xyzarr = np.zeros([self.n_atoms, 3])
+        # second atom at [r01, 0, 0]
+        xyzarr[1] = [rlist[0], 0.0, 0.0]
+        # third atom in xy-plane [x, y, 0]
+        theta = alist[0] * (np.pi / 180.0)
+        b_ij = xyzarr[0] - xyzarr[1]
+        if b_ij[0] < 0:
+            x = xyzarr[1][0] - (rlist[1] * np.cos(theta))
+            y = xyzarr[1][1] - (rlist[1] * np.sin(theta))
+        else:
+            x = xyzarr[1][0] + (rlist[1] * np.cos(theta))
+            y = xyzarr[1][1] + (rlist[1] * np.sin(theta))
+        xyzarr[2] = [x, y, 0.0]
+        # Remaining atoms 
+        for n in range(3, self.n_atoms):
+            # Compute the position given the angle and dihedral
+            r = rlist[n-1]
+            theta = alist[n-2] * (np.pi / 180.0)
+            phi = dlist[n-3] * (np.pi / 180.0)
+
+            sinTheta = np.sin(theta)
+            cosTheta = np.cos(theta)
+            sinPhi = np.sin(phi)
+            cosPhi = np.cos(phi)
+
+            x = r * cosTheta
+            y = r * cosPhi * sinTheta
+            z = r * sinPhi * sinTheta
+
+            a = xyzarr[n-3]
+            b = xyzarr[n-2]
+            c = xyzarr[n-1]
+
+            ab = b - a
+            bc = c - b
+            bc = bc / np.linalg.norm(bc)
+            nv = np.cross(ab, bc)
+            nv = nv / np.linalg.norm(nv)
+            ncbc = np.cross(nv, bc)
+
+            new_x = c[0] - bc[0] * x + ncbc[0] * y + nv[0] * z
+            new_y = c[1] - bc[1] * x + ncbc[1] * y + nv[1] * z
+            new_z = c[2] - bc[2] * x + ncbc[2] * y + nv[2] * z
+            xyzarr[n] = [new_x, new_y, new_z]
+
+        return xyzarr.reshape(-1)
+
+    def angle(self, xyzarr: NDArray, i: int, j: int, k: int) -> float:
+        """ Return the bond angle in degrees between three atoms 
+           with indices i, j, k given a set of xyz coordinates.
+           atom j is the central atom """
+
+        rij = xyzarr[i] - xyzarr[j]
+        rkj = xyzarr[k] - xyzarr[j]
+        cos_theta = np.dot(rij, rkj)
+        sin_theta = np.linalg.norm(np.cross(rij, rkj))
+        theta = np.arctan2(sin_theta, cos_theta)
+        theta = 180.0 * theta / np.pi
+        return theta
+
+    def dihedral(self, xyzarr, l, k, j, i):
+        """ Return the dihedral angle in degrees between four atoms 
+            with indices i, j, k, l given a set of xyz coordinates.
+           connectivity is i->j->k->l """
+
+        rji = xyzarr[j] - xyzarr[i]
+        rkj = xyzarr[k] - xyzarr[j]
+        rlk = xyzarr[l] - xyzarr[k]
+        v1 = np.cross(rji, rkj)
+        v1 = v1 / np.linalg.norm(v1)
+        v2 = np.cross(rlk, rkj)
+        v2 = v2 / np.linalg.norm(v2)
+        m1 = np.cross(v1, rkj) / np.linalg.norm(rkj)
+        x = np.dot(v1, v2)
+        y = np.dot(m1, v2)
+        chi = np.arctan2(y, x)
+        chi = -180.0 - 180.0 * chi / np.pi
+        if (chi < -180.0):
+           chi += 360.0
+        return chi
+
+    def cartesian_to_zmatrix(self, cart_pos) -> NDArray:
+        """ Utility to convert Cartesian coordinates to Z matrix """
+
+        cartesian = cart_pos.reshape(self.n_atoms,3)
+
+        rlist = [] # list of bond lengths
+        alist = [] # list of bond angles (degrees)
+        dlist = [] # list of dihedral angles (degrees)
+        distmat = cdist(cartesian, cartesian)
+
+        if self.n_atoms > 1:
+            # and the second, with distance from first
+            rlist.append(distmat[0][1])
+            if self.n_atoms > 2:
+                rlist.append(distmat[1][2])
+                alist.append(self.angle(cartesian, 0, 1, 2))
+                if self.n_atoms > 3:
+                    for i in range(3, self.n_atoms):
+                        rlist.append(distmat[i-1][i])
+                        alist.append(self.angle(cartesian, i-2, i-1, i))
+                        dlist.append(self.dihedral(cartesian, i-3, i-2, i-1, i))
+        return np.asarray(rlist+alist+dlist)
 
 
 class MolecularCoordinates(AtomicCoordinates):
@@ -187,10 +686,10 @@ class MolecularCoordinates(AtomicCoordinates):
     Description
     ---------------
 
-    Class to store the coordinates of a molecular system, and
-    methods to modify molecular conformations and write out configurations.
+    Class to store the coordinates of an molecular system.
+    Methods to modify atomic positions and write out configurations.
     Inherits from AtomicCoordinates, but contains additional functionality
-    to generate internal coordinate representation and check bonding structure.
+    to test rotatable dihedrals and bonding structure.
 
 
     Attributes
@@ -198,7 +697,7 @@ class MolecularCoordinates(AtomicCoordinates):
     bounds : list of tuples [(b1_min, b1_max), (b2_min, b2_max)...]
         The allowed ranges of the coordinates in each dimension
     ndim : int
-        The dimensionality of the coordinates, 3*n_atoms
+        The dimensionality of the coordinates
     position : numpy array
         Array of size ndim containing the current position
     atom_labels : list
@@ -278,10 +777,12 @@ class MolecularCoordinates(AtomicCoordinates):
             # Pick three points to define a plane
             a, b, c = loop_coords[0:3]
             normal_vec = np.cross((b-a), (c-a))
+            normal_vec /= np.linalg.norm(normal_vec)
             planar = True
             for j in range(len(loop_coords)-3):
                 d = loop_coords[j+3]
-                if np.abs(np.dot((a-d), normal_vec)) > 1e-1:
+                diff_vec = (a-d) / np.linalg.norm(a-d)
+                if np.abs(np.dot(diff_vec, normal_vec)) > 1e-1:
                     planar = False
             if planar:
                 for j in i:
@@ -329,7 +830,7 @@ class MolecularCoordinates(AtomicCoordinates):
 
     def get_repeat_dihedrals(self, dihedrals: list) -> list:
         """ Only retain one dihedral when multiple share the same
-            central bond. Returns a list of repeats to remove """
+            central bond. Gives a list of repeats to remove """
         removals = []
         for i in range(1, len(dihedrals)):
             same_central_bond = False
