@@ -130,6 +130,16 @@ def test_is_new_ts():
     new, match1, match2 = similarity.is_new_ts(ktn, coords, ts_energy)    
     assert new == True
     assert match1 == None
+    # given a pair of nodes with two transition states, can the program find the second transition state?
+    ktn = KineticTransitionNetwork()
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
+                     text_string='.similarity_multipleTS')
+    coords.position = np.array([5.29999, -5.54411e-02, 4.2061285])
+    ts_energy = -1.06162
+    new, match1, match2 = similarity.is_new_ts(ktn, coords, ts_energy)
+    assert new == False
+    assert match1 == 0
+    assert match2 == 1
 
 def test_test_new_minimum():
     coords = StandardCoordinates(ndim=2, bounds=[(-500.0, 500.0),
@@ -159,6 +169,7 @@ def test_test_new_ts():
                      text_string='.similarity')
     coords.position = np.array([-1.0277237, -4.53884, -2.0018477])
     ts_energy = -1.26930
+    ts_energy_2 = -1.06930
     old_min1 = np.array([5.00, -3.308, 4.2449])
     old_min2 = np.array([-2.60664, -4.4795e-01, 3.79735])
     old_energy1 = -2.29238
@@ -179,11 +190,19 @@ def test_test_new_ts():
     assert ktn.n_minima == 9
     ts_coords = ktn.get_ts_coords(0, 2)
     assert np.all(ts_coords == np.array([5.0, 5.0, 5.0]))
+    # New transition state, on top of already known connected minima
+    coords.position = np.array([10.0, 10.0, 10.0])
+    similarity.test_new_ts(ktn, coords, ts_energy_2, old_min1, old_energy1,
+                           old_min2, old_energy2)
+    assert ktn.n_ts == 10
+    assert ktn.n_minima == 9
+    ts_coords = ktn.get_ts_coords(0, 2)
+    assert np.all(ts_coords == np.array([5.0, 5.0, 5.0]))
     # New transition state, unknown connected minima
     coords.position = np.array([-5.0, -5.0, -5.0])
     similarity.test_new_ts(ktn, coords, ts_energy, new_min1, new_energy1,
                            new_min2, new_energy2)
-    assert ktn.n_ts == 10
+    assert ktn.n_ts == 11
     assert ktn.n_minima == 11
     ts_coords = ktn.get_ts_coords(9, 10)
     assert np.all(ts_coords == np.array([-5.0, -5.0, -5.0]))

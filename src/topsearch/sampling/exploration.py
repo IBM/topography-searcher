@@ -370,8 +370,8 @@ class NetworkSampling:
         ts_coordinates = []
         for i in range(self.ktn.n_minima):
             min_coordinates.append(self.ktn.get_minimum_coords(i))
-        for u, v in self.ktn.G.edges():
-            ts_coordinates.append(self.ktn.get_ts_coords(u, v))
+        for u, v, edge_index in self.ktn.G.edges:
+            ts_coordinates.append(self.ktn.get_ts_coords(u, v, edge_index))
         # Reoptimise all the minima
         minima_information = []
         for minimum in min_coordinates:

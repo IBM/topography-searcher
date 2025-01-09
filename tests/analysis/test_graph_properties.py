@@ -65,9 +65,20 @@ def test_remove_edges_threshold():
     H = ktn.G.copy()
     cut_graph = remove_edges_threshold(H, -1.0)
     edges = []
-    for i in cut_graph.edges:
+    for i in cut_graph.edges():
         edges.append(i)
     assert edges == [(0, 1), (2, 8), (3, 6), (4, 5)]
+    
+    # try remove one edge from a multiedge
+    ktn = KineticTransitionNetwork()
+    ktn.read_network(text_path=f'{current_dir}/test_data/',
+                    text_string='.ktn_multipleTS')
+    H = ktn.G.copy()
+    cut_graph = remove_edges_threshold(H, -1)
+    edges = []
+    for i in cut_graph.edges:
+        edges.append(i)
+    assert edges == [(0, 1, 0), (0, 1, 1), (2, 8, 0), (3, 6, 0), (4, 5, 0)]
 
 def test_disconnected_height():
     ktn = KineticTransitionNetwork()

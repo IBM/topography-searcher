@@ -165,8 +165,8 @@ def plot_disconnectivity_graph(ktn: type, levels: int,
     """ Compute the disconnectivity graph, plot and save to file """
     # Find the highest energy transition state as upper limit
     ts_energies = []
-    for u, v in ktn.G.edges():
-        ts_energies.append(ktn.get_ts_energy(u, v))
+    for u, v, edge_index in ktn.G.edges:
+        ts_energies.append(ktn.get_ts_energy(u, v, edge_index))
     if ts_energies:
         highest = np.max(ts_energies)
     else:
