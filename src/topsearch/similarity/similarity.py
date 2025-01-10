@@ -104,13 +104,13 @@ class StandardSimilarity:
         """ Compare transition state to all other currently in the network G
             and return False if same as any of them """
 
-        # Loop over all transition states
-        for node1, node2 in ktn.G.edges():
+        # Loop over all transition states, including cases of multiple TS per pair of nodes
+        for node1, node2, edge_index in ktn.G.edges:
             # Check if each transition state is a match
             if self.test_same(ts_coords,
-                              ktn.get_ts_coords(node1, node2),
+                              ktn.get_ts_coords(node1, node2, edge_index),
                               ts_energy,
-                              ktn.get_ts_energy(node1, node2)):
+                              ktn.get_ts_energy(node1, node2, edge_index)):
                 with open('logfile', 'a', encoding="utf-8") as outfile:
                     outfile.write("Repeated transition state connecting "
                                   f"{node1} and {node2}\n")

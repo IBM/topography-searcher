@@ -38,10 +38,10 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
     selfconnected = self_connected(ktn)
     ts_coords = np.zeros((len(ktn.G.edges)-selfconnected, 2))
     # Plot the connections between minima and transition states
-    for node1, node2 in ktn.G.edges:
+    for node1, node2, edge_index in ktn.G.edges:
         if node1 == node2:
             continue
-        ts_coords[count, :] = ktn.get_ts_coords(node1, node2)
+        ts_coords[count, :] = ktn.get_ts_coords(node1, node2, edge_index)
         # Arrows to show connections between transition states and minima
         plt.arrow(ts_coords[count, 0], ts_coords[count, 1],
                   minima[node1, 0] - ts_coords[count, 0],
@@ -75,7 +75,7 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
 def self_connected(ktn: type) -> int:
     """ Count the number of edges that connect minima to themselves """
     selfconnected = 0
-    for node1, node2 in ktn.G.edges:
+    for node1, node2 in ktn.G.edges():
         if node1 == node2:
             selfconnected += 1
     return selfconnected

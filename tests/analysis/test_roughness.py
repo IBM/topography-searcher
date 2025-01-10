@@ -28,7 +28,7 @@ def test_roughness_metric_barrier():
     roughness_lengthscale = roughness_metric(ktn)
     assert roughness_default == pytest.approx(0.004087311062500195)
     assert roughness_lengthscale == pytest.approx(0.0001785639186812142)
-    ktn.G.edges[0, 1]['energy'] = -3.0
+    ktn.G.edges[0, 1, 0]['energy'] = -3.0
     roughness = roughness_metric(ktn)
     assert roughness == 0.0
 
