@@ -7,7 +7,7 @@ import numpy as np
 from nptyping import NDArray
 from topsearch.minimisation import lbfgs
 from topsearch.data.coordinates import MolecularCoordinates
-
+import traceback
 
 class NudgedElasticBand:
 
@@ -94,6 +94,9 @@ class NudgedElasticBand:
             optimised band """
         # Require a 1d array for scipy lbfgs
         band = band.flatten()
+        init_band_reshape = np.reshape(band, (self.n_images, -1))
+        if self.output_level > 0:
+            np.savetxt(f'neb_init_{self.neb_count}.txt', init_band_reshape)
         optimised_band, f_val, r_dict = \
             lbfgs.minimise(func_grad=self.band_function_gradient,
                            initial_position=band,
