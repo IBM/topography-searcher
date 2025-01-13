@@ -126,7 +126,7 @@ class HybridEigenvectorFollowing:
             self.update_eigenvector_bounds(lower_bounds, upper_bounds)
             
             if self.output_level > 0:
-                coords.write_xyz(f'coords_{tag}_{n_steps}.xyz')
+                coords.write_xyz(f'hyb_{tag}_{n_steps}')
             # Test for convergence to a transition state
             if self.test_convergence(coords.position, lower_bounds,
                                      upper_bounds):

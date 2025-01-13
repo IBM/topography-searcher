@@ -147,15 +147,19 @@ class NetworkSampling:
         else:
             # Run connection attempts for each pair
             for i in total_pairs:
-                stationary_point_information = self.connection_attempt(i)
-                # For each transition state attempt to add to network
-                if stationary_point_information is not None:
-                    for j in stationary_point_information:
-                        self.coords.position = j[0]
-                        self.similarity.test_new_ts(self.ktn,
-                                                    self.coords, j[1],
-                                                    j[2], j[3],
-                                                    j[4], j[5])
+                try:
+                    stationary_point_information = self.connection_attempt(i)
+                    # For each transition state attempt to add to network
+                    if stationary_point_information is not None:
+                        for j in stationary_point_information:
+                            self.coords.position = j[0]
+                            self.similarity.test_new_ts(self.ktn,
+                                                        self.coords, j[1],
+                                                        j[2], j[3],
+                                                        j[4], j[5])
+                except:
+                    print("Failed on finding TS for ", i)
+                    traceback.print_exc()
         # Write node pairs into pairlist to keep track of previous attempts
         if self.ktn.pairlist.size == 0:
             self.ktn.pairlist = np.empty((0, 2), dtype=int)
@@ -197,7 +201,7 @@ class NetworkSampling:
         for ts_search_number, ts_candidate in enumerate(positions, start=1):
             local_coords.position = ts_candidate
             ts_coords, e_ts, min_plus, e_plus, min_minus, e_minus, neg_eig = \
-                self.single_ended_search.run(local_coords, tag=ts_search_number)
+                self.single_ended_search.run(local_coords, tag=f"{pair[0]}-{pair[1]}")
             # Check search was successful
             if ts_coords is not None:
                 with open('logfile', 'a', encoding="utf-8") as outfile:

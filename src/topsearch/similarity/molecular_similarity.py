@@ -72,7 +72,7 @@ class MolecularSimilarity(StandardSimilarity):
                 dist_matrix = distance_matrix(coords1_element,
                                               coords2_element)
                 if dist_matrix.shape[0] != dist_matrix.shape[1]:
-                    # print("warning: distance matrix wrong shape - probably because an extra spurious bond")
+                    print("Warning: distance matrix wrong shape")
                     break
                 # Optimal permutational alignment
                 col_ind = linear_sum_assignment(dist_matrix**2)[1]
