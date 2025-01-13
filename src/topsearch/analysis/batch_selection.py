@@ -4,16 +4,20 @@
 
 import numpy as np
 from nptyping import NDArray
+from topsearch.data.coordinates import StandardCoordinates
+
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+from topsearch.potentials.potential import Potential
 from .graph_properties import disconnected_height
 from .minima_properties import get_ordered_minima, get_minima_energies, \
                                get_bounds_minima, get_similar_minima, \
                                get_minima_above_cutoff
 
 
-def get_excluded_minima(ktn: type,
+def get_excluded_minima(ktn: KineticTransitionNetwork,
                         energy_cutoff: float = 1.0,
                         penalise_edge: bool = False,
-                        coords: type = None,
+                        coords: StandardCoordinates = None,
                         penalise_similarity: bool = False,
                         proximity_measure: float = 0.2,
                         known_points: NDArray = None) -> list:
@@ -37,7 +41,7 @@ def get_excluded_minima(ktn: type,
     return list(set(excluded_minima))
 
 
-def select_batch(ktn: type, batch_size: int, batch_selection_method: str,
+def select_batch(ktn: KineticTransitionNetwork, batch_size: int, batch_selection_method: str,
                  fixed_batch_size: bool, barrier_cutoff: float = 1.0,
                  excluded_minima: list = None) -> tuple[list, NDArray]:
 
@@ -77,7 +81,7 @@ def select_batch(ktn: type, batch_size: int, batch_selection_method: str,
     return batch_indices, batch_points
 
 
-def generate_batch(ktn: type, batch_selection_method: str,
+def generate_batch(ktn: KineticTransitionNetwork, batch_selection_method: str,
                    excluded_minima: list,
                    absolute_barrier_cutoff: float) -> NDArray:
     """ Generate the batch given the specified method """
@@ -94,7 +98,7 @@ def generate_batch(ktn: type, batch_selection_method: str,
     return batch_indices
 
 
-def lowest_batch_selector(ktn: type, excluded_minima: list) -> list:
+def lowest_batch_selector(ktn: KineticTransitionNetwork, excluded_minima: list) -> list:
     """ Simply select the lowest minima of the acquisition function.
         Returns list of indices the selected minima correspond to """
     # Starting from the lowest indices progressively add if not banned
@@ -103,7 +107,7 @@ def lowest_batch_selector(ktn: type, excluded_minima: list) -> list:
     return batch_indices
 
 
-def fill_batch(ktn: type, batch_indices: list,
+def fill_batch(ktn: KineticTransitionNetwork, batch_indices: list,
                excluded_minima: list) -> NDArray:
     """ Return the batch after adding the remaining
         lowest minima in order """
@@ -114,7 +118,7 @@ def fill_batch(ktn: type, batch_indices: list,
     return batch_indices
 
 
-def topographical_batch_selector(ktn: type,
+def topographical_batch_selector(ktn: KineticTransitionNetwork,
                                  excluded_minima: list,
                                  absolute_barrier_cutoff: float) -> NDArray:
     """ Select a batch of minima based on the surface topography.
@@ -138,7 +142,7 @@ def topographical_batch_selector(ktn: type,
     return monotonic_indices + barrier_indices
 
 
-def barrier_batch_selector(ktn: type,
+def barrier_batch_selector(ktn: KineticTransitionNetwork,
                            excluded_minima: list,
                            absolute_barrier_cutoff: float,
                            current_batch_indices: list = None):
@@ -181,7 +185,7 @@ def barrier_batch_selector(ktn: type,
     return batch_indices
 
 
-def sufficient_barrier(ktn: type, node_i: int, node_j: int,
+def sufficient_barrier(ktn: KineticTransitionNetwork, node_i: int, node_j: int,
                        max_ts_energy: float, e_range: float,
                        absolute_barrier_cutoff: float) -> bool:
     """ Check if minima pass criteria to be added to the batch.
@@ -198,7 +202,7 @@ def sufficient_barrier(ktn: type, node_i: int, node_j: int,
     return True
 
 
-def monotonic_batch_selector(ktn: type, excluded_minima: list) -> list:
+def monotonic_batch_selector(ktn: KineticTransitionNetwork, excluded_minima: list) -> list:
     """ Find all monotonic sequence basins when excluding excluded_minima,
         and return their indices in increasing function value """
 
@@ -230,7 +234,7 @@ def monotonic_batch_selector(ktn: type, excluded_minima: list) -> list:
     return batch_indices
 
 
-def get_batch_positions(ktn: type, batch_indices: list) -> NDArray:
+def get_batch_positions(ktn: KineticTransitionNetwork, batch_indices: list) -> NDArray:
     """ Get the corresponding batch position from the list of indices """
     batch_points = np.zeros((len(batch_indices),
                              ktn.get_minimum_coords(0).size), dtype=float)
@@ -239,7 +243,7 @@ def get_batch_positions(ktn: type, batch_indices: list) -> NDArray:
     return batch_points
 
 
-def evaluate_batch(true_potential: type, batch_indices: list,
+def evaluate_batch(true_potential: Potential, batch_indices: list,
                    batch_points: NDArray) -> NDArray:
     """ Evaluate the true potential at each point in the given batch.
         Return the training and corresponding response values """

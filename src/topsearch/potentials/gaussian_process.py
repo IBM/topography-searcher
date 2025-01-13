@@ -7,6 +7,8 @@ import numpy as np
 from nptyping import NDArray
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, Matern, WhiteKernel
+
+from topsearch.data.model_data import ModelData
 from .potential import Potential
 warnings.filterwarnings('ignore')
 
@@ -22,8 +24,8 @@ class GaussianProcess(Potential):
 
     Attributes
     -----------
-    model_data : class
-        The class containing the training and response data we will fit
+    model_data : ModelData instance
+        The object containing the training and response data we will fit
     kernel_choice : str
         The choice of kernel, can be 'RBF' or 'Matern'
     kernel_bounds : list
@@ -43,7 +45,7 @@ class GaussianProcess(Potential):
         The sklearn gaussian process object
     """
 
-    def __init__(self, model_data: type,
+    def __init__(self, model_data: ModelData,
                  kernel_choice: str,
                  kernel_bounds: list,
                  standardise_training: bool = False,

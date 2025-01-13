@@ -2,18 +2,22 @@
     with the kinetic transition network containing minima and
     transition states overlaid onto it """
 
+from matplotlib.colors import Colormap
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib import rc
 import numpy as np
 from nptyping import NDArray
+from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
+
+from topsearch.potentials.potential import Potential
 
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 rc('text', usetex=True)
 mpl.rcParams.update({'font.size': 18})
 
 
-def plot_stationary_points(potential: type, ktn: type, bounds: list,
+def plot_stationary_points(potential: Potential, ktn: KineticTransitionNetwork, bounds: list,
                            label: str = '', contour_levels: int = 50,
                            fineness: int = 50, colour_scheme: str = 'cool',
                            label_min: bool = False) -> None:
@@ -72,7 +76,7 @@ def plot_stationary_points(potential: type, ktn: type, bounds: list,
     plt.close()
 
 
-def self_connected(ktn: type) -> int:
+def self_connected(ktn: KineticTransitionNetwork) -> int:
     """ Count the number of edges that connect minima to themselves """
     selfconnected = 0
     for node1, node2 in ktn.G.edges():
@@ -90,8 +94,8 @@ def make_xy_grid(bounds: list, fineness: int) -> tuple[NDArray, NDArray]:
     return x_grid, y_grid
 
 
-def plot_contours(potential: type, bounds: list, fineness: int,
-                  contour_levels: int, cmap: type) -> NDArray:
+def plot_contours(potential: Potential, bounds: list, fineness: int,
+                  contour_levels: int, cmap: Colormap) -> NDArray:
     """ Make a contour plot of the potential within the range bounds """
     x_grid, y_grid = make_xy_grid(bounds, fineness)
     z_grid = compute_function_grid(potential, x_grid, y_grid, fineness)
@@ -100,7 +104,7 @@ def plot_contours(potential: type, bounds: list, fineness: int,
     return contour_set
 
 
-def compute_function_grid(potential: type, x_array: NDArray,
+def compute_function_grid(potential: Potential, x_array: NDArray,
                           y_array: NDArray, fineness: int) -> NDArray:
     """ Returns the function value evaluated for the grid of
         meshgrid input for plotting """
@@ -111,7 +115,7 @@ def compute_function_grid(potential: type, x_array: NDArray,
     return np.asarray(z_array).reshape((fineness, fineness))
 
 
-def function_call(potential: type, x_value: NDArray) -> float:
+def function_call(potential: Potential, x_value: NDArray) -> float:
     """ Returns function value """
     x_tmp = np.array(x_value)
     return potential.function(x_tmp)

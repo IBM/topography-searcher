@@ -2,10 +2,18 @@
     methods for storing and extracting stationary point information
     encoded as a network graph """
 
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 import networkx as nx
 import numpy as np
 from nptyping import NDArray
 import traceback
+
+from topsearch.data.coordinates import StandardCoordinates
+
+if TYPE_CHECKING:
+    from topsearch.similarity.similarity import StandardSimilarity
 
 
 class KineticTransitionNetwork:
@@ -44,19 +52,19 @@ class KineticTransitionNetwork:
         with open('logfile', 'w', encoding="utf-8") as outfile:
             outfile.write(' ')
 
-    def get_minimum_coords(self, minimum: int) -> None:
+    def get_minimum_coords(self, minimum: int) -> NDArray:
         """ Returns the coordinates of a given node minimum """
         return self.G.nodes[minimum]['coords']
 
-    def get_minimum_energy(self, minimum: int) -> None:
+    def get_minimum_energy(self, minimum: int) -> float:
         """ Returns the energy of a given node minimum """
         return self.G.nodes[minimum]['energy']
 
-    def get_ts_coords(self, min_plus: int, min_minus: int, edge_index: int = 0) -> None:
+    def get_ts_coords(self, min_plus: int, min_minus: int, edge_index: int = 0) -> NDArray:
         """ Returns coordinates of edge_index-th ts edge between min_plus and min_minus """
         return self.G[min_plus][min_minus][edge_index]['coords']
 
-    def get_ts_energy(self, min_plus: int, min_minus: int, edge_index: int = 0) -> None:
+    def get_ts_energy(self, min_plus: int, min_minus: int, edge_index: int = 0) -> float:
         """ Returns energy of edge_index-th ts edge between min_plus and min_minus """
         return self.G[min_plus][min_minus][edge_index]['energy']
 
@@ -87,7 +95,7 @@ class KineticTransitionNetwork:
         self.G.remove_node(self.n_minima)
         self.n_minima -= 1
 
-    def remove_minima(self, minima: NDArray) -> None:
+    def remove_minima(self, minima: list[int]) -> None:
         """ Remove the nodes with the given indices in removed_minima """
         for c, i in enumerate(np.sort(minima), 0):
             self.remove_minimum(i-c)
@@ -196,8 +204,8 @@ class KineticTransitionNetwork:
                 csv_file.write(f'{coords}, ')
                 csv_file.write(f'{energy}\n')
 
-    def add_network(self, other_ktn: type, similarity: type,
-                    coords: type) -> None:
+    def add_network(self, other_ktn: KineticTransitionNetwork, similarity: StandardSimilarity,
+                    coords: StandardCoordinates) -> None:
         """ Method to combine a second network with the current one.
             Compares all stationary points in other_ktn and adds any
             non-repeats to the current network """
