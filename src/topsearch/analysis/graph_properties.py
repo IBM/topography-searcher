@@ -62,10 +62,10 @@ def disconnected_height(ktn: KineticTransitionNetwork, node_i: int, node_j: int,
     return 1e10
 
 
-def remove_edges_threshold(H: nx.Graph, energy1: float) -> nx.Graph:
+def remove_edges_threshold(H: nx.MultiGraph, energy1: float) -> nx.MultiGraph:
     """ Remove any transition states that have an energy above energy1 """
-    for u, v in H.edges():
-        ts_energy = H[u][v]['energy']
+    for u, v, edge_index in list(H.edges): #list() is needed as we need a copy of the edges list, otherwise we'd modify the dictionary H as we're iterating through it
+        ts_energy = H[u][v][edge_index]['energy']
         if ts_energy > energy1:
-            H.remove_edge(u, v)
+            H.remove_edge(u, v, edge_index)
     return H

@@ -12,7 +12,7 @@ def test_barrier_reweighting():
     ktn = KineticTransitionNetwork()
     ktn.read_network(text_path=f'{current_dir}/test_data/',
                      text_string='.network')
-    ktn.G.edges[0,1]['energy'] = -3.0
+    ktn.G.edges[0,1,0]['energy'] = -3.0
     weighted_graph = barrier_reweighting(ktn)
     edges = []
     for i in ktn.G.edges:
