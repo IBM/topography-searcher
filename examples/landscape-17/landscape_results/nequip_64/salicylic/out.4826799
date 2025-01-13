@@ -1,0 +1,134 @@
+setting default to float64
+doing step 0
+doing step 1
+doing step 2
+doing step 3
+doing step 4
+doing step 5
+doing step 6
+doing step 7
+doing step 8
+doing step 9
+doing step 10
+doing step 11
+doing step 12
+doing step 13
+doing step 14
+doing step 15
+doing step 16
+doing step 17
+doing step 18
+doing step 19
+doing step 20
+doing step 21
+doing step 22
+doing step 23
+doing step 24
+doing step 25
+doing step 26
+doing step 27
+doing step 28
+doing step 29
+doing step 30
+doing step 31
+doing step 32
+doing step 33
+doing step 34
+doing step 35
+doing step 36
+doing step 37
+doing step 38
+doing step 39
+doing step 40
+doing step 41
+doing step 42
+doing step 43
+doing step 44
+doing step 45
+doing step 46
+doing step 47
+doing step 48
+doing step 49
+NEB 1 found 1 candidates
+Failed on finding TS for  [1, 2]
+Failed on finding TS for  [0, 3]
+NEB 2 found 1 candidates
+NEB 3 found 1 candidates
+final eigenvalue  0.44263974304313614
+NEB 4 found 1 candidates
+NEB 5 found 1 candidates
+{'coords': array([ 1.98624708e+00,  2.04790776e-02, -3.76209996e-02,  5.24957049e-01,
+       -5.21345846e-02, -6.25398304e-03, -2.31122797e-01,  1.13947444e+00,
+        6.24340211e-02,  3.25622433e-01,  2.35478778e+00,  1.20376111e-01,
+       -1.63020800e+00,  1.06309617e+00,  7.10041986e-02, -2.25598185e+00,
+       -1.67955012e-01,  1.68418689e-02, -1.51761083e+00, -1.35692221e+00,
+       -5.22797919e-02, -1.39362241e-01, -1.29085809e+00, -6.62869519e-02,
+        2.62028167e+00,  1.06389401e+00, -2.09945313e-03,  2.64487556e+00,
+       -1.18156615e+00, -7.50564183e-02,  1.29952191e+00,  2.23658912e+00,
+        1.03738836e-01, -2.19355314e+00,  1.98943098e+00,  1.24017207e-01,
+       -3.34255025e+00, -2.09398470e-01,  2.71110223e-02, -2.02402676e+00,
+       -2.31627815e+00, -9.72469301e-02,  4.65273017e-01, -2.19001275e+00,
+       -1.26081773e-01,  2.70050169e+00, -1.48431049e+00, -9.91477939e-01]), 'energy': -13494.277921610696}
+{'coords': array([ 2.06959127,  0.01338263, -0.01500287,  0.59671219, -0.14360618,
+        0.03809965, -0.29637439,  0.94123913,  0.15690567,  0.12500489,
+        2.22281129,  0.37076118, -1.67096351,  0.69688984,  0.17387709,
+       -2.16880537, -0.59200849,  0.06828991, -1.29055346, -1.67171454,
+       -0.04194471,  0.0735451 , -1.43971616, -0.05185758,  2.8189518 ,
+       -0.94577753,  0.10228759,  2.54457616,  1.2420316 , -0.2210393 ,
+        0.16528019,  2.70186449, -0.46739323, -2.32551866,  1.55495234,
+        0.2867058 , -3.24272004, -0.76093773,  0.077752  , -1.67127524,
+       -2.68646198, -0.11732712,  0.76117869, -2.27804286, -0.13435966,
+        3.51137037,  1.14509415, -0.22575442]), 'energy': -13494.121674938704}
+{'coords': array([ 2.1643907 , -0.06476099, -0.10022512,  0.69565857, -0.20249475,
+       -0.07904408, -0.18305563,  0.90695189,  0.09353337,  0.31537268,
+        2.13495525,  0.28136525, -1.56457958,  0.68387096,  0.09230153,
+       -2.08523187, -0.59223812, -0.06434603, -1.23551185, -1.6884755 ,
+       -0.21043655,  0.13324242, -1.47878345, -0.2076914 ,  2.89200649,
+       -1.0407498 , -0.02508073,  2.69752036,  1.17862179, -0.27102406,
+       -0.41909518,  2.75483941,  0.39987145, -2.21221436,  1.5447932 ,
+        0.22121258, -3.16273418, -0.73545854, -0.06589368, -1.63734757,
+       -2.69062052, -0.3256845 ,  0.80094221, -2.32888409, -0.32205576,
+        2.80063678,  1.61843327,  0.5831977 ]), 'energy': -13493.81196739305}
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc450.pok.ibm.com>
+Subject: Job 4826799: <python -u ../../run_nequip_sal64.py salicylic> in cluster <cccCluster> Done
+
+Job <python -u ../../run_nequip_sal64.py salicylic> was submitted from host <cccxl011> by user <jdm> in cluster <cccCluster> at Mon Sep  2 04:03:13 2024
+Job was executed on host(s) <cccxc450.pok.ibm.com>, in queue <x86_6h>, as user <jdm> in cluster <cccCluster> at Mon Sep  2 04:03:15 2024
+</u/jdm> was used as the home directory.
+</dccstor/aimft1/landscape_paper/nequip_64/salicylic> was used as the working directory.
+Started at Mon Sep  2 04:03:15 2024
+Terminated at Mon Sep  2 04:38:33 2024
+Results reported at Mon Sep  2 04:38:33 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python -u ../../run_nequip_sal64.py salicylic
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   2079.96 sec.
+    Max Memory :                                 1177 MB
+    Average Memory :                             1070.27 MB
+    Total Requested Memory :                     90112.00 MB
+    Delta Memory :                               88935.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   2117 sec.
+    Turnaround time :                            2120 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <err.4826799> for stderr output of this job.
+

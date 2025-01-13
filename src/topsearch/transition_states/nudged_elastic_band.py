@@ -7,7 +7,7 @@ import numpy as np
 from nptyping import NDArray
 from topsearch.minimisation import lbfgs
 from topsearch.data.coordinates import MolecularCoordinates
-
+import traceback
 
 class NudgedElasticBand:
 
@@ -94,6 +94,9 @@ class NudgedElasticBand:
             optimised band """
         # Require a 1d array for scipy lbfgs
         band = band.flatten()
+        init_band_reshape = np.reshape(band, (self.n_images, -1))
+        if self.output_level > 0:
+            np.savetxt(f'neb_init_{self.neb_count}.txt', init_band_reshape)
         optimised_band, f_val, r_dict = \
             lbfgs.minimise(func_grad=self.band_function_gradient,
                            initial_position=band,
@@ -160,7 +163,17 @@ class NudgedElasticBand:
         """ Interpolate linearly in the space of dihedrals, angles and
             bond lengths, which will be much more appropriate for molecules """
         # Set the number of images based on given image density
-        dist = np.linalg.norm(coords1.position-coords2)
+        try:
+            dist = np.linalg.norm(coords1.position-coords2)
+        except:
+            print(coords1.position, coords2)
+            print(coords1)
+            traceback.print_exc()
+            try:
+                print(coords1.position.position)
+            except:
+                pass
+            raise RuntimeError
         self.n_images = int(self.image_density*dist)
         # Can't have too few images
         if self.n_images < 10:

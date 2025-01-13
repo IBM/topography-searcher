@@ -1,0 +1,27 @@
+ -------BASIN-HOPPING-------
+Steps = 25,Temperature = 100.0
+Located 4 distinct minima
+Basin-hopping completed in 764.0167672485113
+
+------- SAMPLING THE NETWORK ---------
+Exploring the landscape for 3 after removing minima at bounds
+Scheme: ClosestEnumeration
+-----------------
+Connection attempt between minima pair: 0 1
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 1264.5647179223597 s:NEB (443.90820567309856), HEF (819.6246827058494)
+-------------------------
+New transition state connecting minima 1 and 0
+Connection attempt between minima pair: 0 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 891.7390462905169 s:NEB (377.61756859347224), HEF (513.0867118798196)
+-------------------------
+New transition state connecting minima 0 and 2
+Connection attempt between minima pair: 1 2
+
+1 candidates from NEB after Force constant: 50.0
+1: Completed connection in 444.90825513005257 s:NEB (286.5153736397624), HEF (157.35425746440887)
+-------------------------
+New transition state connecting minima 1 and 2

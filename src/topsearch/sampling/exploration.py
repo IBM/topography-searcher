@@ -6,6 +6,7 @@ from timeit import default_timer as timer
 import multiprocessing
 from copy import deepcopy
 import numpy as np
+import traceback
 from nptyping import NDArray
 from ..analysis.pair_selection import connect_unconnected, \
     closest_enumeration, read_pairs
@@ -139,15 +140,19 @@ class NetworkSampling:
         else:
             # Run connection attempts for each pair
             for i in total_pairs:
-                stationary_point_information = self.connection_attempt(i)
-                # For each transition state attempt to add to network
-                if stationary_point_information is not None:
-                    for j in stationary_point_information:
-                        self.coords.position = j[0]
-                        self.similarity.test_new_ts(self.ktn,
-                                                    self.coords, j[1],
-                                                    j[2], j[3],
-                                                    j[4], j[5])
+                try:
+                    stationary_point_information = self.connection_attempt(i)
+                    # For each transition state attempt to add to network
+                    if stationary_point_information is not None:
+                        for j in stationary_point_information:
+                            self.coords.position = j[0]
+                            self.similarity.test_new_ts(self.ktn,
+                                                        self.coords, j[1],
+                                                        j[2], j[3],
+                                                        j[4], j[5])
+                except:
+                    print("Failed on finding TS for ", i)
+                    traceback.print_exc()
         # Write node pairs into pairlist to keep track of previous attempts
         if self.ktn.pairlist.size == 0:
             self.ktn.pairlist = np.empty((0, 2), dtype=int)
@@ -189,7 +194,7 @@ class NetworkSampling:
         for ts_search_number, ts_candidate in enumerate(positions, start=1):
             local_coords.position = ts_candidate
             ts_coords, e_ts, min_plus, e_plus, min_minus, e_minus, neg_eig = \
-                self.single_ended_search.run(local_coords, tag=ts_search_number)
+                self.single_ended_search.run(local_coords, tag=f"{pair[0]}-{pair[1]}")
             # Check search was successful
             if ts_coords is not None:
                 with open('logfile', 'a', encoding="utf-8") as outfile:
@@ -393,13 +398,24 @@ class NetworkSampling:
             self.coords.position = minima_information[i][0]
             energy = minima_information[i][1]
             self.similarity.test_new_minimum(self.ktn, self.coords, energy)
-        for i in ts_information:
-            self.coords.position = i[0]
-            self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
-                                        i[3], i[4], i[5])
+        print("Dumping minima")
+        self.ktn.dump_network('tmp_')
+        fail_count = 0
+        for ct, i in enumerate(ts_information):
+            try:
+                self.coords.position = i[0]
+                self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
+                                            i[3], i[4], i[5])
+            except:
+                print(f"Failed reconverging TS number {ct}")
+                with open('logfile', 'a', encoding="utf-8") as outfile:
+                    outfile.write(f"Failed reconverging TS number {ct}\n")
+                fail_count += 1
+                traceback.print_exc()
         end_time = timer()
         with open('logfile', 'a', encoding="utf-8") as outfile:
             outfile.write(f"{self.ktn.n_minima} distinct minima and "
                           f"{self.ktn.n_ts} transition states after "
                           f"reconvergence\nReconvergence completed in "
-                          f"{end_time - start_time}\n\n")
+                          f"{end_time - start_time}\n"
+                          f"failed on {fail_count} transition states\n\n")

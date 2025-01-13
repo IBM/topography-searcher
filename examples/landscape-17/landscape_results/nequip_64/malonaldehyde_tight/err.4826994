@@ -1,0 +1,83 @@
+/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/__init__.py:20: UserWarning: !! PyTorch version 2.4.0+cu121 found. Upstream issues in PyTorch versions 1.13.* and 2.* have been seen to cause unusual performance degredations on some CUDA systems that become worse over time; see https://github.com/mir-group/nequip/discussions/311. The best tested PyTorch version to use with CUDA devices is 1.11; while using other versions if you observe this problem, an unexpected lack of this problem, or other strange behavior, please post in the linked GitHub issue.
+  warnings.warn(
+/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/scripts/deploy.py:156: UserWarning: Models deployed before v0.6.0 don't contain information about their default_dtype or model_dtype; assuming the old default of float32 for both, but this might not be right if you had explicitly set default_dtype=float64.
+  warnings.warn(
+/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/ase/nequip_calculator.py:73: UserWarning: Trying to use chemical symbols as NequIP type names; this may not be correct for your model! To avoid this warning, please provide `species_to_type_name` explicitly.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/networkx/classes/graph.py", line 2012, in bunch_iter
+    for n in nlist:
+TypeError: 'int' object is not iterable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/u/jdm/programs/topography-searcher/src/topsearch/sampling/exploration.py", line 149, in run_connection_attempts
+    self.similarity.test_new_ts(self.ktn,
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/similarity.py", line 151, in test_new_ts
+    index_plus = self.is_new_minimum(ktn, min_plus, e_plus)[1]
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/similarity.py", line 95, in is_new_minimum
+    if self.test_same(min_coords,
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 334, in test_same
+    self.closest_distance(coords1, coords2) < self.distance_criterion
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 340, in closest_distance
+    return self.optimal_alignment(coords1, coords2)[0]
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 278, in optimal_alignment
+    self.test_exact_same(coords1, coords2)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 216, in test_exact_same
+    self.align(coords1, coords2_rotated.flatten())
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 178, in align
+    self.permutational_alignment(coords1, coords2)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 58, in permutational_alignment
+    perm_group1, perm_group2 = self.get_permutable_groups(coords1, coords2)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/similarity/molecular_similarity.py", line 101, in get_permutable_groups
+    bond_labels1 = coords1.get_connected_atoms()
+  File "/u/jdm/programs/topography-searcher/src/topsearch/data/coordinates.py", line 260, in get_connected_atoms
+    for j in current_bonds.edges(i):
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/networkx/classes/reportviews.py", line 1091, in __call__
+    return self.dataview(self, nbunch, data, default=default)
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/networkx/classes/reportviews.py", line 767, in __init__
+    nbunch = dict.fromkeys(viewer._graph.nbunch_iter(nbunch))
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/networkx/classes/graph.py", line 2027, in bunch_iter
+    raise exc
+networkx.exception.NetworkXError: nbunch is not a node or a sequence of nodes.
+Traceback (most recent call last):
+  File "/u/jdm/programs/topography-searcher/src/topsearch/sampling/exploration.py", line 144, in run_connection_attempts
+    stationary_point_information = self.connection_attempt(i)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/sampling/exploration.py", line 182, in connection_attempt
+    self.double_ended_search.run(local_coords, min2, repeats,
+  File "/u/jdm/programs/topography-searcher/src/topsearch/transition_states/nudged_elastic_band.py", line 80, in run
+    band = self.minimise_interpolation(band)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/transition_states/nudged_elastic_band.py", line 101, in minimise_interpolation
+    lbfgs.minimise(func_grad=self.band_function_gradient,
+  File "/u/jdm/programs/topography-searcher/src/topsearch/minimisation/lbfgs.py", line 21, in minimise
+    min_coords, f_val, results_dict = scipy.optimize.fmin_l_bfgs_b(
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_lbfgsb_py.py", line 237, in fmin_l_bfgs_b
+    res = _minimize_lbfgsb(fun, x0, args=args, jac=jac, bounds=bounds,
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_lbfgsb_py.py", line 407, in _minimize_lbfgsb
+    f, g = func_and_grad(x)
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_differentiable_functions.py", line 296, in fun_and_grad
+    self._update_fun()
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_differentiable_functions.py", line 262, in _update_fun
+    self._update_fun_impl()
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_differentiable_functions.py", line 163, in update_fun
+    self.f = fun_wrapped(self.x)
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_differentiable_functions.py", line 145, in fun_wrapped
+    fx = fun(np.copy(x), *args)
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_optimize.py", line 79, in __call__
+    self._compute_if_needed(x, *args)
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/scipy/optimize/_optimize.py", line 73, in _compute_if_needed
+    fg = self.fun(x, *args)
+  File "/u/jdm/programs/topography-searcher/src/topsearch/transition_states/nudged_elastic_band.py", line 322, in band_function_gradient
+    f_val, grad = self.potential.function_gradient(band[i, :])
+  File "/u/jdm/programs/topography-searcher/src/topsearch/potentials/ml_potentials.py", line 109, in function_gradient
+    self.atoms.calc.calculate(self.atoms, properties=['energy', 'forces'])
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/ase/nequip_calculator.py", line 109, in calculate
+    data = AtomicData.from_ase(atoms=atoms, r_max=self.r_max)
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/data/AtomicData.py", line 522, in from_ase
+    return cls.from_points(
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/data/AtomicData.py", line 369, in from_points
+    edge_index, edge_cell_shift, cell = neighbor_list_and_relative_vec(
+  File "/dccstor/aimft1/miniforge3/envs/nequip/lib/python3.9/site-packages/nequip/data/AtomicData.py", line 903, in neighbor_list_and_relative_vec
+    raise ValueError(
+ValueError: Every single atom has no neighbors within the cutoff r_max=4.0 (after eliminating self edges, no edges remain in this system)
