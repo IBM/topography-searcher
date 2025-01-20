@@ -5,7 +5,7 @@ from timeit import default_timer as timer
 import numpy as np
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.global_optimisation.perturbations import AtomicPerturbation, MolecularPerturbation, StandardPerturbation
-from topsearch.minimisation import lbfgs
+from topsearch.minimisation import lbfgs, psi4_internal
 from topsearch.data.coordinates import MolecularCoordinates, AtomicCoordinates, StandardCoordinates
 from topsearch.potentials.dft import DensityFunctionalTheory
 from topsearch.potentials.potential import Potential
