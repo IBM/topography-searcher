@@ -156,7 +156,7 @@ def test_project_onto_bounds(lower_bounds, upper_bounds, vector, expected_projec
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
     proj = single_ended.project_onto_bounds(np.array(vector), np.array(lower_bounds), np.array(upper_bounds))
     assert_array_almost_equal(proj, expected_projection)
-    assert np.linalg.norm(proj) == 1.0
+    assert np.linalg.norm(proj) == pytest.approx(1.0)
 
 def test_get_smallest_eigenvalue1():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
