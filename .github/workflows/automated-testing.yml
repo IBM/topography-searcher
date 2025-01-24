@@ -19,5 +19,5 @@ jobs:
           python -m pip install .
       - name: Test with pytest
         run: |
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov "assertpy ~= 1.1" "pytest-mock ~= 3.14"
           pytest
