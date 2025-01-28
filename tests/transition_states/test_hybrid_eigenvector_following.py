@@ -1,10 +1,11 @@
 import pytest
 import numpy as np
+from numpy.testing import assert_array_almost_equal
 import math
 import os
 from topsearch.data.coordinates import StandardCoordinates, AtomicCoordinates
 from topsearch.transition_states.hybrid_eigenvector_following import HybridEigenvectorFollowing
-from topsearch.potentials.test_functions import Camelback, Schwefel
+from topsearch.potentials.test_functions import Camelback, Schwefel, Potential
 from topsearch.potentials.atomic import LennardJones
 from topsearch.potentials.dataset_fitting import DatasetInterpolation
 from topsearch.data.model_data import ModelData
@@ -142,37 +143,20 @@ def test_update_eigenvector_bounds():
     assert single_ended.eigenvector_bounds == \
         [(0.0, math.inf), (-math.inf, 0.0), (-math.inf, math.inf)]
 
-def test_project_onto_bounds():
+@pytest.mark.parametrize(
+    "lower_bounds, upper_bounds, vector, expected_projection",
+    [
+        ([0, 0], [0, 1], [0.5, 1.5], [1.0, 0.0]),
+        ([0, 0], [0, 1], [-0.3, 0.1], [-1.0, 0.0]),
+        ([0, 1, 1], [0, 0, 0], [0.3, -0.1, -0.2], [1.0, 0.0, 0.0]),
+        ([0, 1, 1], [0, 0, 0], [0.3, 0.1, 0.2], [0.80178373, 0.26726124, 0.53452248])
+    ])
+def test_project_onto_bounds(lower_bounds, upper_bounds, vector, expected_projection):
     camel = Camelback()
     single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
-    lower_bounds = np.array([0, 0])
-    upper_bounds = np.array([0, 1])
-    vector = np.array([0.5, 1.5])
-    proj = single_ended.project_onto_bounds(vector, lower_bounds, upper_bounds)
-    assert np.all(proj == np.array([1.0, 0.0]))
-    assert np.linalg.norm(proj) == 1.0
-    lower_bounds = np.array([0, 0])
-    upper_bounds = np.array([0, 1])
-    vector = np.array([-0.3, 0.1])
-    proj = single_ended.project_onto_bounds(vector, lower_bounds, upper_bounds)
-    assert np.all(proj == np.array([-1.0, 0.0]))
-    assert np.linalg.norm(proj) == 1.0
-
-def test_project_onto_bounds2():
-    camel = Camelback()
-    single_ended = HybridEigenvectorFollowing(camel, 1e-5, 50, 1e-2)
-    lower_bounds = np.array([0, 1, 1])
-    upper_bounds = np.array([0, 0, 0])
-    vector = np.array([0.3, -0.1, -0.2])
-    proj = single_ended.project_onto_bounds(vector, lower_bounds, upper_bounds)
-    assert np.all(proj == np.array([1.0, 0.0, 0.0]))
-    lower_bounds = np.array([0, 1, 1])
-    upper_bounds = np.array([0, 0, 0])
-    vector = np.array([0.3, 0.1, 0.2])
-    proj = single_ended.project_onto_bounds(vector, lower_bounds, upper_bounds)
-    assert np.all(proj == pytest.approx(np.array([0.80178373,
-                                                  0.26726124,
-                                                  0.53452248])))
+    proj = single_ended.project_onto_bounds(np.array(vector), np.array(lower_bounds), np.array(upper_bounds))
+    assert_array_almost_equal(proj, expected_projection)
+    assert np.linalg.norm(proj) == pytest.approx(1.0)
 
 def test_get_smallest_eigenvalue1():
     coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
@@ -375,6 +359,15 @@ def test_test_convergence3():
     single_ended = HybridEigenvectorFollowing(camel, 5e-2, 50, 1e-2)
     conv = single_ended.test_convergence(position, np.array([0, 0]),
                                          np.array([0, 1]))
+    assert conv == True
+
+def test_test_convergence_with_some_dimensions_at_bounds(mocker):
+    position = np.array([0.2, 1, 0.5, -1])
+    fake_func = Potential()
+    fake_func.gradient = mocker.MagicMock(return_value=np.array([2e-2, 0.5, 1e-2, -0.7]))
+    single_ended = HybridEigenvectorFollowing(fake_func, 5e-2, 50, 1e-2)
+    conv = single_ended.test_convergence(position, np.array([0, 0, 0, 1]),
+                                         np.array([0, 1, 0, 0]))
     assert conv == True
 
 def test_do_pushoff():

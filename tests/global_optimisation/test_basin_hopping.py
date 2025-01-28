@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from numpy.testing import assert_array_equal
 import ase.io
 from topsearch.similarity.similarity import StandardSimilarity
 from topsearch.similarity.molecular_similarity import MolecularSimilarity
@@ -12,6 +13,48 @@ from topsearch.global_optimisation.basin_hopping import BasinHopping
 from topsearch.global_optimisation.perturbations import StandardPerturbation, \
         MolecularPerturbation
 from topsearch.analysis.minima_properties import get_minima_energies
+
+def test_batch_finds_all_minima():
+    step_taking = StandardPerturbation(max_displacement=0.7,
+                                       proportional_distance=True)
+    similarity = StandardSimilarity(0.1, 0.1)
+    coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
+    ktn = KineticTransitionNetwork()
+    camelback = Camelback()
+    basin_hopping = BasinHopping(ktn=ktn, potential=camelback,
+                                 similarity=similarity,
+                                 step_taking=step_taking)
+    starting_points = np.array([[0.08984199, -0.7126564 ],
+                                [-0.08984203, 0.71265641],
+                                [1.60710479, 0.56865138],
+                                [-1.70360672, 0.79608357],
+                                [ 1.70360672, -0.79608357],
+                                [-1.60710476, -0.56865144]]) - 0.05
+
+    basin_hopping.run_batch(initial_positions=starting_points, coords=coords, n_steps=5,
+                      temperature=1.0, conv_crit=1e-6)
+    assert ktn.n_minima == 6
+    energies = get_minima_energies(ktn)
+    assert sorted(energies)[0] == pytest.approx(-1.0316284534898734)
+    assert sorted(energies)[1] == pytest.approx(-1.0316284534898585)
+
+def test_batch_attempted_positions_to_ktn():
+    step_taking = StandardPerturbation(max_displacement=0.7,
+                                       proportional_distance=True)
+    similarity = StandardSimilarity(0.1, 0.1)
+    coords = StandardCoordinates(ndim=2, bounds=[(-3.0, 3.0), (-2.0, 2.0)])
+    ktn = KineticTransitionNetwork()
+    camelback = Camelback()
+    basin_hopping = BasinHopping(ktn=ktn, potential=camelback,
+                                 similarity=similarity,
+                                 step_taking=step_taking)
+    starting_points = np.array([[0.08984199, -0.7126564 ],
+                                [-0.08984203, 0.71265641]]) - 0.05
+    basin_hopping.run_batch(initial_positions=starting_points, coords=coords, n_steps=5,
+                      temperature=1.0, conv_crit=1e-6)
+    attempted = np.array(ktn.get_attempted_positions())
+    
+    assert_array_equal(attempted[attempted[:,1].argsort()], starting_points)
 
 def test_run_camelback():
     step_taking = StandardPerturbation(max_displacement=0.7,

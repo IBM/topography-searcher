@@ -2,11 +2,15 @@
     of the function space to map the topography, and running different
     exploration algorithms """
 
+import logging
+import os
 from timeit import default_timer as timer
 import multiprocessing
 from copy import deepcopy
 import numpy as np
 from nptyping import NDArray
+
+from topsearch.utils.parallel import run_parallel
 from topsearch.data.coordinates import StandardCoordinates
 
 from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
@@ -20,6 +24,9 @@ from ..analysis.pair_selection import connect_unconnected, \
 from ..analysis.minima_properties import get_invalid_minima, \
     get_bounds_minima, get_all_bounds_minima
 from ..minimisation import lbfgs
+from tqdm.auto import tqdm
+from multiprocessing import current_process
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
 class NetworkSampling:
@@ -69,7 +76,9 @@ class NetworkSampling:
                  similarity: StandardSimilarity,
                  multiprocessing_on: bool = False,
                  n_processes: int = 0,
-                 output_level: int = 0) -> None:
+                 output_level: int = 0,
+                 log_dir: str = os.getcwd(),
+                 max_connection_attempts_per_pair = 3) -> None:
         self.ktn = ktn
         self.coords = coords
         self.global_optimiser = global_optimiser
@@ -78,14 +87,25 @@ class NetworkSampling:
         self.similarity = similarity
         self.multiprocessing_on = multiprocessing_on
         self.n_processes = n_processes
+        self.logger = logging.getLogger('network_sampling')
+        self.log_dir = log_dir
+        self.max_connection_attempts_per_pair = max_connection_attempts_per_pair
+                                        
         self.output_level = output_level
 
     # OVERALL LANDSCAPE EXPLORATION
 
     def get_minima(self, coords: StandardCoordinates, n_steps: int, conv_crit: float,
-                   temperature: float, test_valid: bool = True) -> None:
+                   temperature: float, test_valid: bool = True, initial_positions = None, num_proc=1) -> None:
         """ Perform global optimisation to locate low-valued minima """
-        self.global_optimiser.run(coords=coords, n_steps=n_steps,
+        if initial_positions is not None:
+            delta = set(map(tuple, self.ktn.get_attempted_positions()))
+            remaining_positions = np.array([x for x in initial_positions if tuple(x) not in delta])
+            self.logger.info(f"Skipping {len(initial_positions) - len(remaining_positions)} as they've already been attempted")
+            self.global_optimiser.run_batch(initial_positions=remaining_positions, coords=coords, n_steps=n_steps,
+                                  conv_crit=conv_crit, temperature=temperature, num_proc=self.n_processes)   
+        else:
+            self.global_optimiser.run(coords=coords, n_steps=n_steps,
                                   conv_crit=conv_crit, temperature=temperature)
         # After finishing basin-hopping remove any minima that are not allowed
         if test_valid:
@@ -128,44 +148,29 @@ class NetworkSampling:
         run the connection attempts in parallel or serial and add any
         new transition states to the network
         """
+        self.logger.info(f"Running connection attempts for {len(total_pairs)} pairs")
 
+        # Set off connection attempts from the list total_pairs
         if self.multiprocessing_on:
-            # Set off connection attempts from the list total_pairs
-            with multiprocessing.get_context('fork').Pool(
-                    processes=self.n_processes) as pool:
-                stationary_point_information = pool.map(
-                    self.connection_attempt, total_pairs)
-                # For each located transition state, attempt to add to network
-                for i in stationary_point_information:
-                    if i is not None:
-                        for j in i:
-                            self.coords.position = j[0]
-                            self.similarity.test_new_ts(self.ktn,
-                                                        self.coords, j[1],
-                                                        j[2], j[3],
-                                                        j[4], j[5])
-        else:
-            # Run connection attempts for each pair
-            for i in total_pairs:
-                try:
-                    stationary_point_information = self.connection_attempt(i)
-                    # For each transition state attempt to add to network
-                    if stationary_point_information is not None:
-                        for j in stationary_point_information:
-                            self.coords.position = j[0]
-                            self.similarity.test_new_ts(self.ktn,
-                                                        self.coords, j[1],
-                                                        j[2], j[3],
-                                                        j[4], j[5])
-                except:
-                    print("Failed on finding TS for ", i)
-                    traceback.print_exc()
-        # Write node pairs into pairlist to keep track of previous attempts
-        if self.ktn.pairlist.size == 0:
-            self.ktn.pairlist = np.empty((0, 2), dtype=int)
-        for i in total_pairs:
+            results = run_parallel(self.connection_attempt, total_pairs, processes=self.n_processes, return_input=True)
+        else: 
+            results = ((pair, self.connection_attempt(pair)) for pair in total_pairs)    
+
+        for pair, stationary_point_information in results:   
+            self.logger.debug(f"Got a result for pair {pair}")
             self.ktn.pairlist = np.append(
-                self.ktn.pairlist, np.array([np.sort(i)]), axis=0)
+                    self.ktn.pairlist, np.array([np.sort(pair)]), axis=0)
+            self.ktn.dump_network()
+
+            if stationary_point_information is not None:
+                for j in stationary_point_information:
+                    self.logger.debug(f"Got stationary_point_information: {j}")
+                    self.coords.position = j[0]
+                    self.similarity.test_new_ts(self.ktn,
+                                                self.coords, j[1],
+                                                j[2], j[3],
+                                                j[4], j[5])
+
 
     def connection_attempt(self, pair: list) -> list:
         """ Perform a connection attempt between a pair of selected minima 
@@ -190,10 +195,9 @@ class NetworkSampling:
                                          permutation)
         neb_end_time = timer()
 
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"{np.size(candidates)} candidates from NEB after "
-                          f"Force constant: "
-                          f"{self.double_ended_search.force_constant}\n")
+        self.logger.info(f"{np.size(candidates)} candidates from NEB after "
+                    f"Force constant: "
+                    f"{self.double_ended_search.force_constant}\n")
 
         # Try and converge each candidate to a true transition state
         hef_start_time = timer()
@@ -204,8 +208,7 @@ class NetworkSampling:
                 self.single_ended_search.run(local_coords, tag=f"{pair[0]}-{pair[1]}")
             # Check search was successful
             if ts_coords is not None:
-                with open('logfile', 'a', encoding="utf-8") as outfile:
-                    outfile.write(f"{ts_search_number}: ")
+                self.logger.debug(f"{ts_search_number}: Converged")
                 stationary_point_information.append(
                         [ts_coords, e_ts, min_plus, e_plus, min_minus,
                          e_minus, neg_eig])
@@ -217,17 +220,18 @@ class NetworkSampling:
         self.write_connection_output(end_time-connection_start_time,
                                      neb_end_time - neb_start_time,
                                      end_time - hef_start_time)
+        
+        self.logger.debug(f"stationary_point_information: {stationary_point_information}")
         return stationary_point_information
 
     def write_connection_output(self, connection_length: float,
                                 neb_length: float, hef_length: float) -> None:
         """ Write the timings for the connection attempt """
 
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"Completed connection in "
-                          f"{connection_length} s:"
-                          f"NEB ({neb_length}), HEF ({hef_length})\n")
-            outfile.write('-------------------------\n')
+        self.logger.info(f"Completed connection attempt in "
+                        f"{connection_length} s:"
+                        f"NEB ({neb_length}), HEF ({hef_length})\n")
+        self.logger.info('-------------------------\n')
 
     def prepare_connection_attempt(self, coords: StandardCoordinates, pair: list) -> NDArray:
         """ Prepare the two minima for connection in a double ended
@@ -237,9 +241,8 @@ class NetworkSampling:
 
         node1 = pair[0]
         node2 = pair[1]
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"Connection attempt between minima pair: "
-                          f"{node1} {node2}\n\n")
+        self.logger.info(f"Connection attempt between minima pair: "
+                        f"{node1} {node2}\n\n")
         # Check if we should connect this pair
         allowed, repeats = self.check_pair(node1, node2)
         if not allowed:
@@ -266,18 +269,16 @@ class NetworkSampling:
             if np.array_equal(i, np.sort([node1, node2])):
                 repeats += 1
         # Report if retrying a connection
-        if repeats in (1, 2):
-            with open('logfile', 'a', encoding="utf-8") as outfile:
-                outfile.write("Connection already attempted. Trying again\n")
+
+        if repeats > 0 and repeats < self.max_connection_attempts_per_pair:
+            self.logger.info("Connection already attempted. Trying again\n")
         #  Only try three times before giving up
-        elif repeats > 2:
-            with open('logfile', 'a', encoding="utf-8") as outfile:
-                outfile.write("Connection attempted too many times.")
+        elif repeats >= self.max_connection_attempts_per_pair:
+            self.logger.info("Connection attempted too many times.")
             return False, repeats
         # Don't repeat connections that are already directly connected
         if self.ktn.G.has_edge(node1, node2):
-            with open('logfile', 'a', encoding="utf-8") as outfile:
-                outfile.write("Nodes already connected by transition state\n")
+            self.logger.info("Nodes already connected by transition state\n")
             return False, repeats
         # Avoid connections between minimum and itself
         if node1 == node2:
@@ -286,22 +287,21 @@ class NetworkSampling:
 
     def write_failure_condition(self) -> None:
         """ Writes reason for transition state location failure to file """
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write("TS search did not converge. ")
-            if self.single_ended_search.failure == 'SDpaths':
-                outfile.write("Steepest descent paths did not converge\n")
-            elif self.single_ended_search.failure == 'eigenvector':
-                outfile.write("Eigenvector is zero\n")
-            elif self.single_ended_search.failure == 'eigenvalue':
-                outfile.write("Eigenvalue is zero\n")
-            elif self.single_ended_search.failure == 'bounds':
-                outfile.write("Transition state outside bounds\n")
-            elif self.single_ended_search.failure == 'steps':
-                outfile.write("Too many steps\n")
-            elif self.single_ended_search.failure == 'pushoff':
-                outfile.write("Can't find a pushoff\n")
-            elif self.single_ended_search.failure == 'invalid_ts':
-                outfile.write("Invalid transition state\n")
+        self.logger.info("TS search did not converge. ")
+        if self.single_ended_search.failure == 'SDpaths':
+            self.logger.info("Steepest descent paths did not converge\n")
+        elif self.single_ended_search.failure == 'eigenvector':
+            self.logger.info("Eigenvector is zero\n")
+        elif self.single_ended_search.failure == 'eigenvalue':
+            self.logger.info("Eigenvalue is zero\n")
+        elif self.single_ended_search.failure == 'bounds':
+            self.logger.info("Transition state outside bounds\n")
+        elif self.single_ended_search.failure == 'steps':
+            self.logger.info("Too many steps\n")
+        elif self.single_ended_search.failure == 'pushoff':
+            self.logger.info("Can't find a pushoff\n")
+        elif self.single_ended_search.failure == 'invalid_ts':
+            self.logger.info("Invalid transition state\n")
 
     def select_minima(self, coords: StandardCoordinates, option: str,
                       neighbours: int) -> list:
@@ -318,17 +318,16 @@ class NetworkSampling:
         """
 
         #  Write which method we are using to logfile
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write("------- SAMPLING THE NETWORK ---------\n")
-            outfile.write(f"Exploring the landscape for {self.ktn.n_minima}"
-                          f" after removing minima at bounds\n")
-            if option == "ClosestEnumeration":
-                outfile.write("Scheme: ClosestEnumeration\n")
-            elif option == "ConnectUnconnected":
-                outfile.write("Scheme: ConnectUnconnected\n")
-            elif option == "ReadPairs":
-                outfile.write("Scheme: ReadPairs\n")
-            outfile.write("-----------------\n")
+        self.logger.debug("------- SAMPLING THE NETWORK ---------\n")
+        self.logger.debug(f"Exploring the landscape for {self.ktn.n_minima}"
+                        f" after removing minima at bounds\n")
+        if option == "ClosestEnumeration":
+            self.logger.debug("Scheme: ClosestEnumeration\n")
+        elif option == "ConnectUnconnected":
+            self.logger.debug("Scheme: ConnectUnconnected\n")
+        elif option == "ReadPairs":
+             self.logger.debug("Scheme: ReadPairs\n")
+        self.logger.debug("-----------------\n")
         #  Run the pair selection method
         if option == "ClosestEnumeration":
             pairs = closest_enumeration(self.ktn, self.similarity,
@@ -367,10 +366,9 @@ class NetworkSampling:
             energy = minima_information[i][1]
             self.similarity.test_new_minimum(self.ktn, self.coords, energy)
         end_time = timer()
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"{self.ktn.n_minima} distinct minima after "
-                          f"reconvergence\nReconvergence completed in "
-                          f"{end_time - start_time}\n\n")
+        self.logger.debug(f"{self.ktn.n_minima} distinct minima after "
+                        f"reconvergence\nReconvergence completed in "
+                        f"{end_time - start_time}\n\n")
 
     def reconverge_landscape(self, potential: Potential,
                              reconv_crit: float) -> None:
@@ -411,8 +409,8 @@ class NetworkSampling:
             self.similarity.test_new_ts(self.ktn, self.coords, i[1], i[2],
                                         i[3], i[4], i[5])
         end_time = timer()
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write(f"{self.ktn.n_minima} distinct minima and "
-                          f"{self.ktn.n_ts} transition states after "
-                          f"reconvergence\nReconvergence completed in "
-                          f"{end_time - start_time}\n\n")
+       
+        self.logger.debug(f"{self.ktn.n_minima} distinct minima and "
+                        f"{self.ktn.n_ts} transition states after "
+                        f"reconvergence\nReconvergence completed in "
+                        f"{end_time - start_time}\n\n")

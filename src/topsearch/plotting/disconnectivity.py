@@ -15,8 +15,8 @@ from ..data.kinetic_transition_network import KineticTransitionNetwork
 from ..analysis.graph_properties import remove_edges_threshold
 from ..analysis.minima_properties import get_minima_energies
 
-rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-rc('text', usetex=True)
+rc('font', **{'family': 'serif'})
+rc('text', usetex=False)
 mpl.rcParams.update({'font.size': 18})
 
 

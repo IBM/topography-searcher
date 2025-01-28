@@ -1,6 +1,7 @@
 """ Routines that act on a KineticTransitionNetwork object to select pairs 
     of minima for sampling by different criteria """
 
+import logging
 import numpy as np
 import networkx as nx
 from topsearch.data.coordinates import StandardCoordinates
@@ -9,7 +10,7 @@ from topsearch.data.kinetic_transition_network import KineticTransitionNetwork
 from topsearch.similarity.similarity import StandardSimilarity
 from .graph_properties import unconnected_component
 from .minima_properties import get_distance_matrix, get_distance_from_minimum
-
+logger = logging.getLogger()
 
 def connect_unconnected(ktn: KineticTransitionNetwork, similarity: StandardSimilarity,
                         coords: StandardCoordinates, neighbours: int) -> list:
@@ -46,8 +47,7 @@ def connect_to_set(ktn: KineticTransitionNetwork, similarity: StandardSimilarity
     # Find list of nodes not connected to node 1
     f_set = set(range(ktn.n_minima)) - set(s_set)
     if f_set == set():
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write("No unconnected minima\n")
+        logger.info("No unconnected minima\n")
         return []
     # Get ordered distances to this node
     dist_vector = get_distance_from_minimum(ktn, similarity, coords, node1)

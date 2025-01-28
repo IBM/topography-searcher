@@ -4,7 +4,8 @@
 
 from __future__ import annotations
 from typing import TYPE_CHECKING
-
+import os
+from pathlib import Path
 import networkx as nx
 import numpy as np
 from nptyping import NDArray
@@ -41,16 +42,18 @@ class KineticTransitionNetwork:
         attempted. Useful to avoid repetition of calculations
     similarity : class instance
         Evalutes the similarity between any two given configurations
+    dump_path: default directory to dump the network
+    dump_suffix: default suffix for dump files
     """
 
-    def __init__(self) -> None:
+    def __init__(self, dump_path=os.getcwd(), dump_suffix="") -> None:
         self.G = nx.MultiGraph()
         self.n_minima = 0
         self.n_ts = 0
         self.pairlist = np.empty((0, 2), dtype=int)
-        # Make the logfile empty before writing
-        with open('logfile', 'w', encoding="utf-8") as outfile:
-            outfile.write(' ')
+        self.initial_positions_attempted = []
+        self.dump_path = Path(dump_path)
+        self.dump_suffix = dump_suffix
 
     def get_minimum_coords(self, minimum: int) -> NDArray:
         """ Returns the coordinates of a given node minimum """
@@ -133,13 +136,20 @@ class KineticTransitionNetwork:
         self.n_ts = 0
         self.pairlist = np.empty((0, 2), dtype=int)
 
-    def dump_network(self, text_string: str = '') -> None:
+    def dump_network(self, text_string: str = '', text_path: str ='') -> None:
         """
         Write network to text files:
         min.data stores the index and energy.
         ts.data stores the connected minima and energy.
         min/ts.coords store the coordinates of each stationary point
         """
+        if text_string == '':
+            text_string = self.dump_suffix
+        if text_path == '':
+            dump_dir = self.dump_path
+        else:
+            dump_dir = Path(text_path)    
+
         # Get dimensionality of minima
         ndim = self.get_minimum_coords(0).shape[0]
         # Get minima data out of network
@@ -163,24 +173,36 @@ class KineticTransitionNetwork:
             ts_coords = np.append(
                 ts_coords, [self.G[node1][node2][edge_idx]['coords']], axis=0)
         # Write stationary point data and pairlist
-        np.savetxt(f"ts.data{text_string}",
-                   ts_data, fmt='%i %i %8.5f')
-        np.savetxt(f"ts.coords{text_string}", ts_coords)
-        np.savetxt(f"min.data{text_string}",
-                   minima_data, fmt='%i %8.5f')
-        np.savetxt(f"min.coords{text_string}", minima_coords)
-        np.savetxt(f"pairlist{text_string}", self.pairlist, fmt='%i')
+        np.savetxt(dump_dir / f"ts.data{text_string}",
+                   ts_data, fmt='%i %i %.16e')
+        np.savetxt(dump_dir / f"ts.coords{text_string}", ts_coords)
+        np.savetxt(dump_dir / f"min.data{text_string}",
+                   minima_data, fmt='%i %.16e')
+        np.savetxt(dump_dir / f"min.coords{text_string}", minima_coords)
+        np.savetxt(dump_dir / f"pairlist{text_string}", self.pairlist, fmt='%i')
+        np.savetxt(dump_dir / f"attempted.coords{text_string}", self.get_attempted_positions())
 
     def read_network(self, text_path: str = '', text_string: str = '') -> None:
         """ Returns G network from files that resulted from dump_network """
-
+        if text_string == '':
+            text_string = self.dump_suffix
+        if text_path == '':
+            dump_dir = self.dump_path
+        else:
+            dump_dir = Path(text_path)  
+            
         # Get the data back from files
-        minima_data = np.loadtxt(f"{text_path}min.data{text_string}", ndmin=2)
-        minima_coords = np.loadtxt(f"{text_path}min.coords{text_string}", ndmin=2)
-        ts_data = np.loadtxt(f"{text_path}ts.data{text_string}", ndmin=2)
-        ts_coords = np.loadtxt(f"{text_path}ts.coords{text_string}", ndmin=2)
-        self.pairlist = np.loadtxt(f"{text_path}pairlist{text_string}",
+        minima_data = np.loadtxt(dump_dir / f"min.data{text_string}", ndmin=2)
+        minima_coords = np.loadtxt(dump_dir / f"min.coords{text_string}", ndmin=2)
+        ts_data = np.loadtxt(dump_dir / f"ts.data{text_string}", ndmin=2)
+        ts_coords = np.loadtxt(dump_dir / f"ts.coords{text_string}", ndmin=2)
+        self.pairlist = np.loadtxt(dump_dir / f"pairlist{text_string}",
                                    ndmin=2, dtype=int)
+        if len(self.pairlist) == 0:
+            self.pairlist = np.empty((0, 2), dtype=int)
+        attempted_file = dump_dir / f"attempted.coords{text_string}"
+        if attempted_file.exists():
+            self.initial_positions_attempted = np.loadtxt(attempted_file, ndmin=2).tolist()
 
         # Now build a graph from the data
         self.n_minima = np.size(minima_data, 0)
@@ -230,3 +252,9 @@ class KineticTransitionNetwork:
         for i in other_ktn.pairlist:
             self.pairlist = np.append(
                 self.pairlist, np.array([np.sort(i)]), axis=0)
+
+    def add_attempted_position(self, position: np.ndarray) -> None:
+        self.initial_positions_attempted.append(position)
+    
+    def get_attempted_positions(self) -> np.ndarray:
+        return np.array(self.initial_positions_attempted)

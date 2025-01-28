@@ -1,6 +1,7 @@
 """ Module that contains classes to implement Gaussian process regression
     and evaluate the resulting model """
 
+import logging
 import warnings
 import sys
 import numpy as np
@@ -62,6 +63,7 @@ class GaussianProcess(Potential):
         self.matern_nu = matern_nu
         self.prepare_training_data()
         self.initialise_gaussian_process()
+        self.logger = logging.getLogger('guassian')
 
     def prepare_training_data(self):
         """ Modify the training data that is provided to the Gaussian process
@@ -127,11 +129,10 @@ class GaussianProcess(Potential):
 
     def write_fit(self) -> None:
         """ Write the hyperparameters of the best GP fit """
-        with open('logfile', 'a', encoding="utf-8") as outfile:
-            outfile.write("Best GP fit: ")
-            for i in self.gpr.kernel_.theta:
-                outfile.write(f"{i} ")
-            outfile.write('\n')
+        self.logger.info("Best GP fit: ")
+        for i in self.gpr.kernel_.theta:
+            self.logger.info(f"{i} ")
+        self.logger.info('\n')
 
     def get_score(self) -> float:
         """ Get the R^2 score of the gp fit """

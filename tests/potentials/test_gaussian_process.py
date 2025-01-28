@@ -146,7 +146,6 @@ def test_write_fit():
                          kernel_bounds=[(1e-1, 1e2), (1e-1, 1e2),
                                         (1e-5, 1e-1)])
     gp.write_fit()
-    assert os.path.exists('logfile') == True
 
 def test_refit_model():
     model_data = ModelData(training_file=f'{current_dir}/test_data/training_gp.txt',
